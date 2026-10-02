@@ -1,6 +1,6 @@
 # Architecture
 
-This file explains how the system fits together: the overall data flow, the project layout, and the database schema. It's the shared background for [ingestion.md](ingestion.md) and [retrieval.md](retrieval.md), which each walk through one stage in detail.
+This file explains how the system fits together: the overall data flow, the project layout, and the database schema. It's the shared background for [ingestion.md](ingestion.md), [retrieval.md](retrieval.md), and [use-cases.md](use-cases.md), which each walk through one stage in detail.
 
 ## Data flow
 
@@ -20,11 +20,18 @@ data/raw/<company>/*.{pdf,html}
         ▼                             ▼
    Ask workflow (LangGraph)     Screening workflow (LangGraph)
    (retrieve → LLM answer        (retrieve → LLM assessment per criterion
-   with citations)                in config/screening_config.yaml; future: comparison)
+   with citations)                in config/screening_config.yaml)
         │                             │
         ▼                             ▼
   answer + source citations    report grouped by dimension, each criterion
                                 classified strong/moderate/weak/insufficient evidence
+                                       │
+                            ┌──────────┴──────────┐
+                            ▼                     ▼
+                     universe workflow      compare workflow
+                     (loops the report       (runs the report for
+                     across every company)   two companies, merged
+                                              by criterion)
 ```
 
 PostgreSQL is the source of truth for the processed corpus — not the filesystem, not objects held in memory. Anything downstream (an LLM answer, a screening report, a comparison) reads from the database, never from the ingestion run that produced it.
@@ -36,11 +43,9 @@ PostgreSQL is the source of truth for the processed corpus — not the filesyste
 | FastAPI (`app/main.py`, `app/api/`) | HTTP boundary: trigger ingestion, check status, ask questions |
 | Ingestion (`app/ingestion/`) | Turn files under `data/raw/` into rows in Postgres |
 | Retrieval (`app/retrieval/`) | Turn a question into ranked evidence chunks |
-| Workflows (`app/workflows/`) | Stateful, multi-step flows built with LangGraph on top of retrieval (`ask`, `screen` today, plus `universe` which loops `screen` across companies; `compare` planned) |
+| Workflows (`app/workflows/`) | Stateful, multi-step flows built with LangGraph on top of retrieval (`ask`, `screen` today, plus `universe` which loops `screen` across companies, and `compare` which runs `screen` for two companies and merges the results) |
 | Services (`app/services/`) | Swappable dependencies: embedding provider and LLM provider |
 | PostgreSQL + pgvector | Storage and similarity search |
-
-Planned, not built yet: the `compare` (UC3) workflow, described in [project-plan.md](project-plan.md). It reuses `screen_company()` once per company being compared, not a new graph.
 
 ## Project structure
 
@@ -50,7 +55,7 @@ app/
 ├── api/
 │   ├── ingestion.py         POST /ingestion/all, GET /ingestion/status
 │   ├── ask.py               POST /ask
-│   └── screening.py         POST /screen, POST /screen/universe
+│   └── screening.py         POST /screen, POST /screen/universe, POST /compare
 ├── db/
 │   ├── session.py           database engine + session helper
 │   ├── models.py            companies, documents, chunks tables
@@ -69,6 +74,7 @@ app/
 │   ├── ask.py               LangGraph retrieve -> generate graph (question -> answer + citations)
 │   ├── screening.py         LangGraph retrieve -> assess graph, looped once per criterion (company -> report)
 │   ├── universe.py          loops screen_criterion() once per ingested company (criterion -> matching companies)
+│   ├── compare.py           runs screen_company() for two companies and merges the results per criterion
 │   └── common.py            source-formatting helpers shared by ask.py and screening.py
 ├── schemas/
 │   └── documents.py         Page and Chunk dataclasses shared across modules
@@ -83,7 +89,7 @@ config/
 
 data/raw/<company_id>/        the source files themselves
 tests/                        pytest suite covering ingestion, retrieval, the ask workflow, the screening
-                               workflow, and universe screening
+                               workflow, universe screening, and company comparison
 docker-compose.yml            local PostgreSQL + pgvector
 ```
 

@@ -50,6 +50,37 @@ class LoadScreeningConfigTestCase(unittest.TestCase):
             load_screening_config("config/does_not_exist.yaml")
 
 
+class ScreenCompanyDimensionFilterTestCase(unittest.TestCase):
+    """Pure unit test: screen_criterion is patched, only checks the dimension filter narrows the loop."""
+
+    def test_unknown_dimension_raises(self):
+        with self.assertRaises(KeyError):
+            asyncio.run(
+                screen_company(
+                    "demo", DummyEmbeddingService(), DummyChatService(), dimension="not_a_real_dimension"
+                )
+            )
+
+    def test_filters_criteria_to_the_requested_dimension(self):
+        async def fake_screen_criterion(criterion, company_id, *args, **kwargs):
+            return {
+                "criterion": criterion.id,
+                "dimension": criterion.dimension,
+                "question": criterion.question,
+                "assessment": "strong_evidence",
+                "rationale": "...",
+                "sources": [],
+            }
+
+        with patch("app.workflows.screening.screen_criterion", fake_screen_criterion):
+            result = asyncio.run(
+                screen_company("demo", DummyEmbeddingService(), DummyChatService(), dimension="growth")
+            )
+
+        self.assertEqual(len(result["dimensions"]), 1)
+        self.assertEqual(result["dimensions"][0]["dimension"], "growth")
+
+
 class ParseAssessmentTestCase(unittest.TestCase):
     """Pure unit test: no Postgres, no LLM call."""
 

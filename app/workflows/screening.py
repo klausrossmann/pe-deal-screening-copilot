@@ -157,9 +157,19 @@ async def screen_company(
     chat_service: ChatService,
     top_k: int = 3,
     config_path: str | Path = "config/screening_config.yaml",
+    dimension: str | None = None,
 ) -> dict[str, Any]:
-    """Assesses every criterion in the screening config for one company, grouped by dimension."""
+    """Assesses every criterion in the screening config for one company, grouped by dimension.
+
+    If `dimension` is given, only that dimension's criteria are assessed (used by `compare_companies()`
+    to avoid running criteria outside the dimension the caller asked about).
+    """
     criteria = load_screening_config(config_path)
+    if dimension is not None:
+        known_dimensions = {criterion.dimension for criterion in criteria}
+        if dimension not in known_dimensions:
+            raise KeyError(f"Unknown screening dimension '{dimension}'. Valid ids: {sorted(known_dimensions)}")
+        criteria = [criterion for criterion in criteria if criterion.dimension == dimension]
 
     dimensions: dict[str, dict[str, Any]] = {}
     for criterion in criteria:

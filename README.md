@@ -17,6 +17,8 @@ The repository now contains a working ingestion and retrieval scaffold for:
   classifying evidence as strong/moderate/weak/insufficient, grouped by dimension
 - a `universe` workflow: assesses one criterion across every ingested company, returning companies that meet a
   minimum evidence threshold
+- a `compare` workflow: applies the same screening criteria to two companies side by side, optionally filtered
+  to one dimension
 - FastAPI app entrypoint
 
 ## Quick start
@@ -29,7 +31,8 @@ The repository now contains a working ingestion and retrieval scaffold for:
 6. Ask a question via `POST /ask` (needs `LLM_PROVIDER` + an API key set in `.env`)
 7. Generate a PE screening report via `POST /screen` (same LLM requirement)
 8. Find companies matching one criterion via `POST /screen/universe` (same LLM requirement)
-9. Validate with: `python3 -m pytest tests -q`
+9. Compare two companies via `POST /compare` (same LLM requirement)
+10. Validate with: `python3 -m pytest tests -q`
 
 ## Documentation
 
@@ -38,9 +41,8 @@ How the system is built, in the order it was built:
 - [architecture.md](architecture.md) — data flow, project structure, database schema, shared local setup
 - [ingestion.md](ingestion.md) — how files under `data/raw/` become rows in Postgres
 - [retrieval.md](retrieval.md) — how a question becomes ranked evidence chunks
-- [ask.md](ask.md) — how a question becomes an answer with citations (LangGraph)
-- [screening.md](screening.md) — how a company becomes a full PE screening report, criterion by criterion (LangGraph)
-- [universe.md](universe.md) — how one criterion gets checked across every ingested company
+- [use-cases.md](use-cases.md) — the four use cases (ask, screen, compare, universe screening), how each is
+  implemented (LangGraph), and the API/tests behind each one
 
 Product vision and planning notes, not yet fully implemented:
 
