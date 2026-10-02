@@ -2,10 +2,38 @@
 
 How the four use cases from [project-plan.md](project-plan.md) are implemented, in the order they were built:
 asking a single question, generating a full screening report for one company, comparing two companies, and
-screening the whole portfolio against one criterion. All four share the same retrieval stage — see
+screening the whole portfolio against one or more criteria. All four share the same retrieval stage — see
 [architecture.md](architecture.md) for the overall data flow and [retrieval.md](retrieval.md) for how a question
 becomes ranked evidence chunks — and build on each other: UC2 loops UC1's graph shape once per criterion, UC3 and
 UC4 both reuse UC2's per-company/per-criterion functions rather than introducing new retrieval or prompting logic.
+
+## How the four use cases fit together
+
+```
+                     UC1 Ask                     UC2 Screening (one company, all criteria)
+                        │                                   │
+                        │                     screen_criterion(criterion, company)  ◄── the one building block
+                        │                                   │                        reused by UC2, UC3, UC4
+                        ▼                                   ▼
+              retrieve() one query          1. saved result still valid?  ── yes ──► return it (no LLM call)
+                        │                   2. retrieve_multi(): question + retrieval_queries, distance cutoff
+                        ▼                   3. nothing found?  ── yes ──► insufficient_evidence (no LLM call)
+                  LLM answer                4. LLM classifies the evidence (risk-aware prompt)
+                                            5. save the result to data/analysis/
+
+   UC3 Compare   = UC2 for two companies at once, merged by criterion
+   UC4 Universe  = screen_criterion() for every (company, criterion) pair you pick
+```
+
+Three things make this cheap and consistent across use cases:
+
+1. **Saved results.** Steps 1 and 5: every (company, criterion) assessment is saved as JSON and reused by every
+   use case until something that could change it changes. Screening ATOSS in UC2 makes ATOSS free in UC3 and UC4.
+2. **Better evidence, fewer pointless LLM calls.** Step 2 searches several phrasings per criterion and drops
+   chunks above a distance cutoff, so step 3 can genuinely skip the LLM when the documents don't cover a criterion.
+3. **Everything runs concurrently.** UC2–UC4 start all their `screen_criterion()` calls at once. The shared
+   `ChatService` decides how many LLM calls are actually in flight (`LLM_MAX_CONCURRENCY`), so free-tier rate
+   limits are respected in one place instead of in every workflow.
 
 ## UC1: Ask
 
@@ -18,10 +46,10 @@ answering, one company at a time.
 question
     │
     ▼
-retrieve(question, company_id, top_k)   -- same retrieval stage as before, unchanged
+retrieve(question, company_id, top_k, max_distance)   -- same retrieval stage as before
     │
     ▼
-no chunks found? -> "Insufficient evidence" answer, LLM is never called
+no chunks found (or none close enough)? -> "Insufficient evidence" answer, LLM is never called
     │
     ▼
 build a numbered-sources prompt from the chunks
@@ -47,10 +75,14 @@ which is where a graph abstraction starts paying for itself.
 - **Services are injected, not constructed inside the graph.** `build_ask_graph(embedding_service, chat_service)`
   takes both as arguments, mirroring how `retrieve()` takes an `embedding_service` instead of creating its own.
   Tests pass in fakes for both; the API route passes in real ones.
+- **One shared service instance per process.** The API gets its services from `get_embedding_service()` /
+  `get_chat_service()` (FastAPI `Depends`, cached with `lru_cache`). Before, every request built a new
+  `EmbeddingService()`, which reloaded the local embedding model from disk each time.
 - **No LLM call when there's no evidence.** If `retrieve` returns zero chunks, `generate_node` short-circuits to
   a fixed `"Insufficient evidence..."` answer instead of prompting the model. This is the same principle
   `framework.md` describes for screening: saying "I don't know based on the documents I have" is a correct
-  answer, not a failure.
+  answer, not a failure. With `RETRIEVAL_MAX_DISTANCE` set, this also happens for questions the documents simply
+  don't cover, not only for companies without documents (see [retrieval.md](retrieval.md)).
 - **Citations are the retrieved chunks, not something parsed out of the LLM's text.** The prompt asks the model
   to cite `[1]`, `[2]`, etc. inline, but the `sources` returned to the caller are always exactly the chunks that
   were retrieved and fed into the prompt — there's no fragile parsing of the model's output to recover which
@@ -69,6 +101,12 @@ which is where a graph abstraction starts paying for itself.
   (5 attempts, exponential backoff from 1s up to 20s) so a transient 503 is retried instead of failing the whole
   `ask()` call. This only helps with genuinely transient errors — a `404` (wrong model name) or a `429` with a
   `0` free-tier quota (wrong pricing tier) will still fail after retrying, since those aren't temporary.
+- **Rate limits are handled in `ChatService`, not in the workflows.** The provider SDKs are synchronous, so each
+  call runs in a worker thread (`asyncio.to_thread`) and the event loop stays free. A semaphore caps how many
+  calls are in flight (`LLM_MAX_CONCURRENCY`, default `1`), and the OpenAI/Groq clients retry up to 8 times,
+  waiting for the server's `retry-after` each time. Groq's free tier allows only 8,000 tokens per minute (about 8
+  screening calls), so with 4 calls in flight a full report failed with `429` even with retries. With 1 it
+  completes reliably. On a paid tier, raise `LLM_MAX_CONCURRENCY` and screening gets proportionally faster.
 
 ### How it's used
 
@@ -104,6 +142,8 @@ Same pattern as `EMBEDDING_PROVIDER` / `EMBEDDING_MODEL`:
 | `LLM_PROVIDER` | `openai`, `google`, `groq` | `openai` |
 | `LLM_MODEL` | any chat model name for that provider | `gpt-4o-mini` (openai) / `models/gemini-flash-latest` (google) / `openai/gpt-oss-120b` (groq) |
 | `OPENAI_API_KEY` / `GOOGLE_API_KEY` / `GROQ_API_KEY` | required for the selected provider | — |
+| `LLM_MAX_CONCURRENCY` | max LLM calls in flight at once, shared by all requests | `1` |
+| `RETRIEVAL_MAX_DISTANCE` | cosine-distance cutoff for retrieved chunks (see [retrieval.md](retrieval.md)) | unset = no cutoff; `.env.example` uses `0.70` |
 
 A missing or invalid API key raises immediately on `ChatService()` construction, the same way `EmbeddingService()`
 does for `openai` / `google`.
@@ -180,44 +220,48 @@ project.
 company_id
     │
     ▼
-load config/screening_config.yaml -> list of criteria (each tagged with a dimension)
+load config/screening_config.yaml -> list of criteria (each with dimension, polarity, retrieval_queries)
     │
     ▼
-for each criterion, in order:
+for every criterion, all started at once (screen_criterion):
+    │
+    ├─ step 1: a saved result in data/analysis/<company>/<criterion>.json still matches?
+    │          -> return it with "cached": true, nothing else runs
+    │
+    ├─ step 2: retrieve_multi([question, *retrieval_queries], company_id, top_k, max_distance)
+    │          -> one search per phrasing, merged, each chunk once at its best distance
+    │
+    ├─ step 3: no chunks found? -> assessment = insufficient_evidence, LLM is never called
+    │
+    ├─ step 4: numbered-sources prompt (plus a "this is a RISK" note for risk criteria);
+    │          LLM returns {"assessment": ..., "rationale": "...[1]..."} as JSON, parsed tolerantly;
+    │          anything that doesn't parse into a known level becomes insufficient_evidence
+    │
+    └─ step 5: save the result (with a fingerprint of everything that produced it)
     │
     ▼
-    retrieve(criterion.question, company_id, top_k)   -- same retrieval stage as UC1
+group the per-criterion results by dimension (in config order)
     │
     ▼
-    no chunks found? -> assessment = insufficient_evidence, LLM is never called
-    │
-    ▼
-    build a numbered-sources prompt, ask the LLM to return
-    {"assessment": ..., "rationale": "...[1]..."} as JSON
-    │
-    ▼
-    parse the JSON (tolerating code fences / stray text); anything that
-    doesn't parse into a known assessment level also becomes insufficient_evidence
-    │
-    ▼
-group the per-criterion results by dimension
-    │
-    ▼
-{ company_id, dimensions: [{ dimension, description, criteria: [{criterion, question,
-  assessment, rationale, sources}, ...] }, ...] }
+{ company_id, dimensions: [{ dimension, description, polarity, criteria: [{criterion, dimension, polarity,
+  question, assessment, rationale, sources, cached}, ...] }, ...] }
 ```
 
 Implemented in `app/workflows/screening.py`:
 
 - `load_screening_config()` reads `config/screening_config.yaml` into a flat list of `Criterion` (id, question,
-  dimension, dimension description).
+  dimension, dimension description, polarity, retrieval queries). `Criterion.queries` is what gets searched: the
+  question first, then the extra phrasings.
 - `build_screen_criterion_graph()` is a two-node [LangGraph](https://langchain-ai.github.io/langgraph/) graph —
   `retrieve` → `assess` — the same shape as UC1's `retrieve` → `generate`, with `assess` producing a classified
-  assessment instead of free text.
-- `screen_criterion()` runs that graph once for one criterion.
-- `screen_company()` loads the config and calls `screen_criterion()` once per criterion, sequentially, grouping
-  the results by dimension. An optional `dimension` parameter filters the config down to one dimension before
-  looping — added for UC3 (Compare) below, which otherwise doesn't need any change to this workflow.
+  assessment instead of free text. It is compiled once per pair of services and reused for every call.
+- `screen_criterion()` runs steps 1–5 above for one criterion and one company.
+- `screen_company()` loads the config and runs `screen_criterion()` for every criterion concurrently, grouping
+  the results by dimension. An optional `dimension` parameter filters the config down to one dimension first —
+  added for UC3 (Compare) below.
+
+Saving results lives in `app/workflows/analysis_cache.py` (`AnalysisCache`), described under *Saved results*
+below.
 
 ### Design decisions
 
@@ -242,15 +286,81 @@ Implemented in `app/workflows/screening.py`:
   its `assessment` value isn't one of the four allowed levels, `_parse_assessment()` falls back to
   `insufficient_evidence` with an explanatory rationale rather than raising. A broken LLM response degrades to
   "we don't have conclusive evidence," not a 500 error for the whole report.
-- **Sequential, not parallel, across criteria.** `screen_company()` awaits each `screen_criterion()` call one at
-  a time, matching the pseudocode in `project-plan.md`. `config/screening_config.yaml` currently has ~19
-  criteria, each triggering one retrieval and one LLM call; running them concurrently would be faster but risks
-  tripping free-tier LLM rate limits (see the Groq/Google notes above). This is the simplest option that works
-  reliably today — worth revisiting with a concurrency limit if screening a full report gets too slow.
+- **Concurrent, with the limit in one place.** `screen_company()` starts all ~20 `screen_criterion()` calls at
+  once with `asyncio.gather`. Retrieval and embedding run in worker threads, so the searches genuinely overlap.
+  The LLM calls queue behind `ChatService`'s semaphore (`LLM_MAX_CONCURRENCY`, see UC1's design notes). The
+  workflows don't need to know about rate limits: on Groq's free tier the LLM step stays effectively sequential
+  (a fresh ATOSS report took ~110 s); on a paid tier, raising the limit speeds everything up with no code change.
 - **Grouped by dimension in the response, not a flat list.** The report shape in `project-plan.md`'s UC2 mockup
   is organized by dimension (Business Quality, Growth, ...), so `screen_company()` returns
-  `dimensions: [{dimension, description, criteria: [...]}]` instead of one flat array the caller would have to
-  group itself.
+  `dimensions: [{dimension, description, polarity, criteria: [...]}]` instead of one flat array the caller would
+  have to group itself.
+
+### Risk criteria (polarity)
+
+The framework shows risks differently from strengths (`! Evidence found` rather than `✓ Strong`). Using the same
+scale for both would read *"strong evidence of customer concentration"* as something good. So:
+
+1. **Config:** the `risks` dimension sets `polarity: risk`. Every other dimension defaults to `positive`.
+2. **Prompt:** for risk criteria the LLM gets an extra paragraph saying that `strong_evidence` means *the risk is
+   clearly present* (a red flag), not that the company is strong.
+3. **Response:** every criterion and dimension carries `polarity`, so consumers never have to guess.
+4. **UI:** risk criteria get their own labels (🔴 *Risk clearly present* / 🟠 *Risk indicated* / 🟡 *Weak risk
+   signal*) instead of the green/yellow scale.
+
+The evidence levels themselves stay the same four values, so filtering by `min_assessment` (UC4) works the same
+way for both kinds. Absence of evidence is still `insufficient_evidence`, never "no risk". The documents not
+mentioning a risk is not proof that the risk is absent.
+
+### Retrieval queries
+
+Each criterion can list `retrieval_queries`: extra search phrases worded like the documents (*"EBITDA margin"*,
+*"free cash flow"*) rather than like a question. Step 2 searches the question **and** every phrase, then merges
+the results. The question alone is still what the LLM is asked. Measured across the 8 ingested companies, this
+moved the best match much closer for several criteria (average top-1 distance: `organic_growth` 0.65 → 0.43,
+`margin` 0.49 → 0.33, `geographic_concentration` 0.66 → 0.47; details in [retrieval.md](retrieval.md)).
+
+### Saved results
+
+`framework.md` (section 6) suggests caching generated analyses under `data/analysis/`. That's what
+`AnalysisCache` does:
+
+```
+data/analysis/
+├── atoss/
+│   ├── recurring_revenue.json
+│   └── ...
+└── nemetschek/
+    └── ...
+```
+
+Each file holds the result (assessment, rationale, sources with `chunk_id`), when it was assessed, and a
+**fingerprint**: a hash of everything that could change the answer:
+
+| Part of the fingerprint | Changes when you... |
+| --- | --- |
+| question + `retrieval_queries` + polarity | edit the criterion in `screening_config.yaml` |
+| prompt template | change the prompt in `screening.py` |
+| `top_k`, `max_distance` | change retrieval settings |
+| embedding provider/model, LLM provider/model | switch models |
+| corpus fingerprint (hash of the company's documents) | ingest, re-ingest or remove a document for that company |
+
+On the next request, `screen_criterion()` recomputes the fingerprint (one small DB query). If it matches the
+saved one, the saved result is returned with `"cached": true`; otherwise the criterion is re-assessed and the
+file overwritten. There is no manual invalidation step to forget. In the real-corpus check, a second ATOSS report
+took 0.14 s instead of ~110 s, and a later UC4 run reused the saved ATOSS rows.
+
+Notes:
+
+- `refresh: true` (API) / the *Recompute* checkbox (UI) ignores saved results for that request and overwrites
+  them, e.g. to see how much the LLM's answer varies between runs.
+- Saved results also make demos stable: the same report doesn't change every time it's opened.
+- Files are written to a temp file and then renamed, so a crash never leaves half-written JSON behind.
+- `company_id` comes from the request and becomes part of a file path, so `AnalysisCache` only accepts ids made of
+  letters, digits, `_` and `-` (anything else, e.g. `../etc`, is rejected with HTTP 400).
+- The workflow functions only save results when a `cache` is passed in. The API always passes one; tests and
+  scripts don't unless they want to.
+- `data/analysis/` is git-ignored. Deleting it is always safe; it just costs LLM calls to rebuild.
 
 ### How it's used
 
@@ -261,34 +371,69 @@ from app.workflows.screening import screen_company
 
 result = await screen_company("atoss", EmbeddingService(), ChatService(), top_k=3)
 # {"company_id": "atoss", "dimensions": [
-#   {"dimension": "business_quality", "description": "...", "criteria": [
-#     {"criterion": "recurring_revenue", "question": "...", "assessment": "strong_evidence",
-#      "rationale": "...[1]...", "sources": [...]},
+#   {"dimension": "business_quality", "description": "...", "polarity": "positive", "criteria": [
+#     {"criterion": "recurring_revenue", "dimension": "business_quality", "polarity": "positive",
+#      "question": "...", "assessment": "strong_evidence", "rationale": "...[1]...",
+#      "sources": [{"chunk_id": "...", "document": "...", "file_name": "...", "page": 3, "distance": 0.24}],
+#      "cached": false},
 #     ...
 #   ]},
 #   ...
 # ]}
 ```
 
+Called like this, nothing is saved and there is no distance cutoff. To get the same behaviour as the API, pass
+both explicitly:
+
+```python
+from app.retrieval.retriever import max_distance_from_env
+from app.workflows.analysis_cache import AnalysisCache
+
+result = await screen_company(
+    "atoss", EmbeddingService(), ChatService(), top_k=3,
+    max_distance=max_distance_from_env(), cache=AnalysisCache("data/analysis"),
+)
+```
+
 A single criterion can be assessed directly with `screen_criterion(criterion, company_id, embedding_service,
-chat_service, top_k)`, where `criterion` is one `Criterion` from `load_screening_config()`.
+chat_service, top_k, max_distance=None, cache=None, refresh=False)`, where `criterion` is one `Criterion` from
+`load_screening_config()`.
 
 Through the API:
 
 ```bash
 curl -X POST http://localhost:8000/screen \
   -H "content-type: application/json" \
-  -d '{"company_id": "atoss", "top_k": 3}'
+  -d '{"company_id": "atoss", "top_k": 3}'            # add "refresh": true to ignore saved results
 ```
 
 ### Configuration
 
 `config/screening_config.yaml` defines the framework: a `screening_dimensions` mapping, each dimension with a
-`description` and a `criteria` mapping of `criterion_id -> {question}`. Adding a criterion or a whole dimension
-is a config change only — no code change needed, since `load_screening_config()` reads the structure generically.
+`description`, an optional `polarity` (`positive` by default, or `risk`), and a `criteria` mapping of
+`criterion_id -> {question, retrieval_queries}`. Adding a criterion or a whole dimension is a config change only
+— no code change needed, since `load_screening_config()` reads the structure generically. An unknown `polarity`
+value raises `ValueError` when the config is loaded.
 
-Same LLM/embedding configuration as UC1 above (`LLM_PROVIDER`, `LLM_MODEL`, provider API keys) — screening reuses
-the same `EmbeddingService` / `ChatService`.
+```yaml
+  risks:
+    description: Material risks to the investment thesis
+    polarity: risk
+    criteria:
+      customer_concentration:
+        question: "Is there evidence of customer concentration?"
+        retrieval_queries:
+          - "largest customers' share of revenue"
+          - "dependence on a few major customers"
+```
+
+Writing good `retrieval_queries`: phrase them the way an annual report or investor deck would state the fact, not
+as a question, and keep each one short and about a single idea. Check the effect with the snippet in
+[retrieval.md](retrieval.md) (smaller distance = closer match).
+
+Same LLM/embedding configuration as UC1 above (`LLM_PROVIDER`, `LLM_MODEL`, `LLM_MAX_CONCURRENCY`,
+`RETRIEVAL_MAX_DISTANCE`, provider API keys), plus `ANALYSIS_DIR` (default `data/analysis`) for where results
+are saved.
 
 ### Running it
 
@@ -320,20 +465,29 @@ python3 -m pytest tests/test_screening.py -q
 ```
 
 - `LoadScreeningConfigTestCase` / `ParseAssessmentTestCase` — pure unit tests, no Postgres, no LLM: the config
-  loader and the JSON-parsing fallbacks (clean JSON, code-fenced JSON, invalid JSON, out-of-enum value).
-- `ScreenCriterionNoEvidenceTestCase` — patches `retrieve` to return no chunks and checks the LLM is never
+  loader (including risk polarity, `retrieval_queries`, and rejecting an unknown polarity) and the JSON-parsing
+  fallbacks (clean JSON, code-fenced JSON, invalid JSON, out-of-enum value).
+- `ScreenCriterionNoEvidenceTestCase` — patches `retrieve_multi` to return no chunks and checks the LLM is never
   called, same pattern as `AskNoEvidenceTestCase` in `test_ask.py`.
+- `ScreenCriterionQueriesAndPolarityTestCase` — pure unit test: checks the question plus every retrieval query is
+  searched with the distance cutoff, and that only risk criteria get the "this is a RISK" prompt note.
 - `ScreenCompanyWorkflowTestCase` — needs Postgres; inserts a hand-picked chunk for a fake `demo` company and
   checks a dummy chat service's fixed JSON reply is parsed and grouped by dimension correctly.
 - `ScreenCompanyDimensionFilterTestCase` — pure unit test: an unknown `dimension` id raises, and a known
-  dimension narrows the loop to just that dimension's criteria (patches `screen_criterion`).
+  dimension narrows the run to just that dimension's criteria (patches `screen_criterion`).
+- `tests/test_analysis_cache.py` — pure unit tests in a temp directory: save/load round trip, a changed
+  fingerprint means stale, unsafe ids (`../etc`) are rejected; and through `screen_criterion()`: the second run
+  is served from the saved result without an LLM call, `refresh=True` forces a new one, and changed documents or
+  settings invalidate it.
 
 ### Deliberately not built yet
 
-- the Streamlit UI (Phase 6) — `screen_company()` and `POST /screen` are the data source for it
 - golden-question evaluation of screening output (Phase 7) — `test_screening.py` covers the workflow's code
-  paths, not evidence/groundedness/citation quality against a verified set of questions
-- concurrency limits on the per-criterion loop — currently sequential; see the design note above
+  paths, not evidence/groundedness/citation quality against a verified set of questions. Saved results in
+  `data/analysis/` are a natural input for that later.
+- a client-side token-rate limiter — on free tiers, `LLM_MAX_CONCURRENCY=1` plus SDK retries is enough
+- partial reports when one criterion's LLM call fails for good — the whole request still fails, as before; the
+  criteria that did succeed are already saved, so a retry only redoes the missing ones
 
 ## UC3: Compare
 
@@ -347,27 +501,27 @@ This is UC3 from `project-plan.md`.
 company_a_id, company_b_id, optional dimension (e.g. "growth")
     │
     ▼
-screen_company(company_a_id, ..., dimension=dimension)   -- unchanged, just an optional filter
-screen_company(company_b_id, ..., dimension=dimension)   -- same, run for the second company
+screen_company(company_a_id, ..., dimension=dimension)  ┐ both started at once;
+screen_company(company_b_id, ..., dimension=dimension)  ┘ saved results are reused for either company
     │
     ▼
 walk company_a's dimensions/criteria; for each criterion, look up the matching
 criterion (same id) in company_b's results
     │
     ▼
-{ company_a, company_b, dimension, dimensions: [{ dimension, description, criteria: [
-  { criterion, question, company_a: {assessment, rationale, sources},
-    company_b: {assessment, rationale, sources} }, ... ] }, ...] }
+{ company_a, company_b, dimension, dimensions: [{ dimension, description, polarity, criteria: [
+  { criterion, question, polarity, company_a: {assessment, rationale, sources, cached},
+    company_b: {assessment, rationale, sources, cached} }, ... ] }, ...] }
 ```
 
 Implemented in `app/workflows/compare.py`:
 
 - `compare_companies()` is the only function here. It does not introduce a new LangGraph graph or a new
-  retrieve/assess step — it calls `screen_company()` once per company (sequentially) and merges the two
+  retrieve/assess step — it runs `screen_company()` for both companies concurrently and merges the two
   per-company reports into one side-by-side structure, keyed by criterion id.
 - `screen_company()` in `screening.py` (UC2 above) gained an optional `dimension` parameter for this: when set,
   it filters `load_screening_config()`'s criteria to that one dimension before looping, instead of assessing all
-  ~19 criteria when the caller only wants e.g. "Growth". An unknown dimension id raises `KeyError`, listing the
+  ~20 criteria when the caller only wants e.g. "Growth". An unknown dimension id raises `KeyError`, listing the
   valid ids, the same pattern as `screen_universe()`'s unknown-criterion error in UC4 below.
 
 ### Design decisions
@@ -383,8 +537,14 @@ Implemented in `app/workflows/compare.py`:
   `screen_company()` means an unwanted dimension's criteria are never assessed in the first place — for either
   company.
 - **Two full company reports, not a single merged retrieval/prompt.** Each company's evidence lives in
-  different chunks, so there's no shared retrieval step to merge the way UC1/UC2 share one query — the two
-  `screen_company()` calls are independent and sequential, same rate-limit reasoning as the loops in UC2/UC4.
+  different chunks, so there's no shared retrieval step to merge the way UC1/UC2 share one query. The two
+  `screen_company()` calls are independent, so they run concurrently. `ChatService` still caps the LLM calls in
+  flight, same as UC2.
+- **Comparing companies you've already screened is nearly free.** Both reports come from the saved results (see
+  UC2, *Saved results*): if ATOSS and Nemetschek were screened in UC2 before, `/compare` makes no LLM calls at
+  all. Each side carries `cached` so the UI can show which assessments are reused.
+- **Risk criteria are labelled as risks.** Each merged criterion carries `polarity`, so *"Nemetschek: strong
+  evidence"* on `competition` is shown as 🔴 *Risk clearly present*, not as a strength.
 - **Grouped by dimension, flat merge by criterion id within each dimension.** Both companies are assessed
   against the identical `config/screening_config.yaml`, so every criterion id in company A's results has a
   matching entry in company B's — no fuzzy matching needed, just a dict keyed by `criterion.id` per dimension.
@@ -421,11 +581,11 @@ Through the API:
 ```bash
 curl -X POST http://localhost:8000/compare \
   -H "content-type: application/json" \
-  -d '{"company_a": "nemetschek", "company_b": "atoss", "top_k": 3, "dimension": "growth"}'
+  -d '{"company_a": "nemetschek", "company_b": "atoss", "top_k": 3, "dimension": "growth"}'   # optional "refresh": true
 ```
 
-An unknown `dimension` id returns `400` with a message listing the valid dimension ids (via `KeyError` from
-`screen_company()`, caught in `app/api/screening.py`).
+An unknown `dimension` id or an invalid company id returns `400` with a message explaining why (via
+`KeyError`/`ValueError`, caught in `app/api/screening.py`).
 
 ### Running it
 
@@ -467,7 +627,6 @@ python3 -m pytest tests/test_compare.py -q
 
 ### Deliberately not built yet
 
-- the Streamlit UI (Phase 6) — `compare_companies()` and `POST /compare` are the data source for it
 - comparing more than two companies at once — `project-plan.md`'s UC3 mockup is explicitly two companies
   ("Company A vs. Company B"); comparing a larger set is closer to UC4's universe screening, which already
   exists for the single-criterion case
@@ -476,51 +635,57 @@ python3 -m pytest tests/test_compare.py -q
 
 ## UC4: Universe screening
 
-How one screening criterion gets evaluated across every ingested company at once, to answer questions like
-"which companies have strong evidence of recurring revenue?" instead of "tell me about ATOSS." This is UC4
-from `project-plan.md` — the stretch feature, explicitly "mostly reuse of UC2."
+How one or more screening criteria get evaluated across every ingested company at once, to answer questions like
+"which companies have strong evidence of recurring revenue?" or "how do all companies look on the four Buy & Build
+criteria?" instead of "tell me about ATOSS." This is UC4 from `project-plan.md` — the stretch feature, explicitly
+"mostly reuse of UC2."
 
 ### What it does
 
 ```
-criterion_id (e.g. "recurring_revenue"), min_assessment (e.g. "moderate_evidence")
+criterion ids (e.g. ["acquisition_history", "acquisition_strategy"]), min_assessment (e.g. "moderate_evidence")
     │
     ▼
-look up the criterion in config/screening_config.yaml -> unknown id raises KeyError
+look up the criteria in config/screening_config.yaml -> unknown ids raise KeyError, an empty list ValueError
     │
     ▼
 list_companies_with_documents() -> every company_id with at least one ingested document
     │
     ▼
-for each company, in order:
+for every (company, criterion) pair, all started at once:
+    screen_criterion(criterion, company_id, ...)   -- same building block as UC2, saved results reused
     │
     ▼
-    screen_criterion(criterion, company_id, ...)   -- same per-criterion graph as UC2, unchanged
+mark each row meets_threshold = assessment at least as strong as min_assessment
     │
     ▼
-filter to companies whose assessment is at least as strong as min_assessment
-    │
-    ▼
-{ criterion, question, min_assessment, results: [{company_id, criterion, dimension,
-  question, assessment, rationale, sources}, ...], matches: [...same shape, filtered...] }
+{ criteria: [{criterion, dimension, polarity, question}, ...], min_assessment,
+  results: [{company_id, criterion, dimension, polarity, question, assessment, rationale, sources,
+             cached, meets_threshold}, ...],          -- one row per (company, criterion)
+  matches: [...the rows with meets_threshold = true...] }
 ```
 
 Implemented in `app/workflows/universe.py`:
 
-- `screen_universe()` is the only function here. It does not introduce a new LangGraph graph — it loops
-  `screen_criterion()` from `screening.py` once per company, exactly like `screen_company()` loops it once per
-  criterion for one company.
+- `screen_universe()` is the only function here. It does not introduce a new LangGraph graph — it runs
+  `screen_criterion()` from `screening.py` for every (company, criterion) pair, the same way `screen_company()`
+  runs it for every criterion of one company.
 - `list_companies_with_documents()` (in `app/db/repository.py`) returns the distinct `company_id`s that have at
   least one row in `documents`, which is the actual screenable universe — not every id in `companies.yaml`,
   some of which may not have been ingested yet.
 
 ### Design decisions
 
-- **One criterion per call, not a free-text query.** `project-plan.md`'s UC4 examples ("find companies with
-  strong evidence of recurring revenue") map directly onto one criterion id from `screening_config.yaml`. Rather
-  than adding an NLP layer to match free text to the nearest criterion, the caller passes the criterion id
-  directly — it's already a stable, known vocabulary shared with UC2. Mapping a free-text question to a
-  criterion id would be a reasonable future layer on top, not a change to this function.
+- **Criterion ids, not a free-text query.** `project-plan.md`'s UC4 examples ("find companies with
+  strong evidence of recurring revenue") map directly onto criterion ids from `screening_config.yaml`. Rather
+  than adding an NLP layer to match free text to the nearest criterion, the caller passes the ids directly —
+  they're already a stable, known vocabulary shared with UC2. A single id as a plain string is also accepted.
+- **Several criteria per call, but no combined verdict.** `framework.md`'s "buy & build" example looks at four
+  criteria together. `screen_universe()` accepts any list of criteria and returns one row per (company,
+  criterion), which the UI shows as a company × criterion table. It deliberately does **not** combine those rows
+  into one judgment per company (e.g. "all four must be at least moderate") or rank companies: that would be
+  guessing at an investment judgment that belongs to the analyst, which `framework.md` explicitly warns against
+  ("not making an investment decision").
 - **The universe is "ingested companies," not "configured companies."** `companies.yaml` can list companies
   before their documents are ingested (that's the point of `data.md`'s staged rollout). Screening a company with
   no chunks would just produce `insufficient_evidence` for everything, so `list_companies_with_documents()`
@@ -531,20 +696,18 @@ Implemented in `app/workflows/universe.py`:
   `min_assessment` threshold (e.g. `"moderate_evidence"` matches both `strong_evidence` and `moderate_evidence`)
   is a simpler caller-facing concept than passing an explicit set of acceptable levels, and reuses that same
   ordering instead of introducing a second enum.
-- **Full `results`, not just `matches`.** The response includes every company's assessment, not only the ones
-  that passed the threshold — the same principle as UC1/UC2: showing `insufficient_evidence` (or a near-miss
-  `weak_evidence`) is useful information, not something to silently drop. `matches` is a filtered view for
-  convenience, computed from `results`, not a separate query.
-- **Single criterion, not a whole dimension, per call.** `framework.md`'s "buy & build" example combines four
-  criteria (`acquisition_history`, `fragmented_market`, `acquisition_strategy`, `integration_capability`) into
-  one qualitative judgment. That combination is left to the caller — call `screen_universe()` once per criterion
-  in the dimension and combine the `matches` client-side — rather than baking a second aggregation rule
-  (e.g. "all four must be at least moderate") into this function, which would be guessing at a judgment call
-  that belongs in the UI/consumer, not the workflow layer.
-- **Sequential across companies**, same reasoning as the sequential loop over criteria in `screen_company()`:
-  simplicity and free-tier LLM rate limits over raw speed. For 8 ingested companies this is already the slower
-  axis than the ~19 criteria in `screen_company()`, so a concurrency limit (e.g. `asyncio.Semaphore`) is the
-  first thing to add if this becomes too slow.
+- **For risk criteria, a match means "risk flagged".** The threshold always means *evidence at least this
+  strong*. For a risk criterion like `customer_concentration`, that's evidence that the risk **is present**, so
+  the response carries `polarity` and the UI warns that ✅ on a risk column means *flagged*. It is deliberately
+  not inverted into "companies without the risk": `insufficient_evidence` means the documents don't say, not
+  that the risk is absent.
+- **Full `results`, not just `matches`.** The response includes every row, not only the ones that passed the
+  threshold — the same principle as UC1/UC2: showing `insufficient_evidence` (or a near-miss `weak_evidence`) is
+  useful information, not something to silently drop. `matches` is a filtered view for convenience.
+- **Concurrent, and reuses saved results.** All pairs start at once. `ChatService` caps the LLM calls actually in
+  flight, and any (company, criterion) already assessed in UC2/UC3 (or a previous UC4 run) is served from
+  `data/analysis/` without an LLM call. In the real-corpus check, a 2-criteria × 8-company run reused the 2 ATOSS
+  rows saved by an earlier UC2 run.
 
 ### How it's used
 
@@ -554,15 +717,17 @@ from app.services.llm import ChatService
 from app.workflows.universe import screen_universe
 
 result = await screen_universe(
-    "recurring_revenue",
+    ["acquisition_history", "acquisition_strategy"],
     EmbeddingService(),
     ChatService(),
     top_k=3,
     min_assessment="moderate_evidence",  # default
 )
-# {"criterion": "recurring_revenue", "question": "...", "min_assessment": "moderate_evidence",
-#  "results": [{"company_id": "atoss", "assessment": "strong_evidence", ...}, ...],
-#  "matches": [...only companies with moderate_evidence or stronger...]}
+# {"criteria": [{"criterion": "acquisition_history", "dimension": "buy_and_build", "polarity": "positive", ...}, ...],
+#  "min_assessment": "moderate_evidence",
+#  "results": [{"company_id": "nemetschek", "criterion": "acquisition_history", "assessment": "strong_evidence",
+#               "meets_threshold": true, "cached": false, ...}, ...],
+#  "matches": [...only rows with meets_threshold = true...]}
 ```
 
 Through the API:
@@ -570,11 +735,12 @@ Through the API:
 ```bash
 curl -X POST http://localhost:8000/screen/universe \
   -H "content-type: application/json" \
-  -d '{"criterion": "recurring_revenue", "top_k": 3, "min_assessment": "moderate_evidence"}'
+  -d '{"criteria": ["acquisition_history", "acquisition_strategy"], "top_k": 3, "min_assessment": "moderate_evidence"}'
 ```
 
-An unknown `criterion` id or an invalid `min_assessment` value returns `400` with a message listing the valid
-criterion ids (via `KeyError`/`ValueError` from `screen_universe()`, caught in `app/api/screening.py`).
+Unknown `criteria` ids, an empty list, or an invalid `min_assessment` value return `400` with a message
+explaining why (via `KeyError`/`ValueError` from `screen_universe()`, caught in `app/api/screening.py`). Before
+this change, the request body used a single `"criterion": "..."` field. It is now `"criteria": [...]`.
 
 ### Running it
 
@@ -590,9 +756,9 @@ from app.services.llm import ChatService
 from app.workflows.universe import screen_universe
 
 async def main():
-    result = await screen_universe("recurring_revenue", EmbeddingService(), ChatService(), top_k=3)
+    result = await screen_universe(["recurring_revenue"], EmbeddingService(), ChatService(), top_k=3)
     for r in result["results"]:
-        print(r["company_id"], "->", r["assessment"])
+        print(r["company_id"], r["criterion"], "->", r["assessment"])
     print("matches:", [r["company_id"] for r in result["matches"]])
 
 asyncio.run(main())
@@ -605,17 +771,17 @@ PY
 python3 -m pytest tests/test_universe.py -q
 ```
 
-- `ScreenUniverseValidationTestCase` — pure unit test: unknown criterion id and invalid `min_assessment` both
-  raise, no Postgres or LLM involved.
+- `ScreenUniverseValidationTestCase` — pure unit test: unknown criterion ids, an empty list and an invalid
+  `min_assessment` all raise, no Postgres or LLM involved.
 - `ScreenUniverseFilteringTestCase` — pure unit test: `list_companies_with_documents` and `screen_criterion` are
-  both patched, checking only the threshold-filtering logic in isolation.
+  both patched, checking the threshold flag/`matches` for one criterion, and that two criteria (one positive, one
+  risk) give one row per (company, criterion) with the right `polarity`.
 - `ScreenUniverseWorkflowTestCase` — needs Postgres; patches `list_companies_with_documents` to return a fake
   `demo` company and runs the real `screen_criterion` retrieval + a dummy chat service against it, same pattern
   as `ScreenCompanyWorkflowTestCase` in UC2 above.
 
 ### Deliberately not built yet
 
-- combining multiple criteria into one dimension-level judgment (e.g. "buy & build" as a single verdict) — call
-  `screen_universe()` once per criterion in the dimension and combine client-side; see the design note above
-- free-text -> criterion id matching — the caller must know the criterion id today (see `config/screening_config.yaml`)
-- concurrency limits on the per-company loop — currently sequential; see the design note above
+- a combined per-company verdict or ranking across several criteria — see the design note above
+- free-text -> criterion id matching — the caller must know the criterion ids today (see
+  `config/screening_config.yaml`; the UI offers them as a multi-select)

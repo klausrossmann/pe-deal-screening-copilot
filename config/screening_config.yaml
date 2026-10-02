@@ -1,3 +1,13 @@
+# PE screening framework (see framework.md and use-cases.md, UC2).
+#
+# Each dimension groups criteria. Each criterion has:
+#   question           - what the LLM is asked to assess; also used as the first retrieval query
+#   retrieval_queries  - optional extra search phrases, worded like the documents themselves
+#                        ("EBITDA margin") rather than like a question; results of all queries are merged
+#
+# A dimension can set `polarity: risk` (default: positive). For risk criteria, "strong_evidence" means
+# "strong evidence that the risk is present" - a red flag, not a strength.
+
 screening_dimensions:
 
   business_quality:
@@ -5,57 +15,124 @@ screening_dimensions:
     criteria:
       recurring_revenue:
         question: "What evidence is there of recurring or subscription revenue?"
+        retrieval_queries:
+          - "share of recurring revenue in total revenue"
+          - "subscription, SaaS and cloud revenue, annual recurring revenue (ARR)"
+          - "maintenance and support contract revenue"
       mission_criticality:
         question: "How important is the product to customers' core operations?"
+        retrieval_queries:
+          - "software is critical for customers' daily operations"
+          - "customers rely on our solutions for core business processes"
       customer_retention:
         question: "What evidence is available regarding customer retention?"
+        retrieval_queries:
+          - "customer retention rate and churn"
+          - "net revenue retention (NRR)"
+          - "long-standing customer relationships"
       market_position:
         question: "What evidence describes the company's competitive position?"
+        retrieval_queries:
+          - "market leader in its segment"
+          - "leading provider with a competitive advantage"
 
   growth:
     description: Potential for continued revenue growth
     criteria:
       organic_growth:
         question: "What evidence is there of organic growth?"
+        retrieval_queries:
+          - "revenue growth year over year at constant currency"
+          - "organic growth rate"
+          - "ARR growth"
       international_expansion:
         question: "What opportunities or evidence exist for geographic expansion?"
+        retrieval_queries:
+          - "revenue growth by region"
+          - "expansion into new countries and international markets"
       cross_sell:
         question: "What evidence is there for cross-selling or upselling?"
+        retrieval_queries:
+          - "cross-selling and upselling to existing customers"
+          - "land and expand with the installed customer base"
       market_growth:
         question: "What does management say about underlying market growth?"
+        retrieval_queries:
+          - "market expected to grow in the coming years"
+          - "digitalization drives demand in our markets"
 
   profitability:
     description: Profitability and cash generation
     criteria:
       margin:
         question: "What evidence is available regarding margins and profitability?"
+        retrieval_queries:
+          - "EBITDA margin"
+          - "operating profit and EBIT margin"
+          - "gross margin"
       cash_generation:
         question: "What evidence is available regarding cash generation?"
+        retrieval_queries:
+          - "free cash flow"
+          - "cash flow from operating activities"
+          - "cash conversion"
       operating_leverage:
         question: "What evidence suggests operating leverage?"
+        retrieval_queries:
+          - "margin expansion as revenue grows"
+          - "operating expenses grew slower than revenue"
+          - "scalable business model"
 
   buy_and_build:
     description: Suitability for an acquisition-led growth strategy
     criteria:
       acquisition_history:
         question: "What acquisitions has the company completed?"
+        retrieval_queries:
+          - "completed the acquisition of"
+          - "closing of the transaction to acquire"
       fragmented_market:
         question: "Is there evidence that the company's market is fragmented?"
+        retrieval_queries:
+          - "fragmented market with many small providers"
+          - "market consolidation opportunities"
       integration_capability:
         question: "What evidence shows the company can integrate acquisitions?"
+        retrieval_queries:
+          - "successful integration of acquired companies"
+          - "synergies from acquisitions"
       acquisition_strategy:
         question: "Does management explicitly describe M&A as part of its strategy?"
+        retrieval_queries:
+          - "M&A strategy and targeted acquisitions"
+          - "acquisitions complement organic growth"
 
   risks:
     description: Material risks to the investment thesis
+    polarity: risk
     criteria:
       customer_concentration:
         question: "Is there evidence of customer concentration?"
+        retrieval_queries:
+          - "largest customers' share of revenue"
+          - "dependence on a few major customers"
       geographic_concentration:
         question: "Is there evidence of geographic concentration?"
+        retrieval_queries:
+          - "revenue by region and country"
+          - "share of revenue generated in the home market"
       competition:
         question: "What competitive risks are described?"
+        retrieval_queries:
+          - "competitors and competitive pressure"
+          - "intense competition and pricing pressure"
       technology_disruption:
         question: "What technology disruption risks are described?"
+        retrieval_queries:
+          - "risks from technological change and new technologies"
+          - "artificial intelligence changes the market"
       regulation:
         question: "What regulatory risks are described?"
+        retrieval_queries:
+          - "regulatory requirements and compliance risks"
+          - "data protection laws and GDPR"

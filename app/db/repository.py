@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import uuid
 from typing import Any
 
@@ -26,6 +27,18 @@ def list_companies_with_documents() -> list[str]:
     with get_session() as session:
         rows = session.execute(select(Document.company_id).distinct().order_by(Document.company_id)).all()
     return [row[0] for row in rows]
+
+
+def company_corpus_fingerprint(company_id: str) -> str:
+    """Hash of the company's ingested documents; changes whenever a document is added, removed or re-ingested."""
+    with get_session() as session:
+        rows = session.execute(
+            select(Document.content_hash, Document.created_at)
+            .where(Document.company_id == company_id)
+            .order_by(Document.content_hash)
+        ).all()
+    joined = "|".join(f"{row.content_hash}@{row.created_at.isoformat()}" for row in rows)
+    return hashlib.sha256(joined.encode("utf-8")).hexdigest()
 
 
 def persist_document_and_chunks(

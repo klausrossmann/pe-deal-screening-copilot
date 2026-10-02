@@ -17,7 +17,7 @@ from app.ingestion.loader import compute_file_hash
 from app.ingestion.manifest import SourceDocument, load_sources
 from app.ingestion.parser import extract_pages
 from app.ingestion.pipeline import ingest_document
-from app.retrieval.retriever import retrieve
+from app.retrieval.retriever import retrieve, retrieve_multi
 from app.schemas.documents import Page
 
 
@@ -196,6 +196,40 @@ class RetrieveTestCase(unittest.TestCase):
         self.assertTrue(all(r["company_id"] == "demo" for r in results))
         self.assertIn("Recurring revenue", results[0]["content"])
         self.assertLess(results[0]["distance"], results[1]["distance"])
+        self.assertTrue(all(r["chunk_id"] for r in results))
+
+    def test_max_distance_drops_chunks_that_are_too_far_away(self):
+        self._insert_chunk("demo", "Recurring revenue from software subscriptions is stable.", [1.0, 0.0])
+        self._insert_chunk("demo", "The product is sold via one-off hardware deals.", [0.0, 1.0])
+
+        class DummyEmbeddingService:
+            async def embed_query(self, text):
+                return [1.0, 0.0]
+
+        results = asyncio.run(
+            retrieve("recurring revenue", DummyEmbeddingService(), company_id="demo", top_k=5, max_distance=0.5)
+        )
+
+        self.assertEqual(len(results), 1)
+        self.assertIn("Recurring revenue", results[0]["content"])
+
+    def test_retrieve_multi_merges_queries_and_keeps_each_chunk_once(self):
+        self._insert_chunk("demo", "Recurring revenue from software subscriptions is stable.", [1.0, 0.0])
+        self._insert_chunk("demo", "EBITDA margin rose to 30%.", [0.0, 1.0])
+
+        class DummyEmbeddingService:
+            async def embed_query(self, text):
+                return [1.0, 0.0] if "recurring" in text else [0.0, 1.0]
+
+        results = asyncio.run(
+            retrieve_multi(
+                ["recurring revenue", "EBITDA margin"], DummyEmbeddingService(), company_id="demo", top_k=5
+            )
+        )
+
+        self.assertEqual(len(results), 2)
+        self.assertEqual(len({r["chunk_id"] for r in results}), 2)
+        self.assertTrue(all(r["distance"] < 1e-6 for r in results))
 
 
 if __name__ == "__main__":

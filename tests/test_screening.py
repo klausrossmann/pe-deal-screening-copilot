@@ -1,6 +1,8 @@
 import asyncio
+import tempfile
 import unittest
 import uuid
+from pathlib import Path
 from unittest.mock import patch
 
 from sqlalchemy import delete
@@ -48,6 +50,28 @@ class LoadScreeningConfigTestCase(unittest.TestCase):
     def test_missing_file_raises(self):
         with self.assertRaises(FileNotFoundError):
             load_screening_config("config/does_not_exist.yaml")
+
+    def test_risk_dimension_has_risk_polarity_and_others_are_positive(self):
+        criteria = load_screening_config("config/screening_config.yaml")
+
+        self.assertTrue(all(c.polarity == "risk" for c in criteria if c.dimension == "risks"))
+        self.assertTrue(all(c.polarity == "positive" for c in criteria if c.dimension != "risks"))
+
+    def test_queries_start_with_the_question_followed_by_retrieval_queries(self):
+        criteria = load_screening_config("config/screening_config.yaml")
+        margin = next(c for c in criteria if c.id == "margin")
+
+        self.assertEqual(margin.queries[0], margin.question)
+        self.assertIn("EBITDA margin", margin.queries[1:])
+
+    def test_invalid_polarity_raises(self):
+        path = Path(tempfile.mkdtemp()) / "bad.yaml"
+        path.write_text(
+            "screening_dimensions:\n  x:\n    polarity: negative\n    criteria:\n      y:\n        question: q\n",
+            encoding="utf-8",
+        )
+        with self.assertRaises(ValueError):
+            load_screening_config(path)
 
 
 class ScreenCompanyDimensionFilterTestCase(unittest.TestCase):
@@ -104,7 +128,7 @@ class ParseAssessmentTestCase(unittest.TestCase):
 
 
 class ScreenCriterionNoEvidenceTestCase(unittest.TestCase):
-    """Pure unit test: retrieve is patched, so no Postgres is needed."""
+    """Pure unit test: retrieve_multi is patched, so no Postgres is needed."""
 
     def test_screen_criterion_skips_the_llm_without_evidence(self):
         chat_service = DummyChatService()
@@ -115,10 +139,10 @@ class ScreenCriterionNoEvidenceTestCase(unittest.TestCase):
             dimension_description="Quality and defensibility of the business",
         )
 
-        async def fake_retrieve(*args, **kwargs):
+        async def fake_retrieve_multi(*args, **kwargs):
             return []
 
-        with patch("app.workflows.screening.retrieve", fake_retrieve):
+        with patch("app.workflows.screening.retrieve_multi", fake_retrieve_multi):
             result = asyncio.run(
                 screen_criterion(criterion, "demo", DummyEmbeddingService(), chat_service, top_k=3)
             )
@@ -126,6 +150,64 @@ class ScreenCriterionNoEvidenceTestCase(unittest.TestCase):
         self.assertEqual(result["assessment"], "insufficient_evidence")
         self.assertEqual(result["sources"], [])
         self.assertEqual(chat_service.prompts, [])
+
+
+FAKE_CHUNK = {
+    "chunk_id": "c1",
+    "company_id": "demo",
+    "page": 1,
+    "document": "Test Doc",
+    "file_name": "test.html",
+    "content": "Two customers account for 60% of revenue.",
+    "metadata": {},
+    "distance": 0.2,
+}
+
+
+class ScreenCriterionQueriesAndPolarityTestCase(unittest.TestCase):
+    """Pure unit test: retrieve_multi is patched, so no Postgres is needed."""
+
+    def _run(self, criterion, chat_service):
+        seen = {}
+
+        async def fake_retrieve_multi(queries, *args, **kwargs):
+            seen["queries"] = queries
+            seen["max_distance"] = kwargs.get("max_distance")
+            return [FAKE_CHUNK]
+
+        with patch("app.workflows.screening.retrieve_multi", fake_retrieve_multi):
+            result = asyncio.run(
+                screen_criterion(
+                    criterion, "demo", DummyEmbeddingService(), chat_service, top_k=3, max_distance=0.7
+                )
+            )
+        return result, seen
+
+    def test_searches_the_question_and_every_retrieval_query_with_the_cutoff(self):
+        criterion = Criterion("margin", "Margins?", "profitability", "", retrieval_queries=("EBITDA margin",))
+
+        _, seen = self._run(criterion, DummyChatService())
+
+        self.assertEqual(seen["queries"], ["Margins?", "EBITDA margin"])
+        self.assertEqual(seen["max_distance"], 0.7)
+
+    def test_risk_criteria_tell_the_llm_that_strong_evidence_is_a_red_flag(self):
+        chat_service = DummyChatService()
+        criterion = Criterion("customer_concentration", "Concentration?", "risks", "", polarity="risk")
+
+        result, _ = self._run(criterion, chat_service)
+
+        self.assertEqual(result["polarity"], "risk")
+        self.assertIn("describes a RISK", chat_service.prompts[0])
+
+    def test_positive_criteria_do_not_get_the_risk_note(self):
+        chat_service = DummyChatService()
+        criterion = Criterion("recurring_revenue", "Recurring?", "business_quality", "")
+
+        result, _ = self._run(criterion, chat_service)
+
+        self.assertEqual(result["polarity"], "positive")
+        self.assertNotIn("describes a RISK", chat_service.prompts[0])
 
 
 class ScreenCompanyWorkflowTestCase(unittest.TestCase):

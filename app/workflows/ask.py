@@ -27,6 +27,7 @@ class AskState(TypedDict):
     question: str
     company_id: str | None
     top_k: int
+    max_distance: float | None
     chunks: list[dict[str, Any]]
     answer: str
 
@@ -40,6 +41,7 @@ def build_ask_graph(embedding_service: EmbeddingService, chat_service: ChatServi
             embedding_service,
             company_id=state.get("company_id"),
             top_k=state.get("top_k", 5),
+            max_distance=state.get("max_distance"),
         )
         return {"chunks": chunks}
 
@@ -66,10 +68,18 @@ async def ask(
     chat_service: ChatService,
     company_id: str | None = None,
     top_k: int = 5,
+    max_distance: float | None = None,
 ) -> dict[str, Any]:
     """Runs the ask graph end-to-end and returns the answer plus the sources it's grounded in."""
     result = await build_ask_graph(embedding_service, chat_service).ainvoke(
-        {"question": question, "company_id": company_id, "top_k": top_k, "chunks": [], "answer": ""}
+        {
+            "question": question,
+            "company_id": company_id,
+            "top_k": top_k,
+            "max_distance": max_distance,
+            "chunks": [],
+            "answer": "",
+        }
     )
     return {
         "question": question,

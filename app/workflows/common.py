@@ -12,9 +12,10 @@ def format_sources_block(chunks: list[dict[str, Any]]) -> str:
 
 
 def to_source_citations(chunks: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Turns retrieved chunks into the citation dicts returned to callers (document, file, page, distance)."""
+    """Turns retrieved chunks into the citation dicts returned to callers (chunk id, document, file, page, distance)."""
     return [
         {
+            "chunk_id": chunk["chunk_id"],
             "document": chunk["document"],
             "file_name": chunk["file_name"],
             "page": chunk["page"],

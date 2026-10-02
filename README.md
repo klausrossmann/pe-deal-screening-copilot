@@ -11,15 +11,19 @@ The repository now contains a working ingestion and retrieval scaffold for:
 - page-level chunking with overlap
 - metadata enrichment for PE use cases
 - embeddings stored in PostgreSQL + pgvector
-- pgvector cosine-distance retrieval, optionally filtered by company
+- pgvector cosine-distance retrieval, optionally filtered by company and by a distance cutoff
 - a LangGraph `ask` workflow: retrieve evidence, then an LLM answers with inline citations
 - a LangGraph `screening` workflow: assesses every criterion in `config/screening_config.yaml` for a company,
-  classifying evidence as strong/moderate/weak/insufficient, grouped by dimension
-- a `universe` workflow: assesses one criterion across every ingested company, returning companies that meet a
+  classifying evidence as strong/moderate/weak/insufficient, grouped by dimension; risk criteria are flagged as
+  risks, and each criterion searches several phrasings for better evidence
+- saved screening results under `data/analysis/`, reused by every use case until the documents or settings change
+- a `universe` workflow: assesses one or more criteria across every ingested company, flagging those that meet a
   minimum evidence threshold
 - a `compare` workflow: applies the same screening criteria to two companies side by side, optionally filtered
   to one dimension
+- concurrent screening with a single, configurable cap on LLM calls in flight (`LLM_MAX_CONCURRENCY`)
 - FastAPI app entrypoint
+- a Streamlit UI with four tabs (Company Screening, Ask, Compare, Universe) calling the FastAPI endpoints
 
 ## Quick start
 
@@ -29,10 +33,11 @@ The repository now contains a working ingestion and retrieval scaffold for:
 4. Run the app: `uvicorn app.main:app --reload`
 5. Trigger the ingestion pipeline via `POST /ingestion/all`
 6. Ask a question via `POST /ask` (needs `LLM_PROVIDER` + an API key set in `.env`)
-7. Generate a PE screening report via `POST /screen` (same LLM requirement)
-8. Find companies matching one criterion via `POST /screen/universe` (same LLM requirement)
+7. Generate a PE screening report via `POST /screen` (same LLM requirement; repeat requests reuse saved results)
+8. Find companies matching one or more criteria via `POST /screen/universe` (same LLM requirement)
 9. Compare two companies via `POST /compare` (same LLM requirement)
-10. Validate with: `python3 -m pytest tests -q`
+10. Or use the UI instead of steps 6-9: `streamlit run app/ui/streamlit_app.py` (needs `uvicorn` running from step 4)
+11. Validate with: `python3 -m pytest tests -q`
 
 ## Documentation
 

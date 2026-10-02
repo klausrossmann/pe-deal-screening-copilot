@@ -14,27 +14,28 @@ data/raw/<company>/*.{pdf,html}
   PostgreSQL + pgvector      (companies, documents, chunks)
         │
         ▼
-   Retrieval                 (embed query → cosine search, optionally per company)
-        │
+   Retrieval                 (embed query → cosine search, optionally per company and within a distance cutoff;
+        │                     screening searches several phrasings per criterion and merges them)
         ├─────────────────────────────┐
         ▼                             ▼
    Ask workflow (LangGraph)     Screening workflow (LangGraph)
    (retrieve → LLM answer        (retrieve → LLM assessment per criterion
-   with citations)                in config/screening_config.yaml)
-        │                             │
+   with citations)                in config/screening_config.yaml)  ◄──►  data/analysis/  (saved results,
+        │                             │                                   reused until their inputs change)
         ▼                             ▼
   answer + source citations    report grouped by dimension, each criterion
                                 classified strong/moderate/weak/insufficient evidence
+                                (risk criteria: strong = the risk is present)
                                        │
                             ┌──────────┴──────────┐
                             ▼                     ▼
                      universe workflow      compare workflow
-                     (loops the report       (runs the report for
-                     across every company)   two companies, merged
+                     (chosen criteria ×      (runs the report for
+                     every company)          two companies, merged
                                               by criterion)
 ```
 
-PostgreSQL is the source of truth for the processed corpus — not the filesystem, not objects held in memory. Anything downstream (an LLM answer, a screening report, a comparison) reads from the database, never from the ingestion run that produced it.
+PostgreSQL is the source of truth for the processed corpus — not the filesystem, not objects held in memory. Anything downstream (an LLM answer, a screening report, a comparison) reads from the database, never from the ingestion run that produced it. The saved screening results in `data/analysis/` are a disposable cache on top: each one records a fingerprint of the documents and settings it came from and is ignored once they change, so deleting the folder never loses anything.
 
 ## Responsibilities
 
@@ -43,8 +44,8 @@ PostgreSQL is the source of truth for the processed corpus — not the filesyste
 | FastAPI (`app/main.py`, `app/api/`) | HTTP boundary: trigger ingestion, check status, ask questions |
 | Ingestion (`app/ingestion/`) | Turn files under `data/raw/` into rows in Postgres |
 | Retrieval (`app/retrieval/`) | Turn a question into ranked evidence chunks |
-| Workflows (`app/workflows/`) | Stateful, multi-step flows built with LangGraph on top of retrieval (`ask`, `screen` today, plus `universe` which loops `screen` across companies, and `compare` which runs `screen` for two companies and merges the results) |
-| Services (`app/services/`) | Swappable dependencies: embedding provider and LLM provider |
+| Workflows (`app/workflows/`) | Stateful, multi-step flows built with LangGraph on top of retrieval (`ask`, `screen` today, plus `universe` which runs `screen` per criterion across companies, and `compare` which runs `screen` for two companies and merges the results); saved screening results |
+| Services (`app/services/`) | Swappable dependencies: embedding provider and LLM provider. One shared instance each per process; `ChatService` also caps concurrent LLM calls (`LLM_MAX_CONCURRENCY`) |
 | PostgreSQL + pgvector | Storage and similarity search |
 
 ## Project structure
@@ -69,27 +70,31 @@ app/
 │   ├── metadata.py          adds company/document metadata to each chunk
 │   └── pipeline.py          runs all of the above, per source and for all sources
 ├── retrieval/
-│   └── retriever.py         embeds a query and runs the pgvector search
+│   └── retriever.py         embeds a query and runs the pgvector search (retrieve, retrieve_multi)
 ├── workflows/
 │   ├── ask.py               LangGraph retrieve -> generate graph (question -> answer + citations)
-│   ├── screening.py         LangGraph retrieve -> assess graph, looped once per criterion (company -> report)
-│   ├── universe.py          loops screen_criterion() once per ingested company (criterion -> matching companies)
+│   ├── screening.py         LangGraph retrieve -> assess graph, run for every criterion (company -> report)
+│   ├── universe.py          runs screen_criterion() for every (company, criterion) pair (criteria -> table)
 │   ├── compare.py           runs screen_company() for two companies and merges the results per criterion
+│   ├── analysis_cache.py    saves/reuses screening results under data/analysis/
 │   └── common.py            source-formatting helpers shared by ask.py and screening.py
 ├── schemas/
 │   └── documents.py         Page and Chunk dataclasses shared across modules
-└── services/
-    ├── embeddings.py        embedding provider wrapper (local/OpenAI/Google)
-    └── llm.py               chat/LLM provider wrapper (OpenAI/Google/Groq)
+├── services/
+│   ├── embeddings.py        embedding provider wrapper (local/OpenAI/Google)
+│   └── llm.py               chat/LLM provider wrapper (OpenAI/Google/Groq)
+└── ui/
+    └── streamlit_app.py     Streamlit UI: Screening/Ask/Compare/Universe tabs, calls the FastAPI endpoints
 
 config/
 ├── sources.yaml              which documents to ingest (source manifest)
 ├── companies.yaml            company master data
-└── screening_config.yaml     PE screening framework: dimensions and criteria
+└── screening_config.yaml     PE screening framework: dimensions (incl. risk polarity), criteria, retrieval queries
 
 data/raw/<company_id>/        the source files themselves
+data/analysis/<company_id>/   saved screening results, one JSON per criterion (git-ignored, safe to delete)
 tests/                        pytest suite covering ingestion, retrieval, the ask workflow, the screening
-                               workflow, universe screening, and company comparison
+                               workflow, saved results, universe screening, and company comparison
 docker-compose.yml            local PostgreSQL + pgvector
 ```
 
@@ -135,7 +140,7 @@ The embedding column has no fixed size because different providers produce diffe
 
 Both ingestion and retrieval share the same setup:
 
-1. Copy `.env.example` to `.env` and adjust it if needed (database URL, embedding provider).
+1. Copy `.env.example` to `.env` and adjust it if needed (database URL, embedding provider, LLM provider, `RETRIEVAL_MAX_DISTANCE`, `LLM_MAX_CONCURRENCY`).
 2. Export it into the shell — the app does not load `.env` by itself:
    ```bash
    set -a; source .env; set +a
