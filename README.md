@@ -28,7 +28,7 @@ The repository now contains a working ingestion and retrieval scaffold for:
 ## Quick start
 
 1. Install dependencies: `pip install -r requirements.txt`
-2. Export the environment: `cp .env.example .env` then `set -a; source .env; set +a`
+2. Create your environment file: `cp .env.example .env` (loaded automatically; no need to `source` it)
 3. Start Postgres and create the tables: `docker compose up -d && python3 -m app.db.bootstrap`
 4. Run the app: `uvicorn app.main:app --reload`
 5. Trigger the ingestion pipeline via `POST /ingestion/all`

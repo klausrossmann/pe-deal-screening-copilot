@@ -140,13 +140,9 @@ The embedding column has no fixed size because different providers produce diffe
 
 Both ingestion and retrieval share the same setup:
 
-1. Copy `.env.example` to `.env` and adjust it if needed (database URL, embedding provider, LLM provider, `RETRIEVAL_MAX_DISTANCE`, `LLM_MAX_CONCURRENCY`).
-2. Export it into the shell — the app does not load `.env` by itself:
-   ```bash
-   set -a; source .env; set +a
-   ```
-3. Start PostgreSQL: `docker compose up -d`
-4. Create the tables: `python3 -m app.db.bootstrap` (safe to re-run; add `--reset` to drop and recreate, e.g. after a model or embedding-provider change)
-5. Run the tests: `python3 -m pytest tests -q` (needs the Postgres container running; tests only touch rows of fake `demo`/`demo2` companies, so it's safe to run against your real database)
+1. Copy `.env.example` to `.env` and adjust it if needed (database URL, embedding provider, LLM provider, `RETRIEVAL_MAX_DISTANCE`, `LLM_MAX_CONCURRENCY`). It's loaded automatically on the first `import app...` (via `python-dotenv` in `app/__init__.py`), so `uvicorn`, `pytest` and `python -m app...` all pick it up without a manual `source` step. A variable already set in the shell still wins over `.env`.
+2. Start PostgreSQL: `docker compose up -d`
+3. Create the tables: `python3 -m app.db.bootstrap` (safe to re-run; add `--reset` to drop and recreate, e.g. after a model or embedding-provider change)
+4. Run the tests: `python3 -m pytest tests -q` (needs the Postgres container running; tests only touch rows of fake `demo`/`demo2` companies, so it's safe to run against your real database)
 
 With that in place, continue with [ingestion.md](ingestion.md) to populate the database, then [retrieval.md](retrieval.md) to query it.
