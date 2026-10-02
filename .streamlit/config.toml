@@ -1,0 +1,29 @@
+# Brand palette lifted from the Bregal Unternehmerkapital website (deep forest green +
+# muted sage accents on white). Users can switch Light/Dark via the app's Settings menu
+# (top-right "..." menu -> Settings -> Theme); both variants are tuned to the same brand hue.
+[theme]
+font = "sans-serif"
+
+[theme.light]
+primaryColor = "#1F4B3C"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F1F5F2"
+textColor = "#1A211D"
+linkColor = "#1F4B3C"
+borderColor = "#DCE5DF"
+
+[theme.light.sidebar]
+backgroundColor = "#F1F5F2"
+secondaryBackgroundColor = "#E4ECE6"
+
+[theme.dark]
+primaryColor = "#6FAE8C"
+backgroundColor = "#121613"
+secondaryBackgroundColor = "#1C2420"
+textColor = "#EDF2EF"
+linkColor = "#8BC2A6"
+borderColor = "#2B3530"
+
+[theme.dark.sidebar]
+backgroundColor = "#171D1A"
+secondaryBackgroundColor = "#20291F"
