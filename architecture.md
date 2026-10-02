@@ -36,7 +36,7 @@ PostgreSQL is the source of truth for the processed corpus — not the filesyste
 | FastAPI (`app/main.py`, `app/api/`) | HTTP boundary: trigger ingestion, check status, ask questions |
 | Ingestion (`app/ingestion/`) | Turn files under `data/raw/` into rows in Postgres |
 | Retrieval (`app/retrieval/`) | Turn a question into ranked evidence chunks |
-| Workflows (`app/workflows/`) | Stateful, multi-step flows built with LangGraph on top of retrieval (`ask`, `screen` today; `compare` planned) |
+| Workflows (`app/workflows/`) | Stateful, multi-step flows built with LangGraph on top of retrieval (`ask`, `screen` today, plus `universe` which loops `screen` across companies; `compare` planned) |
 | Services (`app/services/`) | Swappable dependencies: embedding provider and LLM provider |
 | PostgreSQL + pgvector | Storage and similarity search |
 
@@ -50,7 +50,7 @@ app/
 ├── api/
 │   ├── ingestion.py         POST /ingestion/all, GET /ingestion/status
 │   ├── ask.py               POST /ask
-│   └── screening.py         POST /screen
+│   └── screening.py         POST /screen, POST /screen/universe
 ├── db/
 │   ├── session.py           database engine + session helper
 │   ├── models.py            companies, documents, chunks tables
@@ -68,6 +68,7 @@ app/
 ├── workflows/
 │   ├── ask.py               LangGraph retrieve -> generate graph (question -> answer + citations)
 │   ├── screening.py         LangGraph retrieve -> assess graph, looped once per criterion (company -> report)
+│   ├── universe.py          loops screen_criterion() once per ingested company (criterion -> matching companies)
 │   └── common.py            source-formatting helpers shared by ask.py and screening.py
 ├── schemas/
 │   └── documents.py         Page and Chunk dataclasses shared across modules
@@ -81,7 +82,8 @@ config/
 └── screening_config.yaml     PE screening framework: dimensions and criteria
 
 data/raw/<company_id>/        the source files themselves
-tests/                        pytest suite covering ingestion, retrieval, the ask workflow, and the screening workflow
+tests/                        pytest suite covering ingestion, retrieval, the ask workflow, the screening
+                               workflow, and universe screening
 docker-compose.yml            local PostgreSQL + pgvector
 ```
 

@@ -21,6 +21,13 @@ def count_documents() -> int:
         return session.scalar(select(func.count()).select_from(Document)) or 0
 
 
+def list_companies_with_documents() -> list[str]:
+    """Distinct company ids with at least one ingested document (the screenable universe for UC4)."""
+    with get_session() as session:
+        rows = session.execute(select(Document.company_id).distinct().order_by(Document.company_id)).all()
+    return [row[0] for row in rows]
+
+
 def persist_document_and_chunks(
     source: SourceDocument,
     company: dict[str, Any],

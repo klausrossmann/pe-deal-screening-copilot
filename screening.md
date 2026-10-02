@@ -160,9 +160,10 @@ python3 -m pytest tests/test_screening.py -q
 
 - company comparison (UC3) — applying the same criteria to two companies side by side; reuses `screen_company()`
   for each company, not this stage
-- portfolio-wide screening (UC4) — running one criterion across every company; reuses `screen_criterion()` per
-  company, not this stage
 - the Streamlit UI (Phase 6) — `screen_company()` and `POST /screen` are the data source for it
 - golden-question evaluation of screening output (Phase 7) — `test_screening.py` covers the workflow's code
   paths, not evidence/groundedness/citation quality against a verified set of questions
 - concurrency limits on the per-criterion loop — currently sequential; see the design note above
+
+Portfolio-wide screening (UC4) — running one criterion across every company — is now built; see
+[universe.md](universe.md).

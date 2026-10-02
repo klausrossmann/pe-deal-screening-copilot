@@ -15,6 +15,8 @@ The repository now contains a working ingestion and retrieval scaffold for:
 - a LangGraph `ask` workflow: retrieve evidence, then an LLM answers with inline citations
 - a LangGraph `screening` workflow: assesses every criterion in `config/screening_config.yaml` for a company,
   classifying evidence as strong/moderate/weak/insufficient, grouped by dimension
+- a `universe` workflow: assesses one criterion across every ingested company, returning companies that meet a
+  minimum evidence threshold
 - FastAPI app entrypoint
 
 ## Quick start
@@ -26,7 +28,8 @@ The repository now contains a working ingestion and retrieval scaffold for:
 5. Trigger the ingestion pipeline via `POST /ingestion/all`
 6. Ask a question via `POST /ask` (needs `LLM_PROVIDER` + an API key set in `.env`)
 7. Generate a PE screening report via `POST /screen` (same LLM requirement)
-8. Validate with: `python3 -m pytest tests -q`
+8. Find companies matching one criterion via `POST /screen/universe` (same LLM requirement)
+9. Validate with: `python3 -m pytest tests -q`
 
 ## Documentation
 
@@ -37,6 +40,7 @@ How the system is built, in the order it was built:
 - [retrieval.md](retrieval.md) — how a question becomes ranked evidence chunks
 - [ask.md](ask.md) — how a question becomes an answer with citations (LangGraph)
 - [screening.md](screening.md) — how a company becomes a full PE screening report, criterion by criterion (LangGraph)
+- [universe.md](universe.md) — how one criterion gets checked across every ingested company
 
 Product vision and planning notes, not yet fully implemented:
 
