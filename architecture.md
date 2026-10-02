@@ -95,7 +95,8 @@ data/raw/<company_id>/        the source files themselves
 data/analysis/<company_id>/   saved screening results, one JSON per criterion (git-ignored, safe to delete)
 tests/                        pytest suite covering ingestion, retrieval, the ask workflow, the screening
                                workflow, saved results, universe screening, and company comparison
-docker-compose.yml            local PostgreSQL + pgvector
+Dockerfile                     shared image for the api and ui containers (see "Running with Docker" below)
+docker-compose.yml            PostgreSQL + pgvector, plus the api and ui containers
 ```
 
 Each module in `app/ingestion/` does exactly one job and can be tested alone; `pipeline.py` is the only place that knows the order they run in. Retrieval is small enough to stay in a single file. `app/workflows/` is where LangGraph-based orchestration lives, kept separate from `retrieval/` because a workflow composes multiple steps (retrieve, then call an LLM) while retrieval itself stays a single pgvector query.
@@ -146,3 +147,15 @@ Both ingestion and retrieval share the same setup:
 4. Run the tests: `python3 -m pytest tests -q` (needs the Postgres container running; tests only touch rows of fake `demo`/`demo2` companies, so it's safe to run against your real database)
 
 With that in place, continue with [ingestion.md](ingestion.md) to populate the database, then [retrieval.md](retrieval.md) to query it.
+
+## Running with Docker
+
+`docker compose up -d --build` starts three containers from the same image (built from the root `Dockerfile`):
+`postgres`, `api` (`uvicorn`, port 8000) and `ui` (`streamlit`, port 8501). A `.env` file must exist first (step 1
+above) — `docker compose` reads it via `env_file`. Two variables are overridden in `docker-compose.yml` itself
+so the containers can reach each other by service name instead of `localhost`: `POSTGRES_URL` (api/ui -> postgres)
+and `API_BASE_URL` (ui -> api). `data/analysis/` is bind-mounted into the `api` container so saved screening
+results survive container restarts/rebuilds; `data/raw/` and `config/` are baked into the image, so rebuild
+(`docker compose up -d --build`) after changing either. Run ingestion/tests the same way as above, just via
+`docker compose exec api ...` instead of a local Python environment.
+

@@ -39,6 +39,10 @@ The repository now contains a working ingestion and retrieval scaffold for:
 10. Or use the UI instead of steps 6-9: `streamlit run app/ui/streamlit_app.py` (needs `uvicorn` running from step 4)
 11. Validate with: `python3 -m pytest tests -q`
 
+Or run everything containerized: `cp .env.example .env` (step 2 above still applies), then
+`docker compose up -d --build` starts Postgres, the FastAPI app (port 8000) and the Streamlit UI (port 8501).
+See architecture.md's "Running with Docker" for details.
+
 ## Documentation
 
 How the system is built, in the order it was built:

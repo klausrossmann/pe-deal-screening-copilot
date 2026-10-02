@@ -10,6 +10,47 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d pe_screening"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    container_name: pe-screening-api
+    env_file: .env
+    environment:
+      # Overrides .env's localhost URL so the api container reaches postgres by its service name.
+      POSTGRES_URL: postgresql+psycopg2://postgres:postgres@postgres:5432/pe_screening
+      # If a proxy is configured (e.g. via Docker's own proxy injection), keep it for real external calls
+      # (Groq/OpenAI/Google, Hugging Face model downloads) but bypass it for container-to-container traffic.
+      NO_PROXY: api,ui,postgres,localhost,127.0.0.1
+      no_proxy: api,ui,postgres,localhost,127.0.0.1
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data/analysis:/app/data/analysis
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  ui:
+    build: .
+    container_name: pe-screening-ui
+    env_file: .env
+    environment:
+      # Overrides .env/localhost default so the UI container reaches the api container by its service name.
+      API_BASE_URL: http://api:8000
+      # Bypass any configured proxy for container-to-container traffic (see api's NO_PROXY comment above).
+      NO_PROXY: api,ui,postgres,localhost,127.0.0.1
+      no_proxy: api,ui,postgres,localhost,127.0.0.1
+    command: streamlit run app/ui/streamlit_app.py --server.address 0.0.0.0 --server.port 8501
+    ports:
+      - "8501:8501"
+    depends_on:
+      - api
 
 volumes:
   postgres_data:
