@@ -8,7 +8,7 @@ from app.db.repository import list_companies_with_documents
 from app.services.embeddings import EmbeddingService
 from app.services.llm import ChatService
 from app.workflows.analysis_cache import AnalysisCache
-from app.workflows.screening import ASSESSMENT_LEVELS, load_screening_config, screen_criterion
+from app.workflows.screening import ASSESSMENT_LEVELS, load_screening_config, screen_criterion_safe
 
 
 def _is_at_least(assessment: str, min_assessment: str) -> bool:
@@ -46,9 +46,10 @@ async def screen_universe(
 
     pairs = [(company_id, criterion) for company_id in list_companies_with_documents() for criterion in criteria]
     # Everything runs concurrently; ChatService limits how many LLM calls are actually in flight.
+    # screen_criterion_safe means one (company, criterion) failing still lets every other pair through.
     assessments = await asyncio.gather(
         *(
-            screen_criterion(
+            screen_criterion_safe(
                 criterion, company_id, embedding_service, chat_service,
                 top_k=top_k, max_distance=max_distance, cache=cache, refresh=refresh,
             )

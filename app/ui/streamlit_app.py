@@ -40,6 +40,11 @@ def assessment_label(assessment: str, polarity: str = "positive") -> str:
     return labels.get(assessment, assessment)
 
 
+def side_label(side: dict[str, Any], polarity: str = "positive") -> str:
+    """Like assessment_label, but shows a failed assessment (compare's per-company result) distinctly."""
+    return "⚠️ Failed" if side.get("error") else assessment_label(side["assessment"], polarity)
+
+
 @st.cache_data
 def load_companies(path: str = "config/companies.yaml") -> dict[str, str]:
     """Returns {company_id: display_name}, read directly from config since there's no /companies endpoint."""
@@ -86,6 +91,10 @@ def render_sources(sources: list[dict[str, Any]], cached: bool = False) -> None:
 
 
 def render_criterion(result: dict[str, Any]) -> None:
+    if result.get("error"):
+        with st.expander(f"**{result['criterion'].replace('_', ' ').title()}** — ⚠️ Assessment failed"):
+            st.warning(result["rationale"])
+        return
     label = assessment_label(result["assessment"], result.get("polarity", "positive"))
     with st.expander(f"**{result['criterion'].replace('_', ' ').title()}** — {label}"):
         st.write(result["rationale"])
@@ -184,17 +193,23 @@ def compare_tab(base_url: str, companies: dict[str, str], dimensions: dict[str, 
                 st.caption(dim["description"])
                 for criterion in dim["criteria"]:
                     polarity = criterion.get("polarity", "positive")
-                    label_a = assessment_label(criterion["company_a"]["assessment"], polarity)
-                    label_b = assessment_label(criterion["company_b"]["assessment"], polarity)
+                    label_a = side_label(criterion["company_a"], polarity)
+                    label_b = side_label(criterion["company_b"], polarity)
                     title = criterion["criterion"].replace("_", " ").title()
                     with st.expander(f"**{title}** — {companies[company_a]}: {label_a} | {companies[company_b]}: {label_b}"):
                         tab_a, tab_b = st.tabs([companies[company_a], companies[company_b]])
                         with tab_a:
-                            st.write(criterion["company_a"]["rationale"])
-                            render_sources(criterion["company_a"]["sources"], criterion["company_a"].get("cached", False))
+                            if criterion["company_a"].get("error"):
+                                st.warning(criterion["company_a"]["rationale"])
+                            else:
+                                st.write(criterion["company_a"]["rationale"])
+                                render_sources(criterion["company_a"]["sources"], criterion["company_a"].get("cached", False))
                         with tab_b:
-                            st.write(criterion["company_b"]["rationale"])
-                            render_sources(criterion["company_b"]["sources"], criterion["company_b"].get("cached", False))
+                            if criterion["company_b"].get("error"):
+                                st.warning(criterion["company_b"]["rationale"])
+                            else:
+                                st.write(criterion["company_b"]["rationale"])
+                                render_sources(criterion["company_b"]["sources"], criterion["company_b"].get("cached", False))
 
 
 def universe_tab(base_url: str, companies: dict[str, str], dimensions: dict[str, Any], refresh: bool) -> None:
@@ -249,6 +264,9 @@ def render_universe(result: dict[str, Any], companies: dict[str, str]) -> None:
         line = {"Company": companies.get(company_id, company_id)}
         for criterion in criteria:
             row = rows[criterion["criterion"]]
+            if row.get("error"):
+                line[criterion["criterion"].replace("_", " ").title()] = "⚠️ Failed"
+                continue
             mark = "✅ " if row["meets_threshold"] else ""
             line[criterion["criterion"].replace("_", " ").title()] = mark + assessment_label(
                 row["assessment"], row["polarity"]
@@ -261,10 +279,12 @@ def render_universe(result: dict[str, Any], companies: dict[str, str]) -> None:
         with st.expander(f"**{companies.get(company_id, company_id)}**"):
             for criterion in criteria:
                 row = rows[criterion["criterion"]]
-                st.markdown(
-                    f"**{criterion['criterion'].replace('_', ' ').title()}** — "
-                    f"{assessment_label(row['assessment'], row['polarity'])}"
-                )
+                title = criterion["criterion"].replace("_", " ").title()
+                if row.get("error"):
+                    st.markdown(f"**{title}** — ⚠️ Assessment failed")
+                    st.warning(row["rationale"])
+                    continue
+                st.markdown(f"**{title}** — {assessment_label(row['assessment'], row['polarity'])}")
                 st.write(row["rationale"])
                 render_sources(row["sources"], row.get("cached", False))
 

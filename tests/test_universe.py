@@ -47,11 +47,11 @@ class ScreenUniverseValidationTestCase(unittest.TestCase):
 
 
 class ScreenUniverseFilteringTestCase(unittest.TestCase):
-    """Pure unit test: list_companies_with_documents and screen_criterion are both patched."""
+    """Pure unit test: list_companies_with_documents and screen_criterion_safe are both patched."""
 
     @staticmethod
     def _run(criteria, assessments):
-        async def fake_screen_criterion(criterion, company_id, *args, **kwargs):
+        async def fake_screen_criterion_safe(criterion, company_id, *args, **kwargs):
             return {
                 "criterion": criterion.id,
                 "dimension": criterion.dimension,
@@ -60,12 +60,14 @@ class ScreenUniverseFilteringTestCase(unittest.TestCase):
                 "assessment": assessments[(company_id, criterion.id)],
                 "rationale": "...",
                 "sources": [],
+                "cached": False,
+                "error": False,
             }
 
         companies = list(dict.fromkeys(company_id for company_id, _ in assessments))
         with (
             patch("app.workflows.universe.list_companies_with_documents", return_value=companies),
-            patch("app.workflows.universe.screen_criterion", fake_screen_criterion),
+            patch("app.workflows.universe.screen_criterion_safe", fake_screen_criterion_safe),
         ):
             return asyncio.run(
                 screen_universe(
@@ -105,6 +107,40 @@ class ScreenUniverseFilteringTestCase(unittest.TestCase):
             [(r["company_id"], r["criterion"]) for r in result["matches"]],
             [("nemetschek", "acquisition_history"), ("atoss", "customer_concentration")],
         )
+
+
+class ScreenUniverseResilienceTestCase(unittest.TestCase):
+    """Pure unit test: checks screen_universe uses the error-tolerant wrapper, not the raising one."""
+
+    def test_one_pair_failing_does_not_take_down_the_whole_run(self):
+        async def flaky_screen_criterion_safe(criterion, company_id, *args, **kwargs):
+            if company_id == "atoss":
+                return {
+                    "criterion": criterion.id, "dimension": criterion.dimension, "polarity": criterion.polarity,
+                    "question": criterion.question, "assessment": "insufficient_evidence",
+                    "rationale": "Assessment failed and was not saved: RuntimeError: rate limited",
+                    "sources": [], "cached": False, "error": True,
+                }
+            return {
+                "criterion": criterion.id, "dimension": criterion.dimension, "polarity": criterion.polarity,
+                "question": criterion.question, "assessment": "strong_evidence", "rationale": "...",
+                "sources": [], "cached": False, "error": False,
+            }
+
+        with (
+            patch("app.workflows.universe.list_companies_with_documents", return_value=["nemetschek", "atoss"]),
+            patch("app.workflows.universe.screen_criterion_safe", flaky_screen_criterion_safe),
+        ):
+            result = asyncio.run(
+                screen_universe(["recurring_revenue"], DummyEmbeddingService(), DummyChatService())
+            )
+
+        self.assertEqual(len(result["results"]), 2)
+        failed = next(r for r in result["results"] if r["company_id"] == "atoss")
+        ok = next(r for r in result["results"] if r["company_id"] == "nemetschek")
+        self.assertTrue(failed["error"])
+        self.assertFalse(ok["error"])
+        self.assertEqual([r["company_id"] for r in result["matches"]], ["nemetschek"])
 
 
 class ScreenUniverseWorkflowTestCase(unittest.TestCase):

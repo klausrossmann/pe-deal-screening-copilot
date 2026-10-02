@@ -291,6 +291,16 @@ below.
   The LLM calls queue behind `ChatService`'s semaphore (`LLM_MAX_CONCURRENCY`, see UC1's design notes). The
   workflows don't need to know about rate limits: on Groq's free tier the LLM step stays effectively sequential
   (a fresh ATOSS report took ~110 s); on a paid tier, raising the limit speeds everything up with no code change.
+- **One criterion failing doesn't take down the report.** `ChatService`'s retries (UC1's Configuration above)
+  only cover *transient* failures. A sustained one — e.g. Groq's free tier also has a **daily** token budget
+  (200,000/day), not just per-minute, and the 5+ minute wait that implies outlasts the retries — would otherwise
+  make one failing `asyncio.gather` task raise and fail the whole request, discarding every criterion that had
+  already succeeded. `screen_company()` and `screen_universe()` therefore call `screen_criterion_safe()`, not
+  `screen_criterion()` directly: it catches any exception and returns `insufficient_evidence` with `"error":
+  true` and the exception message as the rationale, instead of raising. A failed criterion is not saved to the
+  cache (it isn't a real assessment), so it's retried on the next request. Every criterion result — cached,
+  freshly assessed, or failed — carries `"error": false`/`true`, so a consumer never has to guess which kind of
+  `insufficient_evidence` it's looking at.
 - **Grouped by dimension in the response, not a flat list.** The report shape in `project-plan.md`'s UC2 mockup
   is organized by dimension (Business Quality, Growth, ...), so `screen_company()` returns
   `dimensions: [{dimension, description, polarity, criteria: [...]}]` instead of one flat array the caller would

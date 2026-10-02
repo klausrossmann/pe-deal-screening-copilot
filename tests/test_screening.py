@@ -16,6 +16,7 @@ from app.workflows.screening import (
     load_screening_config,
     screen_company,
     screen_criterion,
+    screen_criterion_safe,
 )
 
 
@@ -94,15 +95,47 @@ class ScreenCompanyDimensionFilterTestCase(unittest.TestCase):
                 "assessment": "strong_evidence",
                 "rationale": "...",
                 "sources": [],
+                "cached": False,
+                "error": False,
             }
 
-        with patch("app.workflows.screening.screen_criterion", fake_screen_criterion):
+        with patch("app.workflows.screening.screen_criterion_safe", fake_screen_criterion):
             result = asyncio.run(
                 screen_company("demo", DummyEmbeddingService(), DummyChatService(), dimension="growth")
             )
 
         self.assertEqual(len(result["dimensions"]), 1)
         self.assertEqual(result["dimensions"][0]["dimension"], "growth")
+
+    def test_one_criterion_failing_does_not_take_down_the_whole_report(self):
+        async def fake_screen_criterion(criterion, company_id, *args, **kwargs):
+            if criterion.id == "organic_growth":
+                raise RuntimeError("boom")
+            return {
+                "criterion": criterion.id,
+                "dimension": criterion.dimension,
+                "question": criterion.question,
+                "assessment": "strong_evidence",
+                "rationale": "...",
+                "sources": [],
+                "cached": False,
+                "error": False,
+            }
+
+        # screen_criterion_safe is the real (unpatched) wrapper; only screen_criterion underneath it fails.
+        with patch("app.workflows.screening.screen_criterion", fake_screen_criterion):
+            result = asyncio.run(
+                screen_company("demo", DummyEmbeddingService(), DummyChatService(), dimension="growth")
+            )
+
+        criteria = result["dimensions"][0]["criteria"]
+        failed = next(c for c in criteria if c["criterion"] == "organic_growth")
+        ok = next(c for c in criteria if c["criterion"] == "cross_sell")
+        self.assertTrue(failed["error"])
+        self.assertEqual(failed["assessment"], "insufficient_evidence")
+        self.assertIn("boom", failed["rationale"])
+        self.assertFalse(ok["error"])
+        self.assertEqual(ok["assessment"], "strong_evidence")
 
 
 class ParseAssessmentTestCase(unittest.TestCase):
@@ -125,6 +158,25 @@ class ParseAssessmentTestCase(unittest.TestCase):
     def test_falls_back_to_insufficient_evidence_on_unknown_assessment_value(self):
         result = _parse_assessment('{"assessment": "very_strong", "rationale": "..."}')
         self.assertEqual(result["assessment"], "insufficient_evidence")
+
+
+class ScreenCriterionSafeTestCase(unittest.TestCase):
+    """Pure unit test: screen_criterion is patched to raise, no Postgres or LLM involved."""
+
+    def test_an_exception_becomes_an_error_flagged_result_instead_of_raising(self):
+        criterion = Criterion("recurring_revenue", "Recurring?", "business_quality", "")
+
+        async def fake_screen_criterion(*args, **kwargs):
+            raise RuntimeError("rate limited")
+
+        with patch("app.workflows.screening.screen_criterion", fake_screen_criterion):
+            result = asyncio.run(
+                screen_criterion_safe(criterion, "demo", DummyEmbeddingService(), DummyChatService())
+            )
+
+        self.assertTrue(result["error"])
+        self.assertEqual(result["assessment"], "insufficient_evidence")
+        self.assertIn("rate limited", result["rationale"])
 
 
 class ScreenCriterionNoEvidenceTestCase(unittest.TestCase):

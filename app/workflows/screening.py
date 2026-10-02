@@ -180,7 +180,7 @@ async def screen_criterion(
         )
         saved = None if refresh else cache.load(company_id, criterion.id, current_fingerprint)
         if saved is not None:
-            return {**saved, "cached": True}
+            return {**saved, "cached": True, "error": False}
 
     result = await build_screen_criterion_graph(embedding_service, chat_service).ainvoke(
         {
@@ -206,7 +206,38 @@ async def screen_criterion(
     }
     if cache is not None:
         cache.save(company_id, criterion.id, current_fingerprint, assessment)
-    return {**assessment, "cached": False}
+    return {**assessment, "cached": False, "error": False}
+
+
+async def screen_criterion_safe(
+    criterion: Criterion,
+    company_id: str,
+    embedding_service: EmbeddingService,
+    chat_service: ChatService,
+    **kwargs: Any,
+) -> dict[str, Any]:
+    """Same as `screen_criterion`, but never raises.
+
+    Used wherever many criteria run concurrently (`screen_company`, `screen_universe`): one criterion hitting a
+    transient failure (e.g. an LLM rate limit outlasting the SDK's own retries) would otherwise fail the whole
+    `asyncio.gather` and turn a mostly-successful report into a 500, discarding results that already succeeded.
+    A failed criterion becomes `insufficient_evidence` with `"error": True` and is not saved to the cache, so
+    it's retried (not treated as a real assessment) next time.
+    """
+    try:
+        return await screen_criterion(criterion, company_id, embedding_service, chat_service, **kwargs)
+    except Exception as exc:  # noqa: BLE001 - deliberately broad: any failure degrades, none crash the report
+        return {
+            "criterion": criterion.id,
+            "dimension": criterion.dimension,
+            "polarity": criterion.polarity,
+            "question": criterion.question,
+            "assessment": "insufficient_evidence",
+            "rationale": f"Assessment failed and was not saved: {type(exc).__name__}: {exc}",
+            "sources": [],
+            "cached": False,
+            "error": True,
+        }
 
 
 async def _cache_fingerprint(
@@ -261,9 +292,10 @@ async def screen_company(
         criteria = [criterion for criterion in criteria if criterion.dimension == dimension]
 
     # All criteria run concurrently; ChatService limits how many LLM calls are actually in flight.
+    # screen_criterion_safe means one criterion failing (e.g. a rate limit) still lets the rest of the report through.
     results = await asyncio.gather(
         *(
-            screen_criterion(
+            screen_criterion_safe(
                 criterion, company_id, embedding_service, chat_service,
                 top_k=top_k, max_distance=max_distance, cache=cache, refresh=refresh,
             )

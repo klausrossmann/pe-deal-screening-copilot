@@ -73,4 +73,5 @@ def _side(result: dict[str, Any]) -> dict[str, Any]:
         "rationale": result["rationale"],
         "sources": result["sources"],
         "cached": result.get("cached", False),
+        "error": result.get("error", False),
     }
