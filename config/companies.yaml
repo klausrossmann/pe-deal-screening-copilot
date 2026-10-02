@@ -1,0 +1,100 @@
+# PE Deal Screening RAG - German company universe
+# MVP scope: German-headquartered B2B software companies proposed in the project definition.
+# URLs and source documents intentionally live in a separate source manifest so they can be verified during collection.
+
+companies:
+  - id: nemetschek
+    website: https://www.nemetschek.com
+    name: Nemetschek
+    country: Germany
+    category: construction_design_software
+    ownership: public
+    ticker: NEM
+    screening_tags:
+      - vertical_software
+      - construction
+      - design
+
+  - id: teamviewer
+    website: https://www.teamviewer.com
+    name: TeamViewer
+    country: Germany
+    category: remote_connectivity_software
+    ownership: public
+    ticker: TMV
+    screening_tags:
+      - subscription_software
+      - remote_connectivity
+      - enterprise_software
+
+  - id: suse
+    website: https://www.suse.com
+    name: SUSE
+    country: Germany
+    category: enterprise_infrastructure_software
+    ownership: private
+    ticker: null
+    screening_tags:
+      - enterprise_software
+      - infrastructure
+      - open_source
+
+  - id: softwareone
+    website: https://www.softwareone.com
+    name: SoftwareOne
+    country: Germany
+    category: software_cloud_services
+    ownership: public
+    ticker: null
+    screening_tags:
+      - software_services
+      - cloud
+      - enterprise_it
+
+  - id: atoss
+    website: https://www.atoss.com
+    name: ATOSS
+    country: Germany
+    category: workforce_management_software
+    ownership: public
+    ticker: AOF
+    screening_tags:
+      - vertical_software
+      - workforce_management
+      - enterprise_software
+
+  - id: nexus
+    website: https://www.nexus-ag.de
+    name: Nexus AG
+    country: Germany
+    category: healthcare_software
+    ownership: public
+    ticker: NXU
+    screening_tags:
+      - vertical_software
+      - healthcare
+      - mission_critical
+
+  - id: ivu_traffic_technologies
+    website: https://www.ivu.com
+    name: IVU Traffic Technologies
+    country: Germany
+    category: public_transport_software
+    ownership: public
+    ticker: IVU
+    screening_tags:
+      - vertical_software
+      - public_transport
+      - mission_critical
+
+  - id: qt
+    website: https://www.qt.io
+    name: Qt Group
+    country: Germany
+    category: application_framework_software
+    ownership: public
+    ticker: QTG
+    screening_tags:
+      - vertical_software
+      - application_framework
+      - enterprise_software

@@ -1,0 +1,2968 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8">
+
+
+
+    <title>Linux for SAP Applications | Enterprise Server for SAP HANA | SUSE</title>
+
+    <meta name="description" content="Over 20 years of co-innovation with SAP to improve business productivity has made SUSE the leading and trusted open source platform for SAP solutions." />
+
+
+    <link rel="canonical" href="https://www.suse.com/solutions/run-sap-solutions/" />
+
+<link rel="alternate" href="https://www.suse.com/solutions/run-sap-solutions/" hreflang="en"><link rel="alternate" href="https://www.suse.com/de-de/solutions/run-sap-solutions/" hreflang="de-DE"><link rel="alternate" href="https://www.suse.com/es-es/solutions/run-sap-solutions/" hreflang="es-ES"><link rel="alternate" href="https://www.suse.com/fr-fr/solutions/run-sap-solutions/" hreflang="fr-FR"><link rel="alternate" href="https://www.suse.com/zh-cn/solutions/run-sap-solutions/" hreflang="zh-Hans-CN"><link rel="alternate" href="https://www.suse.com/ja-jp/solutions/run-sap-solutions/" hreflang="ja-JP"><link rel="alternate" href="https://www.suse.com/ko-kr/solutions/run-sap-solutions/" hreflang="ko-KR"><link rel="alternate" href="https://www.suse.com/pt-br/solutions/run-sap-solutions/" hreflang="pt-BR"><link rel="alternate" href="https://www.suse.com/solutions/run-sap-solutions/" hreflang="x-default">
+    <meta property="og:title" content="Linux for SAP Applications | Enterprise Server for SAP HANA | SUSE" />
+
+    <meta property="og:description" content="Over 20 years of co-innovation with SAP to improve business productivity has made SUSE the leading and trusted open source platform for SAP solutions." />
+
+    <meta property="og:url" content="https://www.suse.com/solutions/run-sap-solutions/" />
+
+    <meta property="og:image" content="https://www.suse.com/siteassets/example/suse/suse-social-platforms-image.png" />
+    <meta property="og:image:type" content="image/png" />
+
+
+    <meta name="twitter:site" content="@SUSE " />
+
+    <meta name="twitter:title" content="Linux for SAP Applications | Enterprise Server for SAP HANA | SUSE" />
+
+    <meta name="twitter:description" content="Over 20 years of co-innovation with SAP to improve business productivity has made SUSE the leading and trusted open source platform for SAP solutions." />
+
+    <meta name="twitter:image" content="https://www.suse.com/siteassets/example/suse/suse-social-platforms-image.png" />
+    <meta name="twitter:image:alt" content="SUSE: Choose open. Choose freedom." />
+
+        <meta name="google-site-verification" content="Bt96jJk1kma6g1WJK437_-k6QGIbZvo6MRhgwV3UUMI" />
+        <meta name="google-site-verification" content="nWPQ59EF614zzwjOAiG7b1SXCUZKcu7ajpinvshy0xs" />
+
+
+<meta name="dxenv" content="Production"/>
+		<link rel="icon" type="image/x-icon" href="https://www.suse.com/contentassets/17623a922114433cb00cd7bcb7cc6038/favicon.ico" />
+
+	<script nonce src="/assets/onetrust.js?v=Nne6OzPVnUh8EArcqUax6n-wazuRuAkODPiSZxSvtzQ"></script>
+	<script async src="https://js.storylane.io/js/v2/storylane.js"></script>
+
+
+    <!-- Google Tag Manager -->
+	<script nonce>
+	(function (w, d, s, l, i) {
+		w[l] = w[l] || []; w[l].push({
+			'gtm.start':
+				new Date().getTime(), event: 'gtm.js'
+		}); var f = d.getElementsByTagName(s)[0],
+			j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+			'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+	})(window, document, 'script', 'dataLayer', 'GTM-D64V');
+</script>
+    <!-- End Google Tag Manager -->
+
+
+    <script nonce src="https://cdn.cookielaw.org/scripttemplates/otSDKStub.js" type="text/javascript" charset="UTF-8" data-domain-script="91a6ec73-a3cb-4b22-bd3f-e5a060e77d29"></script>
+    <script nonce type="text/javascript">
+		function OptanonWrapper() {
+			try {
+				if (window?.handleOptanonGroups) {
+					window.handleOptanonGroups();
+				}
+			} catch (e) {
+				console.error('Error in OptanonWrapper:', e);
+			}
+		}
+</script>
+
+
+
+    <!-- Qualified -->
+    <script> (function(w,q){w['QualifiedObject']=q;w[q]=w[q]||function(){ (w[q].q=w[q].q||[]).push(arguments)};})(window,'qualified') </script>
+    <!-- Qualified pin mode script -->
+    <script src="https://js.qualified.com/docking.js" type="text/javascript"></script>
+    <script type="text/javascript">   qualified.docking.init({     defaultDocked: true,     showSkeleton: true,   }); </script>
+    <!-- End Qualified pin mode script -->
+    <script async src="https://js.qualified.com/qualified.js?token=SKqQ8nnADD22cAnc"></script>
+    <!-- End Qualified -->
+
+<script nonce>
+    (function () {
+        var g = function (e, h, f, g) {
+            this.get = function (a) { for (var a = a + "=", c = document.cookie.split(";"), b = 0, e = c.length; b < e; b++) { for (var d = c[b]; " " == d.charAt(0);)d = d.substring(1, d.length); if (0 == d.indexOf(a)) return d.substring(a.length, d.length) } return null };
+            this.set = function (a, c) { var b = "", b = new Date; b.setTime(b.getTime() + 6048E5); b = "; expires=" + b.toGMTString(); document.cookie = a + "=" + c + b + "; path=/; " };
+            this.check = function () { var a = this.get(f); if (a) a = a.split(":"); else if (100 != e) "v" == h && (e = Math.random() >= e / 100 ? 0 : 100), a = [h, e, 0], this.set(f, a.join(":")); else return !0; var c = a[1]; if (100 == c) return !0; switch (a[0]) { case "v": return !1; case "r": return c = a[2] % Math.floor(100 / c), a[2]++, this.set(f, a.join(":")), !c }return !0 };
+            this.go = function () { if (this.check()) { var a = document.createElement("script"); a.type = "text/javascript"; a.src = g; document.body && document.body.appendChild(a) } };
+            this.start = function () { var t = this; "complete" !== document.readyState ? window.addEventListener ? window.addEventListener("load", function () { t.go() }, !1) : window.attachEvent && window.attachEvent("onload", function () { t.go() }) : t.go() };
+        };
+        try { (new g(100, "r", "QSI_S_ZN_eam6spwSl7tpOJw", "https://zneam6spwsl7tpojw-suselinux.siteintercept.qualtrics.com/SIE/?Q_ZID=ZN_eam6spwSl7tpOJw")).start() } catch (i) { }
+    })();
+</script>
+	<script async="" nonce="449eef1c-2b44-4fdd-8559-fd757c5ddb62" src="https://fast.wistia.com/embed/medias/6o8vrwzr24.jsonp"></script>
+<script async="" nonce="449eef1c-2b44-4fdd-8559-fd757c5ddb62" src="https://fast.wistia.com/assets/external/E-v1.js"></script>
+<script nonce="449eef1c-2b44-4fdd-8559-fd757c5ddb62">
+!function(T,l,y){var S=T.location,k="script",D="instrumentationKey",C="ingestionendpoint",I="disableExceptionTracking",E="ai.device.",b="toLowerCase",w="crossOrigin",N="POST",e="appInsightsSDK",t=y.name||"appInsights";(y.name||T[e])&&(T[e]=t);var n=T[t]||function(d){var g=!1,f=!1,m={initialize:!0,queue:[],sv:"5",version:2,config:d};function v(e,t){var n={},a="Browser";return n[E+"id"]=a[b](),n[E+"type"]=a,n["ai.operation.name"]=S&&S.pathname||"_unknown_",n["ai.internal.sdkVersion"]="javascript:snippet_"+(m.sv||m.version),{time:function(){var e=new Date;function t(e){var t=""+e;return 1===t.length&&(t="0"+t),t}return e.getUTCFullYear()+"-"+t(1+e.getUTCMonth())+"-"+t(e.getUTCDate())+"T"+t(e.getUTCHours())+":"+t(e.getUTCMinutes())+":"+t(e.getUTCSeconds())+"."+((e.getUTCMilliseconds()/1e3).toFixed(3)+"").slice(2,5)+"Z"}(),iKey:e,name:"Microsoft.ApplicationInsights."+e.replace(/-/g,"")+"."+t,sampleRate:100,tags:n,data:{baseData:{ver:2}}}}var h=d.url||y.src;if(h){function a(e){var t,n,a,i,r,o,s,c,u,p,l;g=!0,m.queue=[],f||(f=!0,t=h,s=function(){var e={},t=d.connectionString;if(t)for(var n=t.split(";"),a=0;a<n.length;a++){var i=n[a].split("=");2===i.length&&(e[i[0][b]()]=i[1])}if(!e[C]){var r=e.endpointsuffix,o=r?e.location:null;e[C]="https://"+(o?o+".":"")+"dc."+(r||"services.visualstudio.com")}return e}(),c=s[D]||d[D]||"",u=s[C],p=u?u+"/v2/track":d.endpointUrl,(l=[]).push((n="SDK LOAD Failure: Failed to load Application Insights SDK script (See stack for details)",a=t,i=p,(o=(r=v(c,"Exception")).data).baseType="ExceptionData",o.baseData.exceptions=[{typeName:"SDKLoadFailed",message:n.replace(/\./g,"-"),hasFullStack:!1,stack:n+"\nSnippet failed to load ["+a+"] -- Telemetry is disabled\nHelp Link: https://go.microsoft.com/fwlink/?linkid=2128109\nHost: "+(S&&S.pathname||"_unknown_")+"\nEndpoint: "+i,parsedStack:[]}],r)),l.push(function(e,t,n,a){var i=v(c,"Message"),r=i.data;r.baseType="MessageData";var o=r.baseData;return o.message='AI (Internal): 99 message:"'+("SDK LOAD Failure: Failed to load Application Insights SDK script (See stack for details) ("+n+")").replace(/\"/g,"")+'"',o.properties={endpoint:a},i}(0,0,t,p)),function(e,t){if(JSON){var n=T.fetch;if(n&&!y.useXhr)n(t,{method:N,body:JSON.stringify(e),mode:"cors"});else if(XMLHttpRequest){var a=new XMLHttpRequest;a.open(N,t),a.setRequestHeader("Content-type","application/json"),a.send(JSON.stringify(e))}}}(l,p))}function i(e,t){f||setTimeout(function(){!t&&m.core||a()},500)}var e=function(){var n=l.createElement(k);n.src=h;var e=y[w];return!e&&""!==e||"undefined"==n[w]||(n[w]=e),n.onload=i,n.onerror=a,n.onreadystatechange=function(e,t){"loaded"!==n.readyState&&"complete"!==n.readyState||i(0,t)},n}();y.ld<0?l.getElementsByTagName("head")[0].appendChild(e):setTimeout(function(){l.getElementsByTagName(k)[0].parentNode.appendChild(e)},y.ld||0)}try{m.cookie=l.cookie}catch(p){}function t(e){for(;e.length;)!function(t){m[t]=function(){var e=arguments;g||m.queue.push(function(){m[t].apply(m,e)})}}(e.pop())}var n="track",r="TrackPage",o="TrackEvent";t([n+"Event",n+"PageView",n+"Exception",n+"Trace",n+"DependencyData",n+"Metric",n+"PageViewPerformance","start"+r,"stop"+r,"start"+o,"stop"+o,"addTelemetryInitializer","setAuthenticatedUserContext","clearAuthenticatedUserContext","flush"]),m.SeverityLevel={Verbose:0,Information:1,Warning:2,Error:3,Critical:4};var s=(d.extensionConfig||{}).ApplicationInsightsAnalytics||{};if(!0!==d[I]&&!0!==s[I]){var c="onerror";t(["_"+c]);var u=T[c];T[c]=function(e,t,n,a,i){var r=u&&u(e,t,n,a,i);return!0!==r&&m["_"+c]({message:e,url:t,lineNumber:n,columnNumber:a,error:i}),r},d.autoExceptionInstrumented=!0}return m}(y.cfg);function a(){y.onInit&&y.onInit(n)}(T[t]=n).queue&&0===n.queue.length?(n.queue.push(a),n.trackPageView({})):a()}(window,document,{src: "https://js.monitor.azure.com/scripts/b/ai.2.gbl.min.js", crossOrigin: "anonymous", cfg: {connectionString: 'InstrumentationKey=f9a13959-42a3-4b35-8bfd-57da661c462f;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/;ApplicationId=458fd045-0fd5-45be-8735-9680d9fe6977', disableCookiesUsage: false }});
+</script>
+
+
+	<link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet" />
+	<link href="/assets/main.css?v=KBuAONKEM5LmHVpj_PPGGU4wOJJWM_gOulEb_KUSI3E" rel="stylesheet" />
+	<link href="/assets/vendor/font-awesome/font-awesome.min.css?v=tTRHEmGqPQ7MXKmBq9Lgq-5II0TJnuhF-MMVw_a7ZLM" rel="stylesheet" />
+
+
+	<script nonce src="/assets/main.js?v=Q1Ybv3b9Dk53jIA6VZyJZoT1DfOSGH1SqefQk_xRRSI" defer></script>
+
+	
+</head>
+<body class="theme-default ">
+
+
+
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-D64V" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+	
+
+	
+
+		<header class="theme-pinegreen header is-fixed">
+			
+
+<div class="l-container h-full">
+    <div class="header__wrapper h-full full-right">
+
+
+
+
+
+
+                <a class="header__logo" title="SUSE home" href="/">
+            <img class=" " alt="SUSE home" src="/contentassets/0930538af48946f1b5d336ea20d7523d/suse-white-logo-green.svg?rmode=max" />
+                </a>
+
+        <div class="header__options hidden-xs h-full">
+            <div class="header__utility visible">
+                    <div class="utility__link-wrapper susecon">
+                        
+
+
+
+
+        <a class="utility__image" style="background-image: url(&#x27;/globalassets/assets/susecon271.svg?height=28&amp;rmode=crop&#x27;);" title="SUSECON 2027" href="/susecon/">
+            <i></i>
+        </a>
+
+
+                    </div>
+
+                    <div class="utility__link-wrapper costumer">
+                        <a href="https://scc.suse.com/home" class="utility__link">
+                            <img src="/assets/images/icons/pan_tool_alt.svg" alt="pan_tool_alt Icon" class="icon">
+                            <span>Customer Center</span>
+                        </a>
+                    </div>
+
+            <div class="utility__link-wrapper  account">
+                <a class="utility__link">
+                    <img src="/assets/images/icons/person.svg" alt="person Icon" class="icon"> <span>Account </span>
+                </a>
+                <div class="header__dropdown" >
+                        <a href="https://www.suse.com/saml2/login/?returnUrl=https%3a%2f%2fwww.suse.com%2fsolutions%2frun-sap-solutions%2f" rel=&quot;nofollow&quot;>
+                            Login
+                        </a>
+                        <a href="https://www.suse.com/account/create/?returnUrl=https%3a%2f%2fwww.suse.com%2fsolutions%2frun-sap-solutions%2f" rel=&quot;nofollow&quot;>
+                            Create Account
+                        </a>
+                        <a href="https://www.suse.com/account/update/?returnUrl=https%3a%2f%2fwww.suse.com%2fsolutions%2frun-sap-solutions%2f" rel=&quot;nofollow&quot;>
+                            Update Your Account
+                        </a>
+                </div>
+            </div>
+
+                    <div class="utility__link-wrapper right language">
+                        <a class="utility__link">
+                            <img src="/assets/images/icons/keyboard_arrow_down.svg" alt="keyboard_arrow_down Icon" class="icon">
+                            <span>English</span>
+                        </a>
+                        <div class="header__dropdown">
+                            <span class="label-dropdown">Language</span>
+                                <a title="English" data-country="en" href="/solutions/run-sap-solutions/">English</a>
+                                <a title="German (Germany)" data-country="de-DE" href="/de-de/solutions/run-sap-solutions/">Deutsch</a>
+                                <a title="Spanish (Spain)" data-country="es-ES" href="/es-es/solutions/run-sap-solutions/">Espa&#xF1;ol</a>
+                                <a title="French (France)" data-country="fr-FR" href="/fr-fr/solutions/run-sap-solutions/">Fran&#xE7;ais</a>
+                                <a title="Chinese (Simplified, China)" data-country="zh-Hans-CN" href="/zh-cn/solutions/run-sap-solutions/">&#x4E2D;&#x6587;(&#x7B80;&#x4F53;)</a>
+                                <a title="Japanese (Japan)" data-country="ja-JP" href="/ja-jp/solutions/run-sap-solutions/">&#x65E5;&#x672C;&#x8A9E;</a>
+                                <a title="Korean (South Korea)" data-country="ko-KR" href="/ko-kr/solutions/run-sap-solutions/">&#xD55C;&#xAD6D;&#xC5B4;</a>
+                                <a title="Portuguese (Brazil)" data-country="pt-BR" href="/pt-br/solutions/run-sap-solutions/">Portugu&#xEA;s (Brasil)</a>
+                        </div>
+                    </div>
+
+                    <div class="utility__link-wrapper search">
+                        <a class="utility__link">
+                            <img src="/assets/images/icons/search.svg" alt="search Icon" class="icon">
+                        </a>
+                    </div>
+                
+                
+                    <div class="utility__link-wrapper shop view-cart d-none">
+                        <a href="/Cart/Checkout" class="utility__link cart-container-link">
+                            <span id="cart-number"></span>
+                            <img src="/assets/images/icons/shopping_cart.svg" alt="shopping_cart Icon" class="icon">
+                            <span>View Cart</span>
+                        </a>
+                    </div>
+                    <div class="utility__link-wrapper shop shop-nav">
+                        <a href="https://www.suse.com/shop/" class="utility__link">
+                            <img src="/assets/images/icons/shopping_cart.svg" alt="shopping_cart Icon" class="icon">
+                            <span>Shop</span>
+                        </a>
+                    </div>
+
+                    <div class="searchbox-container">
+                        <div id="searchbox">
+                            <form id="searchform" action="/search/">
+                                <input type="text"
+                                       class="search-text"
+                                       name="s"
+                                       placeholder="Search"
+                                       autofocus />
+                                <button type="submit"
+                                        class="search-submit"
+                                        aria-hidden="true">
+                                    <img src="/assets/images/icons/search.svg" alt="Search Icon" class="icon">
+                                    </button>
+                            </form>
+                        </div>
+                    </div>
+            </div>
+
+            <div class="header__nav">
+                
+
+
+
+<div class="header__nav-link nav-columns-4">
+        <span class="header__nav-link-text">Products</span>
+
+    <div class="header__mega-menu theme-white">
+        <div class="header__navigation_links_full">
+            <div class="items">
+                    <div class="header__mega-menu-item theme-white">
+                        <div class="header__mega-menu-item-heading">
+                                <img src="/assets/images/icons/Linux-one-color.svg"
+                                     alt="Linux" />
+
+
+                                <a href="/solutions/linux/">Linux</a>
+                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/products/server/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Linux Enterprise Server
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/products/sles-for-sap/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Linux Enterprise Server
+                                                </span>
+                                                    <span>for SAP applications</span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/products/multi-linux-support/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Multi-Linux Support
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/products/multi-linux-manager/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Multi-Linux Manager
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/products/micro/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Linux Micro
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="header__mega-menu-item theme-white">
+                        <div class="header__mega-menu-item-heading">
+                                <img src="/assets/images/icons/Cloud-native-one-color.svg"
+                                     alt="Cloud Native" />
+
+
+                                <a href="https://www.suse.com/solutions/cloud-native/">Cloud Native</a>
+                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <div class="item-text">
+                                            <a href="/products/rancher/">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Rancher Prime
+                                                </span>
+                                            </a>
+                                            <div class="header__mega-menu-sub-item-nested">
+                                                    <a href="/products/rancher/virtualization/">
+                                                        <span>
+                                                            Virtualization
+                                                        </span>
+                                                    </a>
+                                                    <a href="/products/rancher/storage/">
+                                                        <span>
+                                                            Storage
+                                                        </span>
+                                                    </a>
+                                                    <a href="/products/rancher/security/">
+                                                        <span>
+                                                            Security
+                                                        </span>
+                                                    </a>
+                                                    <a href="/products/rancher/observability/">
+                                                        <span>
+                                                            Observability
+                                                        </span>
+                                                    </a>
+                                                    <a href="/products/rancher/application-collection/">
+                                                        <span>
+                                                            Application Collection
+                                                        </span>
+                                                    </a>
+                                            </div>
+                                        </div>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/products/rancher/aws/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Rancher for AWS
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/products/rancher-for-sap/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Rancher for SAP&#xAE; applications
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/products/cloud/observability/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Cloud Observability
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="header__mega-menu-item theme-white">
+                        <div class="header__mega-menu-item-heading">
+                                <img src="/assets/images/icons/Edge-one-color.svg"
+                                     alt="Edge" />
+
+
+                                <a href="https://www.suse.com/solutions/edge/">Edge</a>
+                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/products/edge/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Edge
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/products/industrial-edge/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Industrial Edge
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/products/edge-for-telco/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Telco Cloud
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="header__mega-menu-item theme-white">
+                        <div class="header__mega-menu-item-heading">
+                                <img src="/assets/images/icons/AI-one-color.svg"
+                                     alt="AI" />
+
+
+                                <a href="/solutions/ai/">AI</a>
+                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/products/ai/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE AI Factory
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/products/ai/factory-with-nvidia/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE AI Factory with NVIDIA
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                        </div>
+                    </div>
+            </div>
+
+
+        <a class="button button--secondary button--medium button--secondary_persimmon button--secondary_persimmon__light" title="All products" href="https://www.suse.com/products/">
+            All products
+        </a>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="header__nav-link nav-columns-3">
+        <span class="header__nav-link-text">Solutions</span>
+
+    <div class="header__mega-menu theme-white">
+        <div class="header__navigation_links_full">
+            <div class="items">
+                    <div class="header__mega-menu-item theme-white">
+                        <div class="header__mega-menu-item-heading">
+
+
+Use Cases                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/solutions/modernize-virtualization/">
+                                                <img src="/assets/images/icons/Modernize-pos.svg"
+                                                     alt="Modernize Workloads across Environments" />
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Modernize Workloads across Environments
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/solutions/optimize-operational-efficiency/">
+                                                <img src="/assets/images/icons/Optimize-pos.svg"
+                                                     alt="Optimize Operational Efficiency &amp; Cost" />
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Optimize Operational Efficiency &amp; Cost
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/solutions/manage-secure/">
+                                                <img src="/assets/images/icons/Manage and Secure-pos.svg"
+                                                     alt="Manage &amp; Secure Hybrid Cloud Architecture" />
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Manage &amp; Secure Hybrid Cloud Architecture
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/solutions/innovate/">
+                                                <img src="/assets/images/icons/Innovate-pos.svg"
+                                                     alt="Innovate with Next Gen Technologies" />
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Innovate with Next Gen Technologies
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="header__mega-menu-item theme-white">
+                        <div class="header__mega-menu-item-heading">
+
+
+Solutions                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/solutions/linux/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Linux
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/solutions/cloud-native/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Cloud Native
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/solutions/edge/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Edge
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/solutions/ai/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    AI
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/solutions/run-sap-solutions/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Run SAP
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/solutions/digital-sovereignty/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Digital Sovereignty
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/solutions/public-cloud/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Public Cloud
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/solutions/observability/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Observability
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/solutions/security/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Security
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="header__mega-menu-item theme-lightgray">
+                        <div class="header__mega-menu-item-heading">
+
+
+Industries                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/sector/automotive/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Automotive
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/sector/telco/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Telecom
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/sector/banking-financial-services/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Banking and Financial Systems
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/sector/healthcare/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Healthcare
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/sector/manufacturing/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Manufacturing
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/sector/retail/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Retail
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/sector/defence/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Defence
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://ranchergovernment.com/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Federal
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/sector/public/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Public Administration
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="header__nav-link nav-columns-3">
+        <span class="header__nav-link-text">Support</span>
+
+    <div class="header__mega-menu theme-white">
+        <div class="header__navigation_links_full">
+            <div class="items">
+                    <div class="header__mega-menu-item theme-white">
+                        <div class="header__mega-menu-item-heading">
+
+
+Support                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://scc.suse.com/home">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Product Support
+                                                </span>
+                                                    <span>SUSE Customer Center</span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/services/premium/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Premium Support Services
+                                                </span>
+                                                    <span>Dedicated support services from a premium team</span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/services/sovereign-premium-support/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Sovereign Premium Support
+                                                </span>
+                                                    <span>Trusted, adaptable, highly available, secure and  compliant</span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/products/long-term-service-pack-support/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Long Term Services Support
+                                                </span>
+                                                    <span>Stay on your existing product version</span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/renewals/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Renew Your Support Subscription
+                                                </span>
+                                                    <span>Partners with cloud providers</span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                    <div class="item-text">
+                                        <div class="header__menu-icons">
+
+
+
+
+
+
+                <a title="Amazon" href="https://aws.amazon.com/marketplace/search/results?searchTerms=suse">
+            <img class=" " alt="" src="/globalassets/partner-logos/amazon-3.svg?rmode=max" />
+                </a>
+
+
+
+
+
+
+
+                <a title="Microsoft Azure" href="https://azure.microsoft.com/en-us/solutions/linux-on-azure/suse/">
+            <img class=" " alt="" src="/globalassets/partner-logos/microsoft-azure-3.svg?rmode=max" />
+                </a>
+
+
+
+
+
+
+
+                <a title="Google cloud" href="https://console.cloud.google.com/marketplace/browse?q=SUSE">
+            <img class=" " alt="" src="/globalassets/partner-logos/google-cloud-3.svg?rmode=max" />
+                </a>
+
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="header__mega-menu-item theme-white">
+                        <div class="header__mega-menu-item-heading">
+
+
+Services                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/services/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Global Services
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/services/consulting/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Consulting Services
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/training/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Training &amp; Certification
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/services/premium-technical-advisory/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Premium Technical Advisory Services
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="header__mega-menu-item theme-white">
+                        <div class="header__mega-menu-item-heading">
+
+
+Resources                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/support/handbook/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Support User Guide
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://scc.suse.com/patches/#!/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Patches &amp; Updates
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://documentation.suse.com/?_gl=1*argfhm*_gcl_au*MTI4NzQ2NzMzNC4xNzM2OTMxNzk0*_ga*MTM1MDUxNTg5NC4xNzM2OTMxNzgz*_ga_JEVBS2XFKK*MTczNzU1NzczOC4xMS4xLjE3Mzc1NjEzMTkuMTUuMC4w">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Product Documentation
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://support.scc.suse.com/s/kb?language=en_US">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Knowledgebase
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/lifecycle/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Product Support Life Cycle
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://packagehub.suse.com/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Package Hub
+                                                </span>
+                                                    <span>Community packages for SUSE Linux Enterprise Server</span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://drivers.suse.com/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Driver Search
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://forums.suse.com/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Support Forums
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/services/support-offerings/developer-services/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Developer Services
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/betaprogram/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Beta Program
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/support/security/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Security
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="header__nav-link nav-columns-1">
+        <span class="header__nav-link-text">Partners</span>
+
+    <div class="header__mega-menu theme-white">
+        <div class="header__navigation_links_full">
+            <div class="items">
+                    <div class="header__mega-menu-item theme-white">
+                        <div class="header__mega-menu-item-heading">
+
+
+Partners                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/partners/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Partner Program
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/partners/find-partner/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Find a partner
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/partners/become-partner/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Become a Partner
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://partner.suse.com/s/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Login to the SUSE Partner Portal
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="header__nav-link nav-columns-1">
+        <span class="header__nav-link-text">Communities</span>
+
+    <div class="header__mega-menu theme-white">
+        <div class="header__navigation_links_full">
+            <div class="items">
+                    <div class="header__mega-menu-item theme-white">
+                        <div class="header__mega-menu-item-heading">
+
+
+Communities                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/c/blog/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Blog
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://forums.suse.com/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Forum
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://opensource.suse.com/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Open Source Projects
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.opensuse.org/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    openSUSE.org
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="header__nav-link nav-columns-1">
+        <span class="header__nav-link-text">About</span>
+
+    <div class="header__mega-menu theme-white">
+        <div class="header__navigation_links_full">
+            <div class="items">
+                    <div class="header__mega-menu-item theme-white">
+                        <div class="header__mega-menu-item-heading">
+
+
+About                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/company/about/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    About
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/leadership/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Leadership
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://jobs.suse.com/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Careers
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/news/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Newsroom
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/success/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Success Stories
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/investor-relations/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Investor Relations
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/sustainability/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Sustainability
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://brand.suse.com/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Logo and Brand
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/events/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Events
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/voice-of-customer/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Voice of the Customer
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+                    <div class="header__nav-link nav-columns-0">
+                        <a href="https://www.suse.com/contact/"
+                           class="button button--secondary button--medium button--secondary_persimmon button--secondary_persimmon__dark header__nav-link-button button--small-font">
+                            <span>Contact Us</span>
+                        </a>
+                    </div>
+
+                    <div class="header__nav-link nav-columns-0">
+                        <a href="http://www.suse.com/products/"
+                           class="button button--tertiary button--medium button--tertiary_persimmon button--tertiary_persimmon__dark header__nav-link-button false">
+                            <span>Free Downloads</span>
+                        </a>
+                    </div>
+            </div>
+
+        </div>
+        <div class="header__featured-mobile__utility hidden-lg">
+            <div class="utility__link-wrapper  account">
+                <a class="utility__link">
+                    <img src="/assets/images/icons/person.svg" alt="person Icon" class="icon"> <span>Account </span>
+                </a>
+                <div class="header__dropdown" >
+                        <a href="https://www.suse.com/saml2/login/?returnUrl=https%3a%2f%2fwww.suse.com%2fsolutions%2frun-sap-solutions%2f" rel=&quot;nofollow&quot;>
+                            Login
+                        </a>
+                        <a href="https://www.suse.com/account/create/?returnUrl=https%3a%2f%2fwww.suse.com%2fsolutions%2frun-sap-solutions%2f" rel=&quot;nofollow&quot;>
+                            Create Account
+                        </a>
+                        <a href="https://www.suse.com/account/update/?returnUrl=https%3a%2f%2fwww.suse.com%2fsolutions%2frun-sap-solutions%2f" rel=&quot;nofollow&quot;>
+                            Update Your Account
+                        </a>
+                </div>
+            </div>
+
+                <div class="utility__link-wrapper right language">
+                    <a class="utility__link">
+                        <img src="/assets/images/icons/keyboard_arrow_down.svg" alt="keyboard_arrow_down Icon" class="icon">
+                        <span>English</span>
+                    </a>
+                    <div class="header__dropdown">
+                        <span class="label-dropdown">Language</span>
+                            <a title="English" data-country="en" href="/solutions/run-sap-solutions/">English</a>
+                            <a title="German (Germany)" data-country="de-DE" href="/de-de/solutions/run-sap-solutions/">Deutsch</a>
+                            <a title="Spanish (Spain)" data-country="es-ES" href="/es-es/solutions/run-sap-solutions/">Espa&#xF1;ol</a>
+                            <a title="French (France)" data-country="fr-FR" href="/fr-fr/solutions/run-sap-solutions/">Fran&#xE7;ais</a>
+                            <a title="Chinese (Simplified, China)" data-country="zh-Hans-CN" href="/zh-cn/solutions/run-sap-solutions/">&#x4E2D;&#x6587;(&#x7B80;&#x4F53;)</a>
+                            <a title="Japanese (Japan)" data-country="ja-JP" href="/ja-jp/solutions/run-sap-solutions/">&#x65E5;&#x672C;&#x8A9E;</a>
+                            <a title="Korean (South Korea)" data-country="ko-KR" href="/ko-kr/solutions/run-sap-solutions/">&#xD55C;&#xAD6D;&#xC5B4;</a>
+                            <a title="Portuguese (Brazil)" data-country="pt-BR" href="/pt-br/solutions/run-sap-solutions/">Portugu&#xEA;s (Brasil)</a>
+                    </div>
+                </div>
+        </div>
+        <button class="header__burgerButton">
+            <img src="/assets/images/icons/menu_27.svg" alt="Menu Icon">
+        </button>
+        <div class="header__mobile__menu">
+            <div class="mobile-utility">
+                    <div class="utility__link-wrapper susecon">
+                        
+
+
+
+
+        <a class="utility__link" title="SUSECON 2027" href="/susecon/">
+            <span>SUSECON 2027</span>
+        </a>
+
+
+                    </div>
+
+                    <div class="utility__link-wrapper costumer">
+                        <a href="https://scc.suse.com/home" class="utility__link">
+                            <span>Customer Center</span>
+                        </a>
+                    </div>
+
+                    <div class="utility__link-wrapper shop">
+                        <a href="https://www.suse.com/shop/" class="utility__link">
+                            <span>Shop</span>
+                        </a>
+                    </div>
+            </div>
+            <div class="mobile-navigation">
+                
+
+
+
+<div class="header__nav-link nav-columns-4">
+        <a class="header__nav-link-text">
+            <span>Products</span>
+            <img src="/assets/images/icons/chevron_right_40dp.svg" alt="chevron_right Icon">
+        </a>
+
+    <div class="header__mega-menu ">
+            <div class="header__back-btn">
+                <img src="/assets/images/icons/chevron_left_36dp.svg" alt="chevron_left Icon">
+                <span>Back</span>
+            </div>
+        <div class="header__navigation_links_full">
+            <div class="items">
+                    <div class="header__mega-menu-item ">
+                        <div class="header__mega-menu-item-heading">
+                                <img src="/assets/images/icons/Linux-one-color.svg"
+                                     alt="Linux" />
+
+
+                                <a href="/solutions/linux/">Linux</a>
+                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/products/server/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Linux Enterprise Server
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/products/sles-for-sap/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Linux Enterprise Server
+                                                </span>
+                                                    <span>for SAP applications</span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/products/multi-linux-support/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Multi-Linux Support
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/products/multi-linux-manager/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Multi-Linux Manager
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/products/micro/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Linux Micro
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="header__mega-menu-item ">
+                        <div class="header__mega-menu-item-heading">
+                                <img src="/assets/images/icons/Cloud-native-one-color.svg"
+                                     alt="Cloud Native" />
+
+
+                                <a href="https://www.suse.com/solutions/cloud-native/">Cloud Native</a>
+                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <div class="item-text">
+                                            <a href="/products/rancher/">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Rancher Prime
+                                                </span>
+                                            </a>
+                                            <div class="header__mega-menu-sub-item-nested">
+                                                    <a href="/products/rancher/virtualization/">
+                                                        <span>
+                                                            Virtualization
+                                                        </span>
+                                                    </a>
+                                                    <a href="/products/rancher/storage/">
+                                                        <span>
+                                                            Storage
+                                                        </span>
+                                                    </a>
+                                                    <a href="/products/rancher/security/">
+                                                        <span>
+                                                            Security
+                                                        </span>
+                                                    </a>
+                                                    <a href="/products/rancher/observability/">
+                                                        <span>
+                                                            Observability
+                                                        </span>
+                                                    </a>
+                                                    <a href="/products/rancher/application-collection/">
+                                                        <span>
+                                                            Application Collection
+                                                        </span>
+                                                    </a>
+                                            </div>
+                                        </div>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/products/rancher/aws/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Rancher for AWS
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/products/rancher-for-sap/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Rancher for SAP&#xAE; applications
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/products/cloud/observability/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Cloud Observability
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="header__mega-menu-item ">
+                        <div class="header__mega-menu-item-heading">
+                                <img src="/assets/images/icons/Edge-one-color.svg"
+                                     alt="Edge" />
+
+
+                                <a href="https://www.suse.com/solutions/edge/">Edge</a>
+                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/products/edge/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Edge
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/products/industrial-edge/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Industrial Edge
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/products/edge-for-telco/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Telco Cloud
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="header__mega-menu-item ">
+                        <div class="header__mega-menu-item-heading">
+                                <img src="/assets/images/icons/AI-one-color.svg"
+                                     alt="AI" />
+
+
+                                <a href="/solutions/ai/">AI</a>
+                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/products/ai/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE AI Factory
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/products/ai/factory-with-nvidia/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE AI Factory with NVIDIA
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                        </div>
+                    </div>
+            </div>
+
+
+        <a class="button button--secondary button--medium button--secondary_persimmon button--secondary_persimmon__light" title="All products" href="https://www.suse.com/products/">
+            All products
+        </a>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="header__nav-link nav-columns-3">
+        <a class="header__nav-link-text">
+            <span>Solutions</span>
+            <img src="/assets/images/icons/chevron_right_40dp.svg" alt="chevron_right Icon">
+        </a>
+
+    <div class="header__mega-menu ">
+            <div class="header__back-btn">
+                <img src="/assets/images/icons/chevron_left_36dp.svg" alt="chevron_left Icon">
+                <span>Back</span>
+            </div>
+        <div class="header__navigation_links_full">
+            <div class="items">
+                    <div class="header__mega-menu-item ">
+                        <div class="header__mega-menu-item-heading">
+
+
+Use Cases                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/solutions/modernize-virtualization/">
+                                                <img src="/assets/images/icons/Modernize-pos.svg"
+                                                     alt="Modernize Workloads across Environments" />
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Modernize Workloads across Environments
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/solutions/optimize-operational-efficiency/">
+                                                <img src="/assets/images/icons/Optimize-pos.svg"
+                                                     alt="Optimize Operational Efficiency &amp; Cost" />
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Optimize Operational Efficiency &amp; Cost
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/solutions/manage-secure/">
+                                                <img src="/assets/images/icons/Manage and Secure-pos.svg"
+                                                     alt="Manage &amp; Secure Hybrid Cloud Architecture" />
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Manage &amp; Secure Hybrid Cloud Architecture
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/solutions/innovate/">
+                                                <img src="/assets/images/icons/Innovate-pos.svg"
+                                                     alt="Innovate with Next Gen Technologies" />
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Innovate with Next Gen Technologies
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="header__mega-menu-item ">
+                        <div class="header__mega-menu-item-heading">
+
+
+Solutions                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/solutions/linux/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Linux
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/solutions/cloud-native/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Cloud Native
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/solutions/edge/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Edge
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/solutions/ai/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    AI
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/solutions/run-sap-solutions/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Run SAP
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/solutions/digital-sovereignty/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Digital Sovereignty
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/solutions/public-cloud/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Public Cloud
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/solutions/observability/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Observability
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/solutions/security/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Security
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="header__mega-menu-item ">
+                        <div class="header__mega-menu-item-heading">
+
+
+Industries                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/sector/automotive/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Automotive
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/sector/telco/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Telecom
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/sector/banking-financial-services/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Banking and Financial Systems
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/sector/healthcare/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Healthcare
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/sector/manufacturing/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Manufacturing
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/sector/retail/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Retail
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/sector/defence/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Defence
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://ranchergovernment.com/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Federal
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/sector/public/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Public Administration
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="header__nav-link nav-columns-3">
+        <a class="header__nav-link-text">
+            <span>Support</span>
+            <img src="/assets/images/icons/chevron_right_40dp.svg" alt="chevron_right Icon">
+        </a>
+
+    <div class="header__mega-menu ">
+            <div class="header__back-btn">
+                <img src="/assets/images/icons/chevron_left_36dp.svg" alt="chevron_left Icon">
+                <span>Back</span>
+            </div>
+        <div class="header__navigation_links_full">
+            <div class="items">
+                    <div class="header__mega-menu-item ">
+                        <div class="header__mega-menu-item-heading">
+
+
+Support                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://scc.suse.com/home">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Product Support
+                                                </span>
+                                                    <span>SUSE Customer Center</span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/services/premium/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Premium Support Services
+                                                </span>
+                                                    <span>Dedicated support services from a premium team</span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/services/sovereign-premium-support/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Sovereign Premium Support
+                                                </span>
+                                                    <span>Trusted, adaptable, highly available, secure and  compliant</span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/products/long-term-service-pack-support/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Long Term Services Support
+                                                </span>
+                                                    <span>Stay on your existing product version</span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/renewals/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Renew Your Support Subscription
+                                                </span>
+                                                    <span>Partners with cloud providers</span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                    <div class="item-text">
+                                        <div class="header__menu-icons">
+
+
+
+
+
+
+                <a title="Amazon" href="https://aws.amazon.com/marketplace/search/results?searchTerms=suse">
+            <img class=" " alt="" src="/globalassets/partner-logos/amazon-3.svg?rmode=max" />
+                </a>
+
+
+
+
+
+
+
+                <a title="Microsoft Azure" href="https://azure.microsoft.com/en-us/solutions/linux-on-azure/suse/">
+            <img class=" " alt="" src="/globalassets/partner-logos/microsoft-azure-3.svg?rmode=max" />
+                </a>
+
+
+
+
+
+
+
+                <a title="Google cloud" href="https://console.cloud.google.com/marketplace/browse?q=SUSE">
+            <img class=" " alt="" src="/globalassets/partner-logos/google-cloud-3.svg?rmode=max" />
+                </a>
+
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="header__mega-menu-item ">
+                        <div class="header__mega-menu-item-heading">
+
+
+Services                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/services/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Global Services
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/services/consulting/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Consulting Services
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/training/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Training &amp; Certification
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/services/premium-technical-advisory/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Premium Technical Advisory Services
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="header__mega-menu-item ">
+                        <div class="header__mega-menu-item-heading">
+
+
+Resources                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/support/handbook/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Support User Guide
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://scc.suse.com/patches/#!/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Patches &amp; Updates
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://documentation.suse.com/?_gl=1*argfhm*_gcl_au*MTI4NzQ2NzMzNC4xNzM2OTMxNzk0*_ga*MTM1MDUxNTg5NC4xNzM2OTMxNzgz*_ga_JEVBS2XFKK*MTczNzU1NzczOC4xMS4xLjE3Mzc1NjEzMTkuMTUuMC4w">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Product Documentation
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://support.scc.suse.com/s/kb?language=en_US">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Knowledgebase
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/lifecycle/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Product Support Life Cycle
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://packagehub.suse.com/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Package Hub
+                                                </span>
+                                                    <span>Community packages for SUSE Linux Enterprise Server</span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://drivers.suse.com/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Driver Search
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://forums.suse.com/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Support Forums
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/services/support-offerings/developer-services/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Developer Services
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/betaprogram/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Beta Program
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/support/security/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Security
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="header__nav-link nav-columns-1">
+        <a class="header__nav-link-text">
+            <span>Partners</span>
+            <img src="/assets/images/icons/chevron_right_40dp.svg" alt="chevron_right Icon">
+        </a>
+
+    <div class="header__mega-menu ">
+            <div class="header__back-btn">
+                <img src="/assets/images/icons/chevron_left_36dp.svg" alt="chevron_left Icon">
+                <span>Back</span>
+            </div>
+        <div class="header__navigation_links_full">
+            <div class="items">
+                    <div class="header__mega-menu-item ">
+                        <div class="header__mega-menu-item-heading">
+
+
+Partners                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/partners/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Partner Program
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/partners/find-partner/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Find a partner
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/partners/become-partner/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Become a Partner
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://partner.suse.com/s/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Login to the SUSE Partner Portal
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="header__nav-link nav-columns-1">
+        <a class="header__nav-link-text">
+            <span>Communities</span>
+            <img src="/assets/images/icons/chevron_right_40dp.svg" alt="chevron_right Icon">
+        </a>
+
+    <div class="header__mega-menu ">
+            <div class="header__back-btn">
+                <img src="/assets/images/icons/chevron_left_36dp.svg" alt="chevron_left Icon">
+                <span>Back</span>
+            </div>
+        <div class="header__navigation_links_full">
+            <div class="items">
+                    <div class="header__mega-menu-item ">
+                        <div class="header__mega-menu-item-heading">
+
+
+Communities                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/c/blog/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Blog
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://forums.suse.com/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Forum
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://opensource.suse.com/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Open Source Projects
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.opensuse.org/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    openSUSE.org
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="header__nav-link nav-columns-1">
+        <a class="header__nav-link-text">
+            <span>About</span>
+            <img src="/assets/images/icons/chevron_right_40dp.svg" alt="chevron_right Icon">
+        </a>
+
+    <div class="header__mega-menu ">
+            <div class="header__back-btn">
+                <img src="/assets/images/icons/chevron_left_36dp.svg" alt="chevron_left Icon">
+                <span>Back</span>
+            </div>
+        <div class="header__navigation_links_full">
+            <div class="items">
+                    <div class="header__mega-menu-item ">
+                        <div class="header__mega-menu-item-heading">
+
+
+About                        </div>
+                        <div class="header__mega-menu-sub-items">
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/company/about/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    About
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/leadership/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Leadership
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://jobs.suse.com/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Careers
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/news/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Newsroom
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/success/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Success Stories
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/investor-relations/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Investor Relations
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/sustainability/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Sustainability
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://brand.suse.com/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    SUSE Logo and Brand
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="https://www.suse.com/events/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Events
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="header__mega-menu-sub-item">
+                                        <a href="/voice-of-customer/">
+                                            <div class="item-text">
+                                                <span class="header__mega-menu-sub-item-heading">
+                                                    Voice of the Customer
+                                                </span>
+                                            </div>
+                                        </a>
+                                </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+                    <div class="header__nav-link contact">
+                        <a class="header__nav-link-text" href="https://www.suse.com/contact/">
+                            <span>Contact Us</span>
+                        </a>
+                    </div>
+
+                    <div class="header__nav-link downloads">
+                        <a class="header__nav-link-text" href="http://www.suse.com/products/">
+                            <span>Free Downloads</span>
+                        </a>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="header__end-line">
+    <div class="persimmon"></div>
+    <div class="green"></div>
+    <div class="waterhole-blue"></div>
+    <div class="mint"></div>
+</div>
+<script nonce>
+    window.SUSE = window.SUSE || {};
+    window.SUSE.Header = {"helloLabel":"Hello","accountLabel":"Account","newLinks":[{"text":"Update Your Account","href":"https://www.suse.com/account/update/"}]}
+</script>
+
+
+
+		</header>
+		<div class="header__placeholder"></div>
+
+	
+	<div id="main">
+		<main>
+			
+<div></div>
+
+<div>
+<div class="block twocolumnbannerblock">
+
+
+<section class="banner-2-column theme-white padding-top-xl padding-bottom-xl">
+    <div class="row banner-2-column__wrapper">
+        <div class="col-md-6 banner-2-column__left-panel">
+            <h1 class="heading heading--h2">Run SAP Solutions</h1>
+            <h2 class="margin-bottom-md heading heading--h3">Fuel business growth and drive operational excellence</h2>
+            
+
+
+
+
+
+
+        <a class="button button--primary_persimmon button--large button--md-height " title=" Read CIO Agenda for SAP" href="https://more.suse.com/FY23Q3_PM_EL_SAP_SAPC_LP_SAPinsider_TEF_CIO_2023_Agenda_for_SAP_RG_GLB_LandingPage.html">
+             Read CIO Agenda for SAP
+        </a>
+
+
+        </div>
+        <div class="col-md-6 banner-2-column__right-panel">
+            <div class="richText banner-2-column__description margin-bottom-md">
+                
+<p>Deliver SAP services faster, more efficiently and with less risk. SUSE platforms and expert services teams help you manage mission-critical SAP infrastructures with automation and monitoring.</p>
+
+            </div>
+            
+
+
+
+
+
+
+
+
+        </div>
+    </div>
+</section></div><div class="block bigcardbannerblock img banner-with-image">
+
+
+
+<section class="banner-5050 theme-jungle">
+    <div class="row l-container ">
+        <div class="col-md-6 banner-5050__left-panel theme-jungle">
+                <div class="richText video-placeholder">
+                    
+
+
+    <div class="wistia_responsive_padding" style="padding:56.25% 0 0 0;position:relative;">
+        <div class="wistia_responsive_wrapper" style="height:100%;left:0;position:absolute;top:0;width:100%;">
+            <div class="wistia_embed wistia_async_6o8vrwzr24 videoFoam=true" style="height:100%;position:relative;width:100%">
+                <div class="wistia_swatch" style="height:100%;left:0;opacity:0;overflow:hidden;position:absolute;top:0;transition:opacity 200ms;width:100%;">
+                    <img alt="" class="wistia-onload" aria-hidden="true" src="https://fast.wistia.com/embed/medias/6o8vrwzr24/swatch" style="filter:blur(5px);height:100%;object-fit:contain;width:100%;" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <script nonce>
+        var images = document.querySelectorAll('.wistia-onload');
+        images.forEach(function (img) {
+            img.addEventListener('load', function () {
+                this.parentNode.style.opacity = 1;
+            });
+        });
+    </script>
+
+                </div>
+        </div>
+
+        <div class="col-md-6 banner-5050__right-panel theme-jungle">
+            <div class="banner-5050__content-wrap">
+                <div class="banner-5050__content">
+                        <h1 class="banner-5050__title margin-bottom-md heading heading--h2">What is Run SAP?</h1>
+                        <div class="richText banner-5050__description">
+<p>SAP solutions help organizations drive digital transformation to grow revenue, increase customer retention, and improve operational excellence. SUSE enables your SAP systems to deliver uninterrupted access to business insights and improve time to market for new services. Over 20 years of co-innovation with SAP to more easily deploy and manage complex IT infrastructures have made SUSE the leading and trusted open source platform for SAP solutions.</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section></div><div class="block logocarouselblock">
+
+
+<section class="padding-top-xl padding-bottom-xl theme-lightgray">
+    <div class="l-container text-center">
+        <h2  class="heading heading--h2 margin-bottom-xs">
+            Trusted by the world&#x2019;s leading enterprises
+        </h2>
+            <div class="swiper">
+                <div class="swiper-wrapper" >
+                        <div class="swiper-slide">
+                            <div class="carousel-holder">
+                                <div class="carousel-wrapper">
+                                    <img class="carousel-img" src="/globalassets/sites/default/files/deutsche-bank_10.png" alt="Customer Success Story" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="carousel-holder">
+                                <div class="carousel-wrapper">
+                                    <img class="carousel-img" src="/globalassets/sites/default/files/fujitsu_10.png" alt="Customer Success Story" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="carousel-holder">
+                                <div class="carousel-wrapper">
+                                    <img class="carousel-img" src="/globalassets/sites/default/files/hsbc_10.png" alt="Customer Success Story" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="carousel-holder">
+                                <div class="carousel-wrapper">
+                                    <img class="carousel-img" src="/globalassets/sites/default/files/indian_oil_10.png" alt="Customer Success Story" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="carousel-holder">
+                                <div class="carousel-wrapper">
+                                    <img class="carousel-img" src="/globalassets/sites/default/files/intel_8.png" alt="Customer Success Story" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="carousel-holder">
+                                <div class="carousel-wrapper">
+                                    <img class="carousel-img" src="/globalassets/sites/default/files/marriott_15.png" alt="Customer Success Story" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="carousel-holder">
+                                <div class="carousel-wrapper">
+                                    <img class="carousel-img" src="/globalassets/sites/default/files/merck_8.png" alt="Customer Success Story" />
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <div class="padding-top-md">
+                
+
+
+
+
+
+
+        <a class="button button--primary_persimmon button--medium button--sm-height " title="View all Stories" href="/success/">
+            View all Stories
+        </a>
+
+
+            </div>
+    </div>
+</section></div><div class="block keypointslistingblock edge-to-edge">
+
+
+
+
+<section class="padding-top-xl padding-bottom-xl theme-white">
+    <div class="l-container numbered-card">
+        <div class="numbered-card__heading">
+            <h2 class="heading heading--h2">Why SUSE for SAP Workloads?</h2>
+
+                <div class="richText heading heading--p">
+<p class="subheadline t1-paragraph t1-paragraph--large t1-paragraph--center u-margin-bottom">Linux Solutions by Industry</p>
+ <p class="subheadline t1-paragraph t1-paragraph--large t1-paragraph--center">SUSE enables your SAP software to deliver uninterrupted access to secure data and analytics that give you new insights into business operations and customer sentiment.</p>
+</div>
+        </div>
+            <div class="row numbered-card__items g-4" >
+
+
+
+
+<div class="col-lg-3">
+    <div class="numbered-card__item  theme-lightgray">
+        <div class="numbered-card__card_content">
+            <div class="numbered-card__border"></div>
+            <p class="heading heading--p numbered-card__order">01</p>
+            <h3 class="heading heading--h3 numbered-card__title container-card-title">Deliver More Reliable Services</h3>
+            <div class="richText numbered-card__desc">Improve business productivity with automated SAP services recovery from system outages with SUSE high-availability options. Patch Linux OS vulnerabilities with no downtime. Proactively identify system problems with monitoring.</div>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="col-lg-3">
+    <div class="numbered-card__item  theme-lightgray">
+        <div class="numbered-card__card_content">
+            <div class="numbered-card__border"></div>
+            <p class="heading heading--p numbered-card__order">02</p>
+            <h3 class="heading heading--h3 numbered-card__title container-card-title">Implement New Services Faster</h3>
+            <div class="richText numbered-card__desc">Meet time-to-market requirements with SUSE automated deployment that delivers new services faster and for migrations to SAP S/4HANA. Deploy the full SAP software stack in the cloud or on premises with best practices to reduce errors.</div>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="col-lg-3">
+    <div class="numbered-card__item  theme-lightgray">
+        <div class="numbered-card__card_content">
+            <div class="numbered-card__border"></div>
+            <p class="heading heading--p numbered-card__order">03</p>
+            <h3 class="heading heading--h3 numbered-card__title container-card-title">Strengthen Business Operations</h3>
+            <div class="richText numbered-card__desc">Gain real-time access to business insights to make timely SAP operations decisions with SUSE tuning and performance optimization. Enhanced security features prevent unauthorized access to SAP HANA systems and storage devices.</div>
+        </div>
+
+    </div>
+</div>            </div>
+    </div>
+</section>
+</div><div class="block casestudyteaserblock">
+
+
+
+<section class="case-study theme-lightgray l-container-full">
+    <div class="row case-study__wrapper">
+        <div class="col-md-6 case-study__left-panel">
+            <div class="case-study__content-wrap">
+                <div class="case-study__title-wrap">
+                        <img  src="/globalassets/sites/default/files/carhartt-inc-vector-logo.svg" alt="Carhartt"
+                             width="140px" class="case-study__logo">
+                        <h2 class="case-study__title heading heading--h3">Carhartt works together with SUSE to achieve zero downtime, saving millions of dollars</h2>
+                </div>
+                <div class="case-study__content-line"></div>
+                    <div class="richText case-study__description">
+                        
+<ul>
+	<li>Zero downtime saves the company millions of dollars</li>
+	<li>Stability and simplicity create more time for innovation</li>
+	<li>Patches and updates for a mixed environment are managed from a single point with ease</li>
+</ul>
+
+
+
+                    </div>
+
+
+
+
+
+
+
+        <a class="button button--primary_persimmon button--medium button--sm-height " title="See Full Case Study" href="https://www.suse.com/success/carhartt/">
+            See Full Case Study
+        </a>
+
+            </div>
+        </div>
+        <div class="col-md-6 case-study__right-panel">
+                <div 
+                     style="background-image: url('/globalassets/sites/default/files/run-sap-1.jpg?width=1100&amp;rmode=crop;')"
+                     alt="Run SAP"
+                     class="case-study__image">
+                </div>
+        </div>
+    </div>
+</section></div><div class="block cardcontainerblock col-12 full">
+
+
+
+
+<section id=""
+         class="card-container theme-white padding-top-xl padding-bottom-xl  ">
+    <div class="l-container">
+            <div class="card-container__heading ">
+                    <h2 class="heading heading--h2 padding-bottom-md">Related Products</h2>
+                
+                
+
+
+
+
+
+
+
+
+            </div>
+        <div class="items">
+            
+
+<div class="row g-5">
+    <div class="block outlinedcardblock col-12 col-md-4 card-container-item third">
+
+
+
+
+<div class="outlined-card__item theme-white">
+    <div>
+        <p class="heading heading--h4 card-title">SUSE Linux Enterprise Server for SAP Applications</p>
+    </div>
+    <div class="richText">
+        
+The leading Linux platform for SAP HANA, SAP NetWeaver and SAP S/4HANA solutions and is endorsed by SAP. 
+    </div>
+
+
+
+
+
+
+
+        <a class="button button--link button--medium button--sm-height " title="Read more " href="/products/sles-for-sap/">
+            Read more 
+        </a>
+
+</div>
+</div><div class="block outlinedcardblock col-12 col-md-4 card-container-item third">
+
+
+
+
+<div class="outlined-card__item theme-white">
+    <div>
+        <p class="heading heading--h4 card-title">SUSE Multi-Linux Manager</p>
+    </div>
+    <div class="richText">
+        
+A best-in-class Open Source Infrastructure management solution for your software-defined infrastructure.
+    </div>
+
+
+
+
+
+
+
+        <a class="button button--link button--medium button--sm-height " title="Read more " href="/products/suse-manager/">
+            Read more 
+        </a>
+
+</div>
+</div><div class="block outlinedcardblock col-12 col-md-4 card-container-item third">
+
+
+
+
+<div class="outlined-card__item theme-white">
+    <div>
+        <p class="heading heading--h4 card-title">SUSE Linux Enterprise Live Patching</p>
+    </div>
+    <div class="richText">
+        
+Maximize uptime for a wide range of business-critical applications like AI/ML apps, big data analytics, SQL databases or in-memory database applications such as SAP HANA.
+    </div>
+
+
+
+
+
+
+
+        <a class="button button--link button--medium button--sm-height " title="Read more " href="/unpublished-archive/live-patching-old/">
+            Read more 
+        </a>
+
+</div>
+</div><div class="block outlinedcardblock col-12 col-md-4 card-container-item third">
+
+
+
+
+<div class="outlined-card__item theme-white">
+    <div>
+        <p class="heading heading--h4 card-title">Trento</p>
+    </div>
+    <div class="richText">
+        
+Bundled with SLES for SAP Applications, Trento is cloud-native web console aiming to improve the workday of SAP Applications administrators.
+    </div>
+
+
+
+
+
+
+
+        <a class="button button--link button--medium button--sm-height " title="Read more " href="https://more.suse.com/SAP_Trento.html">
+            Read more 
+        </a>
+
+</div>
+</div><div class="block outlinedcardblock col-12 col-md-4 card-container-item third">
+
+
+
+
+<div class="outlined-card__item theme-white">
+    <div>
+        <p class="heading heading--h4 card-title">SUSE Rancher for SAP Applications</p>
+    </div>
+    <div class="richText">
+        
+Streamlines SAP workloads with hybrid-cloud scalability, enterprise security, and reduced complexity. Accelerates time to market, lowers risks and costs, and drives innovation.
+    </div>
+
+
+
+
+
+
+
+        <a class="button button--link button--medium button--sm-height " title="Read more" href="/products/rancher-for-sap/">
+            Read more
+        </a>
+
+</div>
+</div>
+</div>
+        </div>
+    </div>
+</section></div><div class="block learnhowbarblock">
+
+
+
+<section class="learn-how learn-how-- theme-jungle theme-light-bg">
+    <div class="l-container padding-top-xl padding-bottom-xl">
+        <div class="row learn-content learn-content--2col">
+            <div class="col-md-9 ">
+                <div class="row gx-4 learn-how-content-wrapper">
+                    <div class="col-md-12">
+                        <p  class="learn-how-title learn-how-title--">
+                            More questions about Run SAP Solutions?&#xA0;
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 ">
+                <div class="learn-how-btn">
+                    <div>
+
+
+
+
+
+        <a class="button button--primary_pine-green button--medium button--sm-height " title="Request a call" href="https://www.suse.com/contact/">
+            Request a call
+        </a>
+
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section></div>
+</div>
+		</main>
+
+		
+<div>
+<div class="block footerblock InGrid InGrid">
+
+
+<div class="footer-start-line"></div>
+<footer class="theme-pinegreen footer">
+    <div class="l-container">
+        <div class="footer__row">
+            <div class="footer__nav">
+                
+
+
+
+
+
+                <a title="SUSE" href="/">
+            <img class="logo__image " alt="SUSE Logo" src="/siteassets/layout/suse-white-logo-green.svg?height=55&amp;rmode=max" height="55" />
+                </a>
+
+
+                
+                <ul >
+                        <li>
+                            
+
+        <a title="Careers" href="https://jobs.suse.com/" target="_blank">
+            Careers
+        </a>
+
+                        </li>
+                        <li>
+                            
+
+        <a title="Legal" href="/company/legal/">
+            Legal
+        </a>
+
+                        </li>
+                        <li>
+                            
+
+        <a title="Modern Slavery Statement" href="/legal/anti-slavery/">
+            Modern Slavery Statement
+        </a>
+
+                        </li>
+                        <li>
+                            
+
+        <a title="About" href="/company/about/">
+            About
+        </a>
+
+                        </li>
+                        <li>
+                            
+
+        <a title="Communications Preferences" href="/company/subscribe/">
+            Communications Preferences
+        </a>
+
+                        </li>
+                        <li>
+                            
+
+        <a title="Contact Us" href="/contact/">
+            Contact Us
+        </a>
+
+                        </li>
+                        <li>
+                            
+
+        <a title="Let&#x27;s Chat" href="#footer-chat-now">
+            Let&#x27;s Chat
+        </a>
+
+                        </li>
+                   
+                </ul>
+            </div>
+            
+                <div class="footer__social">
+                    <ul class="l-flex l-flex--justify-start" >
+                            <li>
+                                
+
+
+
+
+
+                <a title="YouTube" href="https://www.youtube.com/channel/UCHTfqIzPKz4f_dri36lAQGA" target="_blank">
+            <img class=" " alt="" src="/siteassets/layout/youtube.png?rmode=max" />
+                </a>
+
+
+                            </li>
+                            <li>
+                                
+
+
+
+
+
+                <a title="Facebook" href="https://www.facebook.com/SUSEWorldwide" target="_blank">
+            <img class=" " alt="" src="/siteassets/layout/fn-fbook-ico-white.png?rmode=max" />
+                </a>
+
+
+                            </li>
+                            <li>
+                                
+
+
+
+
+
+                <a title="X" href="https://www.twitter.com/SUSE" target="_blank">
+            <img class=" " alt="" src="/siteassets/layout/x1-1.png?rmode=max" />
+                </a>
+
+
+                            </li>
+                            <li>
+                                
+
+
+
+
+
+                <a title="LinkedIn" href="https://www.linkedin.com/company/suse" target="_blank">
+            <img class=" " alt="" src="/siteassets/layout/fn-link-ico-white.png?rmode=max" />
+                </a>
+
+
+                            </li>
+                            <li>
+                                
+
+
+
+
+
+                <a title="Bluesky" href="https://bsky.app/profile/suse.com">
+            <img class=" " alt="" src="/siteassets/layout/bsky-icon.png?rmode=max" />
+                </a>
+
+
+                            </li>
+                    </ul>
+                </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="footer__bottom">
+            
+                <div class="number" >
+                    Support: 
+
+        <a title="Open a Support Case" href="/support/handbook/#open">
+            Open a Support Case
+        </a>
+
+                </div>
+            
+            <div class="footer__copy">
+                    <span class="copy__rights" >&#xA9; 2026 &#xA9;SUSE, All Rights Reserved </span>
+                
+                <ul>
+                    <li>
+                        <a href="javascript:Optanon.ToggleInfoDisplay()">Cookie Settings</a>
+                    </li>
+                </ul>
+
+                <ul >
+                        <li>
+                            
+
+        <a title="Privacy Policy" href="/company/legal/">
+            Privacy Policy
+        </a>
+
+                        </li>
+                        <li>
+                            
+
+        <a title="Cookie Policy" href="/company/legal/cookies-policy/">
+            Cookie Policy
+        </a>
+
+                        </li>
+                </ul>
+            </div>
+        </div> 
+    </div>
+</footer></div>
+</div>
+	</div>
+
+	<div class="modal fade" id="imageModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="footer__modal-content modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body"></div> 
+        </div> 
+    </div>
+</div>
+
+
+	
+
+</body>
+</html>

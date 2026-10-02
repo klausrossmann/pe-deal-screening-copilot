@@ -1,0 +1,135 @@
+{
+  "company_id": "teamviewer",
+  "company_name": "TeamViewer",
+  "website": "https://www.teamviewer.com",
+  "folder": "Teamviewer",
+  "crawled_pages": [
+    {
+      "url": "https://www.teamviewer.com/",
+      "title": "TeamViewer – die Plattform für den digitalen Arbeitsplatz",
+      "depth": 0
+    },
+    {
+      "url": "https://www.teamviewer.com/de/solutions/use-cases/",
+      "title": "Use case-specific solutions | TeamViewer",
+      "depth": 1
+    },
+    {
+      "url": "https://www.teamviewer.com/de/solutions/industries/",
+      "title": "Industry solutions | TeamViewer",
+      "depth": 1
+    },
+    {
+      "url": "https://www.teamviewer.com/de/global/company/corporate-governance/",
+      "title": "Corporate governance | TeamViewer",
+      "depth": 1
+    },
+    {
+      "url": "https://www.teamviewer.com/de/global/company/about-teamviewer/",
+      "title": "Über uns",
+      "depth": 1
+    },
+    {
+      "url": "https://www.teamviewer.com/de/global/company/press/2025/teamviewer-reports-rapid-customer-adoption-ai/",
+      "title": "TeamViewer verzeichnet starkes Wachstum bei der Nutzung seiner KI-Lösungen",
+      "depth": 1
+    },
+    {
+      "url": "https://www.teamviewer.com/de/global/support/customer-support/",
+      "title": "Kundensupport | TeamViewer",
+      "depth": 1
+    },
+    {
+      "url": "https://www.teamviewer.com/de/legal/product-descriptions/",
+      "title": "Product descriptions | TeamViewer",
+      "depth": 2
+    },
+    {
+      "url": "https://www.teamviewer.com/ams/solutions/use-cases/?language-switched=true",
+      "title": "Use case specific solutions | TeamViewer",
+      "depth": 2
+    },
+    {
+      "url": "https://www.teamviewer.com/apac/solutions/use-cases/?language-switched=true",
+      "title": "Use case specific solutions | TeamViewer",
+      "depth": 2
+    },
+    {
+      "url": "https://www.teamviewer.com/cn/solutions/use-cases/?language-switched=true",
+      "title": "Use case-specific solutions | TeamViewer",
+      "depth": 2
+    },
+    {
+      "url": "https://www.teamviewer.com/cs/solutions/use-cases/?language-switched=true",
+      "title": "Use case specific solutions | TeamViewer",
+      "depth": 2
+    },
+    {
+      "url": "https://www.teamviewer.com/de/products/add-ons/remote-management/",
+      "title": "Remote Management | TeamViewer",
+      "depth": 2
+    },
+    {
+      "url": "https://www.teamviewer.com/de/products/dex/",
+      "title": "TeamViewer DEX | TeamViewer",
+      "depth": 2
+    },
+    {
+      "url": "https://www.teamviewer.com/de/platform/one/use-cases/frictionless-experience/",
+      "title": "Reibungslose Experience | TeamViewer",
+      "depth": 2
+    },
+    {
+      "url": "https://www.teamviewer.com/de/platform/one/use-cases/seamless-it-operations/",
+      "title": "Nahtloser IT-Betrieb | TeamViewer",
+      "depth": 2
+    },
+    {
+      "url": "https://www.teamviewer.com/de/products/dex/features/endpoint-automation/",
+      "title": "Endpoint Automation | TeamViewer",
+      "depth": 2
+    },
+    {
+      "url": "https://www.teamviewer.com/de/global/company/",
+      "title": "Über uns",
+      "depth": 2
+    }
+  ],
+  "saved_pages": [
+    {
+      "file": "data/raw/Teamviewer/01-index.html",
+      "url": "https://www.teamviewer.com/",
+      "topic": "homepage",
+      "title": "TeamViewer – die Plattform für den digitalen Arbeitsplatz",
+      "score": 100
+    },
+    {
+      "file": "data/raw/Teamviewer/02-about.html",
+      "url": "https://www.teamviewer.com/de/global/company/",
+      "topic": "about",
+      "title": "Über uns",
+      "score": 25
+    },
+    {
+      "file": "data/raw/Teamviewer/03-products.html",
+      "url": "https://www.teamviewer.com/de/legal/product-descriptions/",
+      "topic": "products",
+      "title": "Product descriptions | TeamViewer",
+      "score": 25
+    },
+    {
+      "file": "data/raw/Teamviewer/04-industries.html",
+      "url": "https://www.teamviewer.com/de/solutions/use-cases/",
+      "topic": "industries",
+      "title": "Use case-specific solutions | TeamViewer",
+      "score": 36
+    },
+    {
+      "file": "data/raw/Teamviewer/05-customers.html",
+      "url": "https://www.teamviewer.com/ams/resources/success-stories/",
+      "topic": "customers",
+      "title": "TeamViewer customer stories and case studies",
+      "score": 26
+    }
+  ]
+}

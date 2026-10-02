@@ -1,0 +1,65 @@
+{
+  "company_id": "qt",
+  "company_name": "Qt Group",
+  "website": "https://www.qt.io",
+  "folder": "qt",
+  "crawled_pages": [
+    {
+      "url": "https://www.qt.io/",
+      "title": "Qt | Tools for Each Stage of Software Development Lifecycle",
+      "depth": 0
+    },
+    {
+      "url": "https://www.qt.io/about-us?hsLang=en",
+      "title": "About The Qt Group - Code Less & Create More",
+      "depth": 1
+    },
+    {
+      "url": "https://www.qt.io/products?hsLang=en",
+      "title": "Qt Products: Cross-Platform Dev, Design and QA Tools",
+      "depth": 1
+    },
+    {
+      "url": "https://www.qt.io/development/qt-in-automotive?hsLang=en",
+      "title": "Qt in Automotive",
+      "depth": 1
+    },
+    {
+      "url": "https://www.qt.io/development/bsh-built-with-qt?hsLang=en",
+      "title": "BSH | Built with Qt",
+      "depth": 1
+    }
+  ],
+  "saved_pages": [
+    {
+      "file": "data/raw/qt/01-index.html",
+      "url": "https://www.qt.io/",
+      "topic": "homepage",
+      "title": "Qt | Tools for Each Stage of Software Development Lifecycle"
+    },
+    {
+      "file": "data/raw/qt/02-about.html",
+      "url": "https://www.qt.io/about-us?hsLang=en",
+      "topic": "about",
+      "title": "About The Qt Group - Code Less & Create More"
+    },
+    {
+      "file": "data/raw/qt/03-products.html",
+      "url": "https://www.qt.io/products?hsLang=en",
+      "topic": "products",
+      "title": "Qt Products: Cross-Platform Dev, Design and QA Tools"
+    },
+    {
+      "file": "data/raw/qt/04-industries.html",
+      "url": "https://www.qt.io/development/qt-in-automotive?hsLang=en",
+      "topic": "industries",
+      "title": "Qt in Automotive"
+    },
+    {
+      "file": "data/raw/qt/05-customers.html",
+      "url": "https://www.qt.io/development/bsh-built-with-qt?hsLang=en",
+      "topic": "customers",
+      "title": "BSH | Built with Qt"
+    }
+  ]
+}

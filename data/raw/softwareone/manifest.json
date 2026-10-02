@@ -1,0 +1,65 @@
+{
+  "company_id": "softwareone",
+  "company_name": "SoftwareOne",
+  "website": "https://www.softwareone.com",
+  "folder": "SoftwareOne",
+  "crawled_pages": [
+    {
+      "url": "https://www.softwareone.com/de-de",
+      "title": "Willkommen bei SoftwareOne",
+      "depth": 0
+    },
+    {
+      "url": "https://www.softwareone.com/de-de/ueber-softwareone",
+      "title": "Über SoftwareOne | SoftwareOne",
+      "depth": 1
+    },
+    {
+      "url": "https://www.softwareone.com/de-de/cloud-services",
+      "title": "Cloud Lösungen für Unternehmen | SoftwareOne",
+      "depth": 1
+    },
+    {
+      "url": "https://www.softwareone.com/de-de/digital-workplace-services-old",
+      "title": "Digital Workplace Services für Unternehmen | SoftwareOne",
+      "depth": 1
+    },
+    {
+      "url": "https://www.softwareone.com/de-de/now/dach/it-campus",
+      "title": "SoftwareOne IT Campus | Customer Training Solutions",
+      "depth": 1
+    }
+  ],
+  "saved_pages": [
+    {
+      "file": "data/raw/SoftwareOne/01-index.html",
+      "url": "https://www.softwareone.com/de-de",
+      "topic": "homepage",
+      "title": "Willkommen bei SoftwareOne"
+    },
+    {
+      "file": "data/raw/SoftwareOne/02-about.html",
+      "url": "https://www.softwareone.com/de-de/ueber-softwareone",
+      "topic": "about",
+      "title": "Über SoftwareOne | SoftwareOne"
+    },
+    {
+      "file": "data/raw/SoftwareOne/03-products.html",
+      "url": "https://www.softwareone.com/de-de/cloud-services",
+      "topic": "products",
+      "title": "Cloud Lösungen für Unternehmen | SoftwareOne"
+    },
+    {
+      "file": "data/raw/SoftwareOne/04-industries.html",
+      "url": "https://www.softwareone.com/de-de/digital-workplace-services-old",
+      "topic": "industries",
+      "title": "Digital Workplace Services für Unternehmen | SoftwareOne"
+    },
+    {
+      "file": "data/raw/SoftwareOne/05-customers.html",
+      "url": "https://www.softwareone.com/de-de/now/dach/it-campus",
+      "topic": "customers",
+      "title": "SoftwareOne IT Campus | Customer Training Solutions"
+    }
+  ]
+}

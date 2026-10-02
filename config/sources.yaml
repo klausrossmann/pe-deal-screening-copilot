@@ -1,0 +1,443 @@
+sources:
+  # Nemetschek
+  - company_id: nemetschek
+    file_name: NEM_AnnualReport_2025_EN.pdf
+    document_type: annual_report
+    year: 2025
+    title: NEM Annual Report 2025
+    source_url: https://example.com/nemetschek/annual-report-2025
+
+  - company_id: nemetschek
+    file_name: 01-index.html
+    document_type: company_profile
+    year: 2025
+    title: "NEMETSCHEK | Softwarelösungen für Architekten und Kreative"
+    source_url: https://www.nemetschek.com/
+
+  - company_id: nemetschek
+    file_name: 02-about.html
+    document_type: company_profile
+    year: 2025
+    title: About us | NEMETSCHEK Group | Digital Driver AEC/O
+    source_url: https://www.nemetschek.com/en/company/about-us
+
+  - company_id: nemetschek
+    file_name: 03-products.html
+    document_type: product_overview
+    year: 2025
+    title: "Crem Solutions | Modulare Software für Immobilienmanagement"
+    source_url: https://www.nemetschek.com/de/marke/crem-solutions
+
+  - company_id: nemetschek
+    file_name: 04-industries.html
+    document_type: industry_overview
+    year: 2025
+    title: "Public Sector – Powered by Purpose. | NEMETSCHEK"
+    source_url: https://www.nemetschek.com/de/public-sector
+
+  - company_id: nemetschek
+    file_name: acquisitions/01-nemetschek-group-acquire-gocanvas.html
+    document_type: acquisition_announcement
+    year: 2024
+    title: Nemetschek Group to Acquire GoCanvas to further Accelerate Digitalization in Construction Industry
+    source_url: https://www.nemetschek.com/en/news-media/nemetschek-group-acquire-gocanvas-further-accelerate-digitalization-construction
+
+  - company_id: nemetschek
+    file_name: acquisitions/02-gocanvas-closing.html
+    document_type: acquisition_announcement
+    year: 2024
+    title: Nemetschek Group Completes Acquisition of GoCanvas Holdings, Inc.
+    source_url: https://www.nemetschek.com/en/news-media/nemetschek-group-completes-acquisition-gocanvas-holdings-inc
+
+  - company_id: nemetschek
+    file_name: acquisitions/03-ngroup-to-acquire-hcss.html
+    document_type: acquisition_announcement
+    year: 2024
+    title: "Nemetschek Group to Acquire HCSS; Creates Next Global Construction Technology Leader"
+    source_url: https://www.nemetschek.com/en/news-media/ngroup-to-acquire-hcss
+
+  - company_id: nemetschek
+    file_name: acquisitions/04-vectorworks-acquires-morpholio.html
+    document_type: acquisition_announcement
+    year: 2026
+    title: Vectorworks Acquires Morpholio, Adding Leading Mobile Design Apps to its Product Line
+    source_url: https://www.nemetschek.com/en/news-media/vectorworks-acquires-morpholio
+
+  - company_id: nemetschek
+    file_name: acquisitions/05-graphisoft-acquires-distributors.html
+    document_type: acquisition_announcement
+    year: 2026
+    title: Graphisoft acquires distributors in Australia and New Zealand, strengthening direct presence in Pacific region
+    source_url: https://www.nemetschek.com/en/news-media/graphisoft-acquires-distributors-australia-and-new-zealand-strengthening-direct-presence
+
+  # ATOSS
+  - company_id: atoss
+    file_name: atoss-geschaeftsbericht-2025.pdf
+    document_type: annual_report
+    year: 2025
+    title: "ATOSS Geschäftsbericht 2025"
+    source_url: https://example.com/atoss/annual-report-2025
+
+  - company_id: atoss
+    file_name: atoss_presentation-q2-and-h1-2026.pdf
+    document_type: investor_presentation
+    year: 2026
+    title: ATOSS Presentation Q2 and H1 2026
+    source_url: https://example.com/atoss/investor-presentation-q2-h1-2026
+
+  - company_id: atoss
+    file_name: 01-index.html
+    document_type: company_profile
+    year: 2025
+    title: "ATOSS: Smart New Work für Produktivität und People Experience"
+    source_url: https://www.atoss.com/
+
+  - company_id: atoss
+    file_name: 02-about.html
+    document_type: company_profile
+    year: 2025
+    title: About us - Introducing of ATOSS Software SE
+    source_url: https://www.atoss.com/en/company
+
+  - company_id: atoss
+    file_name: 03-products.html
+    document_type: product_overview
+    year: 2025
+    title: Our portfolio of workforce management solutions
+    source_url: https://www.atoss.com/en/solutions
+
+  - company_id: atoss
+    file_name: 04-industries.html
+    document_type: industry_overview
+    year: 2025
+    title: Service quality on time and budget with ATOSS technology
+    source_url: https://www.atoss.com/en/solutions/industries/service-industry
+
+  - company_id: atoss
+    file_name: 05-customers.html
+    document_type: customer_references
+    year: 2025
+    title: Customer
+    source_url: https://www.atoss.com/en/customers
+
+  # TeamViewer
+  - company_id: teamviewer
+    file_name: 260210_TMV_Q4-FY_2025_Earnings_Presentation.pdf
+    document_type: investor_presentation
+    year: 2025
+    title: "TeamViewer Q4 & FY2025 Earnings Presentation"
+    source_url: https://example.com/teamviewer/q4-fy2025-earnings-presentation
+
+  - company_id: teamviewer
+    file_name: 01-index.html
+    document_type: company_profile
+    year: 2025
+    title: "TeamViewer – die Plattform für den digitalen Arbeitsplatz"
+    source_url: https://www.teamviewer.com/
+
+  - company_id: teamviewer
+    file_name: 02-about.html
+    document_type: company_profile
+    year: 2025
+    title: "Über uns"
+    source_url: https://www.teamviewer.com/de/global/company/
+
+  - company_id: teamviewer
+    file_name: 03-products.html
+    document_type: product_overview
+    year: 2025
+    title: Product descriptions | TeamViewer
+    source_url: https://www.teamviewer.com/de/legal/product-descriptions/
+
+  - company_id: teamviewer
+    file_name: 04-industries.html
+    document_type: industry_overview
+    year: 2025
+    title: Use case-specific solutions | TeamViewer
+    source_url: https://www.teamviewer.com/de/solutions/use-cases/
+
+  - company_id: teamviewer
+    file_name: 05-customers.html
+    document_type: customer_references
+    year: 2025
+    title: TeamViewer customer stories and case studies
+    source_url: https://www.teamviewer.com/ams/resources/success-stories/
+
+  - company_id: teamviewer
+    file_name: acquisitions/01-teamviewer-acquires-viscopic.html
+    document_type: acquisition_announcement
+    year: 2021
+    title: TeamViewer acquires 3D visualization and Mixed Reality innovator Viscopic
+    source_url: https://www.teamviewer.com/en/global/company/press/2021/teamviewer-acquires-3d-visualization-and-mixed-reality-innovator-viscopic/
+
+  - company_id: teamviewer
+    file_name: acquisitions/02-teamviewer-to-acquire-1e.html
+    document_type: acquisition_announcement
+    year: 2024
+    title: "TeamViewer to acquire 1E, a leader in Digital Employee Experience"
+    source_url: https://www.teamviewer.com/en/global/company/press/2024/teamviewer-to-acquire-1e/
+
+  - company_id: teamviewer
+    file_name: acquisitions/03-teamviewer-follow-up-1e.html
+    document_type: acquisition_announcement
+    year: 2025
+    title: TeamViewer announces first integrated solutions following acquisition of 1E to shape the digital workplace
+    source_url: https://www.teamviewer.com/en/global/company/press/2025/teamviewer-announces-first-integrated-solutions-following-acquisition-of-1e-to-shape-the-digital-workplace/
+
+  - company_id: teamviewer
+    file_name: acquisitions/04-special-acquisitions.html
+    document_type: acquisition_overview
+    year: 2026
+    title: Acquisitions | TeamViewer
+    source_url: https://www.teamviewer.com/en/special/acquisitions/
+
+  - company_id: teamviewer
+    file_name: acquisitions/05-special-acquisitions-1e.html
+    document_type: acquisition_announcement
+    year: 2024
+    title: TeamViewer has acquired 1E | TeamViewer
+    source_url: https://www.teamviewer.com/en/special/acquisitions/1e/
+
+  # SUSE
+  - company_id: suse
+    file_name: SUSE-FY2022-Annual-Report.pdf
+    document_type: annual_report
+    year: 2022
+    title: SUSE FY2022 Annual Report
+    source_url: https://example.com/suse/fy2022-annual-report
+
+  - company_id: suse
+    file_name: Q4-FY22-Results-Presentation.pdf
+    document_type: investor_presentation
+    year: 2022
+    title: SUSE Q4 FY22 Results Presentation
+    source_url: https://example.com/suse/q4-fy22-results-presentation
+
+  - company_id: suse
+    file_name: 01-index.html
+    document_type: company_profile
+    year: 2025
+    title: Open Source Software Solutions for Enterprise Servers & Cloud | SUSE
+    source_url: https://www.suse.com/
+
+  - company_id: suse
+    file_name: 02-about.html
+    document_type: company_profile
+    year: 2025
+    title: About Us
+    source_url: https://www.suse.com/company/about/
+
+  - company_id: suse
+    file_name: 03-products.html
+    document_type: product_overview
+    year: 2025
+    title: Linux for SAP Applications | Enterprise Server for SAP HANA | SUSE
+    source_url: https://www.suse.com/solutions/run-sap-solutions/
+
+  - company_id: suse
+    file_name: 04-customers.html
+    document_type: customer_references
+    year: 2025
+    title: Communications Preferences | SUSE
+    source_url: https://www.suse.com/company/subscribe/
+
+  # SoftwareOne
+  - company_id: softwareone
+    file_name: softwareone-2026-fy2025-results-report.pdf
+    document_type: annual_report
+    year: 2025
+    title: SoftwareOne FY2025 Results Report
+    source_url: https://example.com/softwareone/fy2025-results-report
+
+  - company_id: softwareone
+    file_name: softwareone-capital-markets-day-2026-presentation.pdf
+    document_type: investor_presentation
+    year: 2026
+    title: SoftwareOne Capital Markets Day 2026 Presentation
+    source_url: https://example.com/softwareone/capital-markets-day-2026-presentation
+
+  - company_id: softwareone
+    file_name: 01-index.html
+    document_type: company_profile
+    year: 2025
+    title: Willkommen bei SoftwareOne
+    source_url: https://www.softwareone.com/de-de
+
+  - company_id: softwareone
+    file_name: 02-about.html
+    document_type: company_profile
+    year: 2025
+    title: "Über SoftwareOne | SoftwareOne"
+    source_url: https://www.softwareone.com/de-de/ueber-softwareone
+
+  - company_id: softwareone
+    file_name: 03-products.html
+    document_type: product_overview
+    year: 2025
+    title: "Cloud Lösungen für Unternehmen | SoftwareOne"
+    source_url: https://www.softwareone.com/de-de/cloud-services
+
+  - company_id: softwareone
+    file_name: 04-industries.html
+    document_type: industry_overview
+    year: 2025
+    title: "Digital Workplace Services für Unternehmen | SoftwareOne"
+    source_url: https://www.softwareone.com/de-de/digital-workplace-services-old
+
+  - company_id: softwareone
+    file_name: 05-customers.html
+    document_type: customer_references
+    year: 2025
+    title: SoftwareOne IT Campus | Customer Training Solutions
+    source_url: https://www.softwareone.com/de-de/now/dach/it-campus
+
+  - company_id: softwareone
+    file_name: acquisitions/01-softwareone-crayon.html
+    document_type: acquisition_announcement
+    year: 2025
+    title: "SoftwareOne and Crayon: Combining two leading global providers of software and cloud solutions"
+    source_url: https://www.softwareone.com/en/investors/softwareone-crayon
+
+  # Nexus AG
+  - company_id: nexus
+    file_name: "NEXUS Annual Report 2024.pdf"
+    document_type: annual_report
+    year: 2024
+    title: NEXUS Annual Report 2024
+    source_url: https://example.com/nexus/annual-report-2024
+
+  - company_id: nexus
+    file_name: "6908b28c52c8e4e7c5a80b7f_Jahresbericht 2024-25.pdf"
+    document_type: annual_report
+    year: 2025
+    title: "NEXUS Jahresbericht 2024/25"
+    source_url: https://example.com/nexus/jahresbericht-2024-25
+
+  - company_id: nexus
+    file_name: 01-index.html
+    document_type: company_profile
+    year: 2025
+    title: Home - NEXUS / AG
+    source_url: https://www.nexus-ag.de/
+
+  - company_id: nexus
+    file_name: 02-products.html
+    document_type: product_overview
+    year: 2025
+    title: ViREQ software solutions GmbH - NEXUS / AG
+    source_url: https://www.nexus-ag.de/vireq-software-solutions-gmbh
+
+  - company_id: nexus
+    file_name: 03-industries.html
+    document_type: industry_overview
+    year: 2025
+    title: Aktuelles - NEXUS / AG
+    source_url: https://www.nexus-ag.de/aktuelles/themen/Branchennews
+
+  - company_id: nexus
+    file_name: 04-customers.html
+    document_type: customer_references
+    year: 2025
+    title: Aktuelles - NEXUS / AG
+    source_url: https://www.nexus-ag.de/aktuelles/themen/Success-Stories
+
+  # IVU Traffic Technologies (company_id must match companies.yaml, not the shorter folder name)
+  - company_id: ivu_traffic_technologies
+    file_name: IVU_Annual_Report_2025.pdf
+    document_type: annual_report
+    year: 2025
+    title: IVU Annual Report 2025
+    source_url: https://example.com/ivu/annual-report-2025
+
+  - company_id: ivu_traffic_technologies
+    file_name: 01-index.html
+    document_type: company_profile
+    year: 2025
+    title: "IVU | Integrated IT systems for bus and rail"
+    source_url: https://www.ivu.com/
+
+  - company_id: ivu_traffic_technologies
+    file_name: 02-about.html
+    document_type: company_profile
+    year: 2025
+    title: "IVU | Corporate Governance"
+    source_url: https://www.ivu.com/de/corporate-governance
+
+  - company_id: ivu_traffic_technologies
+    file_name: 03-products.html
+    document_type: product_overview
+    year: 2025
+    title: "IVU | The end-to-end solution for bus and rail"
+    source_url: https://www.ivu.com/en/solutions
+
+  - company_id: ivu_traffic_technologies
+    file_name: 04-customers.html
+    document_type: customer_references
+    year: 2025
+    title: References – IVU Traffic Technologies for Public Transport
+    source_url: https://www.ivu.com/en/all-references
+
+  # Qt Group
+  - company_id: qt
+    file_name: Qt_AnnualReport_2025-EN.pdf
+    document_type: annual_report
+    year: 2025
+    title: Qt Group Annual Report 2025
+    source_url: https://example.com/qt/annual-report-2025
+
+  - company_id: qt
+    file_name: "Qt Group as an investment.html"
+    document_type: investor_relations
+    year: 2026
+    title: Qt Group as an investment
+    source_url: https://www.qt.io/investors/qt-as-an-investment
+
+  - company_id: qt
+    file_name: 02-about.html
+    document_type: company_profile
+    year: 2025
+    title: About The Qt Group - Code Less & Create More
+    source_url: https://www.qt.io/about-us?hsLang=en
+
+  - company_id: qt
+    file_name: 03-products.html
+    document_type: product_overview
+    year: 2025
+    title: "Qt Products: Cross-Platform Dev, Design and QA Tools"
+    source_url: https://www.qt.io/products?hsLang=en
+
+  - company_id: qt
+    file_name: 04-industries.html
+    document_type: industry_overview
+    year: 2025
+    title: Qt in Automotive
+    source_url: https://www.qt.io/development/qt-in-automotive?hsLang=en
+
+  - company_id: qt
+    file_name: 05-customers.html
+    document_type: customer_references
+    year: 2025
+    title: BSH | Built with Qt
+    source_url: https://www.qt.io/development/bsh-built-with-qt?hsLang=en
+
+  # Qt acquisition years are best-effort (public record); the saved pages carried no retrievable date.
+  - company_id: qt
+    file_name: acquisitions/01-qt-acquires-axivion.html
+    document_type: acquisition_announcement
+    year: 2022
+    title: Qt Acquires Axivion GmbH to Further Strengthen its Market-Leading Offering in Quality Assurance
+    source_url: https://www.qt.io/press/qt-acquires-axivion-gmbh-to-further-strengthen-its-market-leading-offering-in-quality-assurance
+
+  - company_id: qt
+    file_name: acquisitions/02-qt-acquires-froglogic.html
+    document_type: acquisition_announcement
+    year: 2016
+    title: The Qt Company Strengthens its Market Leader Position with Acquisition of froglogic GmbH
+    source_url: https://www.qt.io/press/the-qt-company-strengthens-its-market-leader-position-with-acquisition-of-froglogic-gmbh
+
+  - company_id: qt
+    file_name: acquisitions/03-qt-acquisition-proceeding-as-planned.html
+    document_type: acquisition_announcement
+    year: 2012
+    title: Qt acquisition proceeding as planned
+    source_url: https://www.qt.io/blog/2012/09/07/qt-acquisition-proceeding-as-planned-2

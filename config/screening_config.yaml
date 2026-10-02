@@ -1,0 +1,61 @@
+screening_dimensions:
+
+  business_quality:
+    description: Quality and defensibility of the business
+    criteria:
+      recurring_revenue:
+        question: "What evidence is there of recurring or subscription revenue?"
+      mission_criticality:
+        question: "How important is the product to customers' core operations?"
+      customer_retention:
+        question: "What evidence is available regarding customer retention?"
+      market_position:
+        question: "What evidence describes the company's competitive position?"
+
+  growth:
+    description: Potential for continued revenue growth
+    criteria:
+      organic_growth:
+        question: "What evidence is there of organic growth?"
+      international_expansion:
+        question: "What opportunities or evidence exist for geographic expansion?"
+      cross_sell:
+        question: "What evidence is there for cross-selling or upselling?"
+      market_growth:
+        question: "What does management say about underlying market growth?"
+
+  profitability:
+    description: Profitability and cash generation
+    criteria:
+      margin:
+        question: "What evidence is available regarding margins and profitability?"
+      cash_generation:
+        question: "What evidence is available regarding cash generation?"
+      operating_leverage:
+        question: "What evidence suggests operating leverage?"
+
+  buy_and_build:
+    description: Suitability for an acquisition-led growth strategy
+    criteria:
+      acquisition_history:
+        question: "What acquisitions has the company completed?"
+      fragmented_market:
+        question: "Is there evidence that the company's market is fragmented?"
+      integration_capability:
+        question: "What evidence shows the company can integrate acquisitions?"
+      acquisition_strategy:
+        question: "Does management explicitly describe M&A as part of its strategy?"
+
+  risks:
+    description: Material risks to the investment thesis
+    criteria:
+      customer_concentration:
+        question: "Is there evidence of customer concentration?"
+      geographic_concentration:
+        question: "Is there evidence of geographic concentration?"
+      competition:
+        question: "What competitive risks are described?"
+      technology_disruption:
+        question: "What technology disruption risks are described?"
+      regulation:
+        question: "What regulatory risks are described?"

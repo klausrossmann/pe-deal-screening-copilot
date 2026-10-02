@@ -1,0 +1,93 @@
+{
+  "company_id": "ivu_traffic_technologies",
+  "company_name": "IVU Traffic Technologies",
+  "website": "https://www.ivu.com",
+  "folder": "ivu",
+  "crawled_pages": [
+    {
+      "url": "https://www.ivu.com/",
+      "title": "IVU | Integrated IT systems for bus and rail",
+      "depth": 0
+    },
+    {
+      "url": "https://www.ivu.com/en/solutions/services/customised-software-development",
+      "title": "IVU | Customised software development",
+      "depth": 1
+    },
+    {
+      "url": "https://www.ivu.com/en/all-references",
+      "title": "References – IVU Traffic Technologies for Public Transport",
+      "depth": 1
+    },
+    {
+      "url": "https://www.ivu.com/en/solutions",
+      "title": "IVU | The end-to-end solution for bus and rail",
+      "depth": 1
+    },
+    {
+      "url": "https://www.ivu.com/de/loesungen/services/individuelle-softwareentwicklung",
+      "title": "Maßgeschneiderte Softwareentwicklung",
+      "depth": 2
+    },
+    {
+      "url": "https://www.ivu.com/en/solutions#highlights",
+      "title": "IVU | The end-to-end solution for bus and rail",
+      "depth": 2
+    },
+    {
+      "url": "https://www.ivu.com/en/solutions/services",
+      "title": "IVU | Software and services from a single source",
+      "depth": 2
+    },
+    {
+      "url": "https://www.ivu.com/en/solutions/services#ivucloud",
+      "title": "IVU | Software and services from a single source",
+      "depth": 2
+    },
+    {
+      "url": "https://www.ivu.com/de/alle-referenzen",
+      "title": "Referenzen – IVU Traffic Technologies für den Öffentlichen Verkehr",
+      "depth": 2
+    },
+    {
+      "url": "https://www.ivu.com/en/customer-portal",
+      "title": "IVU | Customer login",
+      "depth": 2
+    },
+    {
+      "url": "https://www.ivu.com/en/all-references/references/control-centre-to-goon-from-individual-solutions-to-a-system-with-a-mobile-control-centre",
+      "title": "Control centre to go.on: From individual solutions to a system with a mobile control centre",
+      "depth": 2
+    }
+  ],
+  "saved_pages": [
+    {
+      "file": "data/raw/ivu/01-index.html",
+      "url": "https://www.ivu.com/",
+      "topic": "homepage",
+      "title": "IVU | Integrated IT systems for bus and rail",
+      "score": 100
+    },
+    {
+      "file": "data/raw/ivu/02-about.html",
+      "url": "https://www.ivu.com/de/corporate-governance",
+      "topic": "about",
+      "title": "IVU | Corporate Governance",
+      "score": 14
+    },
+    {
+      "file": "data/raw/ivu/03-products.html",
+      "url": "https://www.ivu.com/en/solutions",
+      "topic": "products",
+      "title": "IVU | The end-to-end solution for bus and rail",
+      "score": 37
+    },
+    {
+      "file": "data/raw/ivu/04-customers.html",
+      "url": "https://www.ivu.com/en/all-references",
+      "topic": "customers",
+      "title": "References – IVU Traffic Technologies for Public Transport",
+      "score": 31
+    }
+  ]
+}

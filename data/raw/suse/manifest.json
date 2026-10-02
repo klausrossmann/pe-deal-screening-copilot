@@ -1,0 +1,128 @@
+{
+  "company_id": "suse",
+  "company_name": "SUSE",
+  "website": "https://www.suse.com",
+  "folder": "Suse",
+  "crawled_pages": [
+    {
+      "url": "https://www.suse.com/",
+      "title": "Open Source Software Solutions for Enterprise Servers & Cloud | SUSE",
+      "depth": 0
+    },
+    {
+      "url": "http://www.suse.com/products/",
+      "title": "SUSE Product Portfolio",
+      "depth": 1
+    },
+    {
+      "url": "https://www.suse.com/products/",
+      "title": "SUSE Product Portfolio",
+      "depth": 1
+    },
+    {
+      "url": "https://www.suse.com/services/support-offerings/developer-services/",
+      "title": "Developer Services | SUSE",
+      "depth": 1
+    },
+    {
+      "url": "https://www.suse.com/products/long-term-service-pack-support/",
+      "title": "Long Term Service Pack Support (LTSS) | SUSE",
+      "depth": 1
+    },
+    {
+      "url": "https://www.suse.com/news/suse-recognized-as-a-visionary-in-2026-gartner-magic-quadrant-for-server-virtualization-platforms-and-distributed-hybrid-infrastructure/",
+      "title": "SUSE Named Visionary in 2026 Gartner&#xAE; Magic Quadrants",
+      "depth": 1
+    },
+    {
+      "url": "https://www.suse.com/solutions/run-sap-solutions/",
+      "title": "Linux for SAP Applications | Enterprise Server for SAP HANA | SUSE",
+      "depth": 2
+    },
+    {
+      "url": "http://www.suse.com/de-de/products/",
+      "title": "Products",
+      "depth": 2
+    },
+    {
+      "url": "http://www.suse.com/es-es/products/",
+      "title": "Products",
+      "depth": 2
+    },
+    {
+      "url": "http://www.suse.com/fr-fr/products/",
+      "title": "Products",
+      "depth": 2
+    },
+    {
+      "url": "http://www.suse.com/ja-jp/products/",
+      "title": "Products",
+      "depth": 2
+    },
+    {
+      "url": "https://www.suse.com/de-de/products/",
+      "title": "Products",
+      "depth": 2
+    },
+    {
+      "url": "https://www.suse.com/es-es/products/",
+      "title": "Products",
+      "depth": 2
+    },
+    {
+      "url": "https://www.suse.com/fr-fr/products/",
+      "title": "Products",
+      "depth": 2
+    },
+    {
+      "url": "https://www.suse.com/de-de/services/support-offerings/developer-services/",
+      "title": "Developer Services | SUSE",
+      "depth": 2
+    },
+    {
+      "url": "https://www.suse.com/es-es/services/support-offerings/developer-services/",
+      "title": "Developer Services | SUSE",
+      "depth": 2
+    },
+    {
+      "url": "https://www.suse.com/fr-fr/services/support-offerings/developer-services/",
+      "title": "Developer Services | SUSE",
+      "depth": 2
+    },
+    {
+      "url": "https://www.suse.com/ja-jp/services/support-offerings/developer-services/",
+      "title": "Developer Services | SUSE",
+      "depth": 2
+    }
+  ],
+  "saved_pages": [
+    {
+      "file": "data/raw/Suse/01-index.html",
+      "url": "https://www.suse.com/",
+      "topic": "homepage",
+      "title": "Open Source Software Solutions for Enterprise Servers & Cloud | SUSE",
+      "score": 100
+    },
+    {
+      "file": "data/raw/Suse/02-about.html",
+      "url": "https://www.suse.com/company/about/",
+      "topic": "about",
+      "title": "About Us",
+      "score": 16
+    },
+    {
+      "file": "data/raw/Suse/03-products.html",
+      "url": "https://www.suse.com/solutions/run-sap-solutions/",
+      "topic": "products",
+      "title": "Linux for SAP Applications | Enterprise Server for SAP HANA | SUSE",
+      "score": 54
+    },
+    {
+      "file": "data/raw/Suse/04-customers.html",
+      "url": "https://www.suse.com/company/subscribe/",
+      "topic": "customers",
+      "title": "Communications Preferences | SUSE",
+      "score": 16
+    }
+  ]
+}

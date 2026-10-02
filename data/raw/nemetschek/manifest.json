@@ -1,0 +1,83 @@
+{
+  "company_id": "nemetschek",
+  "company_name": "Nemetschek",
+  "website": "https://www.nemetschek.com",
+  "folder": "nemetschek",
+  "crawled_pages": [
+    {
+      "url": "https://www.nemetschek.com/",
+      "title": "NEMETSCHEK | Softwarelösungen für Architekten und Kreative",
+      "depth": 0
+    },
+    {
+      "url": "https://www.nemetschek.com/de/marke/crem-solutions",
+      "title": "Crem Solutions | Modulare Software für Immobilienmanagement",
+      "depth": 1
+    },
+    {
+      "url": "https://www.nemetschek.com/de/unternehmen/ueber-uns",
+      "title": "Über uns | NEMETSCHEK Group | Digitaler Treiber AEC/O",
+      "depth": 1
+    },
+    {
+      "url": "https://www.nemetschek.com/de/public-sector",
+      "title": "Public Sector – Powered by Purpose. | NEMETSCHEK",
+      "depth": 1
+    },
+    {
+      "url": "https://www.nemetschek.com/#",
+      "title": "NEMETSCHEK | Softwarelösungen für Architekten und Kreative",
+      "depth": 1
+    },
+    {
+      "url": "https://www.nemetschek.com/de/marke/crem-solutions#",
+      "title": "Crem Solutions | Modulare Software für Immobilienmanagement",
+      "depth": 2
+    },
+    {
+      "url": "https://www.nemetschek.com/en/company/about-us",
+      "title": "About us | NEMETSCHEK Group | Digital Driver AEC/O",
+      "depth": 2
+    },
+    {
+      "url": "https://www.nemetschek.com/de/unternehmen/ueber-uns/stefanie-zimmermann",
+      "title": "Stefanie Zimmermann | NEMETSCHEK",
+      "depth": 2
+    },
+    {
+      "url": "https://www.nemetschek.com/de/public-sector#",
+      "title": "Public Sector – Powered by Purpose. | NEMETSCHEK",
+      "depth": 2
+    }
+  ],
+  "saved_pages": [
+    {
+      "file": "data/raw/nemetschek/01-index.html",
+      "url": "https://www.nemetschek.com/",
+      "topic": "homepage",
+      "title": "NEMETSCHEK | Softwarelösungen für Architekten und Kreative",
+      "score": 100
+    },
+    {
+      "file": "data/raw/nemetschek/02-about.html",
+      "url": "https://www.nemetschek.com/en/company/about-us",
+      "topic": "about",
+      "title": "About us | NEMETSCHEK Group | Digital Driver AEC/O",
+      "score": 44
+    },
+    {
+      "file": "data/raw/nemetschek/03-products.html",
+      "url": "https://www.nemetschek.com/de/marke/crem-solutions",
+      "topic": "products",
+      "title": "Crem Solutions | Modulare Software für Immobilienmanagement",
+      "score": 33
+    },
+    {
+      "file": "data/raw/nemetschek/04-industries.html",
+      "url": "https://www.nemetschek.com/de/public-sector",
+      "topic": "industries",
+      "title": "Public Sector – Powered by Purpose. | NEMETSCHEK",
+      "score": 14
+    }
+  ]
+}

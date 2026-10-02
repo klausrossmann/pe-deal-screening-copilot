@@ -1,0 +1,83 @@
+{
+  "company_id": "nexus",
+  "company_name": "Nexus AG",
+  "website": "https://www.nexus-ag.de",
+  "folder": "nexus",
+  "crawled_pages": [
+    {
+      "url": "https://www.nexus-ag.de/",
+      "title": "Home - NEXUS / AG",
+      "depth": 0
+    },
+    {
+      "url": "https://www.nexus-ag.de/vireq-software-solutions-gmbh",
+      "title": "ViREQ software solutions GmbH - NEXUS / AG",
+      "depth": 1
+    },
+    {
+      "url": "https://www.nexus-ag.de/lab/vireq",
+      "title": "ViREQ / Informations- und Kommunikationssysteme",
+      "depth": 1
+    },
+    {
+      "url": "https://www.nexus-ag.de/unternehmen/news/artikel/NEXUS-und-SYNLAB-Medical-Digital-Services-schliessen-sich-zusammen",
+      "title": "NEXUS AG und SYNLAB Medical Digital Services schliessen sich zusammen - NEXUS / AG",
+      "depth": 1
+    },
+    {
+      "url": "https://www.nexus-ag.de/aktuelles",
+      "title": "Aktuelles - NEXUS / AG",
+      "depth": 1
+    },
+    {
+      "url": "https://www.nexus-ag.de/vireq-software-solutions-gmbh#article-23022",
+      "title": "ViREQ software solutions GmbH - NEXUS / AG",
+      "depth": 2
+    },
+    {
+      "url": "https://www.nexus-ag.de/datenschutzerklaerung",
+      "title": "Datenschutzerklärung - NEXUS / AG",
+      "depth": 2
+    },
+    {
+      "url": "https://www.nexus-ag.de/impressum",
+      "title": "Impressum - NEXUS / AG",
+      "depth": 2
+    },
+    {
+      "url": "https://www.nexus-ag.de/unternehmen/news/artikel/",
+      "title": "Unternehmensnews Artikel - NEXUS / AG",
+      "depth": 2
+    }
+  ],
+  "saved_pages": [
+    {
+      "file": "data/raw/nexus/01-index.html",
+      "url": "https://www.nexus-ag.de/",
+      "topic": "homepage",
+      "title": "Home - NEXUS / AG",
+      "score": 100
+    },
+    {
+      "file": "data/raw/nexus/02-products.html",
+      "url": "https://www.nexus-ag.de/vireq-software-solutions-gmbh",
+      "topic": "products",
+      "title": "ViREQ software solutions GmbH - NEXUS / AG",
+      "score": 38
+    },
+    {
+      "file": "data/raw/nexus/03-industries.html",
+      "url": "https://www.nexus-ag.de/aktuelles/themen/Branchennews",
+      "topic": "industries",
+      "title": "Aktuelles - NEXUS / AG",
+      "score": 19
+    },
+    {
+      "file": "data/raw/nexus/04-customers.html",
+      "url": "https://www.nexus-ag.de/aktuelles/themen/Success-Stories",
+      "topic": "customers",
+      "title": "Aktuelles - NEXUS / AG",
+      "score": 13
+    }
+  ]
+}

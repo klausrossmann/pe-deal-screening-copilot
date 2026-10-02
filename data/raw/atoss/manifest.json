@@ -1,0 +1,115 @@
+{
+  "company_id": "atoss",
+  "company_name": "ATOSS",
+  "website": "https://www.atoss.com",
+  "folder": "atoss",
+  "crawled_pages": [
+    {
+      "url": "https://www.atoss.com/",
+      "title": "ATOSS: Smart New Work für Produktivität und People Experience",
+      "depth": 0
+    },
+    {
+      "url": "https://www.atoss.com/de/warum-atoss/customer-services",
+      "title": "Erstklassiger Service & Schulungen für Ihre ATOSS Lösung – Individuelle Unterstützung und Betreuung",
+      "depth": 1
+    },
+    {
+      "url": "https://www.atoss.com/de/unternehmen/investor-relations/corporate-governance",
+      "title": "Corporate Governance",
+      "depth": 1
+    },
+    {
+      "url": "https://www.atoss.com/de/loesungen/branchen",
+      "title": "Branchenlösungen von ATOSS - maßgeschneidert für Ihre Anforderungen",
+      "depth": 1
+    },
+    {
+      "url": "https://www.atoss.com/de/loesungen/herausforderungen/self-services-app",
+      "title": "Self Services",
+      "depth": 1
+    },
+    {
+      "url": "https://www.atoss.com/de/warum-atoss/softwareeinfuehrung",
+      "title": "Software-Einführung - budgettreu und genau nach Plan",
+      "depth": 1
+    },
+    {
+      "url": "https://www.atoss.com/de/kunden",
+      "title": "Kunden",
+      "depth": 1
+    },
+    {
+      "url": "https://www.atoss.com/de/unternehmen",
+      "title": "Über uns - Die ATOSS Software SE stellt sich vor",
+      "depth": 1
+    },
+    {
+      "url": "https://www.atoss.com/de/warum-atoss/customer-services#overlay/567",
+      "title": "Erstklassiger Service & Schulungen für Ihre ATOSS Lösung – Individuelle Unterstützung und Betreuung",
+      "depth": 2
+    },
+    {
+      "url": "https://www.atoss.com/de/unternehmen/investor-relations/corporate-governance#overlay/567",
+      "title": "Corporate Governance",
+      "depth": 2
+    },
+    {
+      "url": "https://www.atoss.com/de/loesungen/branchen#overlay/567",
+      "title": "Branchenlösungen von ATOSS - maßgeschneidert für Ihre Anforderungen",
+      "depth": 2
+    },
+    {
+      "url": "https://www.atoss.com/de/loesungen/herausforderungen/self-services-app#",
+      "title": "Self Services",
+      "depth": 2
+    },
+    {
+      "url": "https://www.atoss.com/de/kunden/handel/butlers",
+      "title": "Butlers",
+      "depth": 2
+    },
+    {
+      "url": "https://www.atoss.com/en/company/career/jobs",
+      "title": "Find the job, that suits you",
+      "depth": 2
+    }
+  ],
+  "saved_pages": [
+    {
+      "file": "data/raw/atoss/01-index.html",
+      "url": "https://www.atoss.com/",
+      "topic": "homepage",
+      "title": "ATOSS: Smart New Work für Produktivität und People Experience",
+      "score": 100
+    },
+    {
+      "file": "data/raw/atoss/02-about.html",
+      "url": "https://www.atoss.com/en/company",
+      "topic": "about",
+      "title": "About us - Introducing of ATOSS Software SE",
+      "score": 28
+    },
+    {
+      "file": "data/raw/atoss/03-products.html",
+      "url": "https://www.atoss.com/en/solutions",
+      "topic": "products",
+      "title": "Our portfolio of workforce management solutions",
+      "score": 25
+    },
+    {
+      "file": "data/raw/atoss/04-industries.html",
+      "url": "https://www.atoss.com/en/solutions/industries/service-industry",
+      "topic": "industries",
+      "title": "Service quality on time and budget with ATOSS technology",
+      "score": 17
+    },
+    {
+      "file": "data/raw/atoss/05-customers.html",
+      "url": "https://www.atoss.com/en/customers",
+      "topic": "customers",
+      "title": "Customer",
+      "score": 25
+    }
+  ]
+}
