@@ -66,7 +66,7 @@ Acquisition strategy
 Fragmented market
 Risks
 
-I'd treat risks slightly differently: retrieve whatever material risks the company reports rather than trying to exhaustively score a predefined list.
+Risks are treated differently: the system retrieves whatever material risks the company reports, rather than exhaustively scoring a predefined list.
 
 The assessment vocabulary stays very simple:
 
@@ -94,7 +94,7 @@ Purpose: basic RAG capability.
 
 ### UC2: PE Company Screening 
 
-This is now the hero feature.
+This is the hero feature of the project.
 
 User selects:
 
@@ -176,7 +176,7 @@ The point is consistent comparison against a common framework, not declaring a w
 
 ### UC4: Screen the company universe
 
-This should be the stretch feature because technically it is mostly reuse of UC2.
+This is the stretch feature, since it is mostly reuse of UC2.
 
 Example:
 
@@ -188,7 +188,7 @@ Find companies with strong evidence of recurring revenue.
 
 The system performs retrieval across company metadata and shows supporting evidence for matching companies.
 
-You are essentially turning your RAG corpus into a miniature research universe.
+This turns the RAG corpus into a miniature research universe.
 
 ## Architecture
 
@@ -412,7 +412,7 @@ Company B: [...]
 [Compare]
 
 
-Portfolio-wide screening is optional if you're making good progress.
+Portfolio-wide screening is optional, included only once the core screening flow works well.
 
 #### Phase 7: Golden Questions
 
@@ -430,7 +430,7 @@ Example:
     at ATOSS?
 
 
-For the weekend project, evaluate just:
+Evaluation for this phase covers just:
 
 Retrieval
 
@@ -454,11 +454,11 @@ Only at this point expand from 5 toward 20 companies.
 
 This ordering matters.
 
-I'd rather have:
+Priority order:
 
 12 companies with excellent ingestion + screening
 
-than:
+over:
 
 20 companies where six PDFs failed extraction.
 

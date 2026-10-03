@@ -1,6 +1,6 @@
-The PE screening framework is the analytical layer between your RAG and the user. Instead of asking the LLM to vaguely “analyze this company,” you define in advance what an attractive PE/software business looks like and make the application retrieve evidence for those dimensions.
+The PE screening framework is the analytical layer between the RAG and the user. Instead of asking the LLM to vaguely “analyze this company,” the framework defines in advance what an attractive PE/software business looks like, and the application retrieves evidence for those dimensions.
 
-For your project, I’d use it in three places: retrieval, output structure, and evaluation.
+The framework is used in three places: retrieval, output structure, and evaluation.
 
 1. Define the framework
 
@@ -82,7 +82,7 @@ Instead of doing one giant RAG query:
 Analyze Nemetschek as a PE investment.
 
 
-I'd have your application execute several targeted retrievals.
+The application executes several targeted retrievals.
 
 Conceptually:
 
@@ -117,11 +117,7 @@ This is much more robust than asking the LLM to create everything in one shot.
 
 3. Have the LLM assess evidence, not invent a score
 
-I would not ask:
-
-"Score recurring revenue from 1–10."
-
-Instead, use an evidence classification:
+Criteria are not scored on a numeric scale such as "Score recurring revenue from 1–10." Instead, the framework uses an evidence classification:
 
 assessment:
   - strong_evidence
@@ -160,15 +156,11 @@ The retrieved sources do not provide sufficient
 information to assess customer concentration.
 
 
-That second outcome is good RAG behavior.
+That second outcome is good RAG behavior: the system says "I don't know based on the documents I have" rather than inventing an answer.
 
-You're explicitly testing whether the system can say:
+4. The main application view
 
-"I don't know based on the documents I have."
-
-4. Turn it into your main application view
-
-I'd make the company page look roughly like this:
+The company page is laid out roughly like this:
 
 --------------------------------------------------
 Nemetschek
@@ -206,25 +198,19 @@ Risks
 ? Customer concentration    Insufficient evidence
 
 
-Clicking Acquisition History then exposes the underlying citations/chunks.
+Clicking Acquisition History exposes the underlying citations/chunks.
 
-That would be a very nice Streamlit demo.
+5. Portfolio screening
 
-5. It also enables portfolio screening
-
-This is where the framework becomes especially useful.
-
-Without the framework your application can answer:
+Without the framework the application can only answer a generic question such as:
 
 "Tell me about ATOSS."
-
-Fine, but fairly generic.
 
 With the framework, the user can ask:
 
 Find companies with strong evidence for buy-and-build characteristics.
 
-Your backend can then run the same criteria against each company:
+The backend then runs the same criteria against each company:
 
                  acquisition_history
                          +
@@ -266,11 +252,11 @@ Company B
   ...
 
 
-Crucially, I'd avoid presenting this as “Company A is better than Company B.” The application is finding and organizing evidence against explicit screening criteria, not making an investment decision.
+This is deliberately not presented as “Company A is better than Company B.” The application finds and organizes evidence against explicit screening criteria; it does not make an investment decision.
 
-6. Store the results separately from the documents
+6. Results stored separately from the documents
 
-I'd distinguish three things:
+Three things are kept distinct:
 
 companies.yaml
       │
@@ -328,13 +314,11 @@ For example:
 }
 
 
-That separation is architecturally clean.
+This separation keeps company data, the criteria definition, and generated results independent of each other.
 
-7. It also gives you your Golden Questions almost for free
+7. Golden questions
 
-This is probably the part you'd appreciate most given your evaluation background.
-
-Your screening framework effectively becomes an evaluation taxonomy.
+The screening framework doubles as an evaluation taxonomy: each criterion's question becomes a golden question.
 
 For example:
 
@@ -378,11 +362,11 @@ Citation
    └─ Does the cited passage support the claim?
 
 
-You now have an end-to-end RAG evaluation story.
+This gives an end-to-end RAG evaluation story, built from the same criteria used for screening.
 
-8. I would make this the central concept of the project
+8. The central concept of the project
 
-I'd actually slightly rename your project:
+The project is named accordingly:
 
 PE Deal Screening RAG
  Evidence-based screening of European B2B software companies using public company information.
@@ -417,6 +401,6 @@ Public company documents
   Streamlit UI
 
 
-That's the twist: the framework isn't extra data you manually research. It's a lens through which your RAG interrogates the documents.
+The framework is not extra data researched manually — it is the lens through which the RAG interrogates the documents.
 
-For the weekend MVP, I'd implement just 12–15 criteria across those five dimensions, with strong / moderate / weak / insufficient evidence. That gives you enough structure to make the application feel PE-specific without turning the project into an investment-analysis platform.
+The initial scope implements 12–15 criteria across those five dimensions, with a strong / moderate / weak / insufficient evidence scale — enough structure to make the application feel PE-specific without turning the project into an investment-analysis platform.

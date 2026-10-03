@@ -47,11 +47,13 @@ See architecture.md's "Running with Docker" for details.
 
 How the system is built, in the order it was built:
 
-- [architecture.md](architecture.md) — data flow, project structure, database schema, shared local setup
+- [architecture.md](architecture.md) — data flow, project structure, database schema, shared local setup,
+  Docker, AWS deployment, and the gaps remaining between this and a production system
 - [ingestion.md](ingestion.md) — how files under `data/raw/` become rows in Postgres
 - [retrieval.md](retrieval.md) — how a question becomes ranked evidence chunks
 - [use-cases.md](use-cases.md) — the four use cases (ask, screen, compare, universe screening), how each is
   implemented (LangGraph), and the API/tests behind each one
+- [rag.md](rag.md) — RAG concepts end to end, and the lessons learned applying them in this project
 
 Product vision and planning notes, not yet fully implemented:
 

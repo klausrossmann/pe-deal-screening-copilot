@@ -186,18 +186,86 @@ points at the RDS endpoint instead.
 
 Steps, once `aws configure` works and (if applicable) the account restrictions above are resolved:
 
+### Provisioning the infrastructure
+
 1. `cd terraform && cp terraform.tfvars.example terraform.tfvars` and fill in `db_password` (generate one,
    don't reuse anything real), `key_pair_name` (create via `aws ec2 create-key-pair`), `allowed_ssh_cidr`
    (your IP, `/32` — never `0.0.0.0/0`), `git_repo_url` (a public repo the instance can clone anonymously),
    `budget_alert_email`.
 2. `terraform init && terraform plan -out=plan.out && terraform apply plan.out`. Creates the VPC security
-   groups, RDS instance (~5-10 min), EC2 instance, and budget alert.
-3. SSH in once the instance's user-data has finished (`git clone` done): build an `.env` on the instance
-   (copy the local one, point `POSTGRES_URL` at the RDS endpoint from `terraform output rds_endpoint` with
-   `?sslmode=require` appended), then `docker compose -f docker-compose.prod.yml up -d --build`,
-   `docker compose -f docker-compose.prod.yml exec api python3 -m app.db.bootstrap`, and
-   `curl -X POST http://localhost:8000/ingestion/all`.
-4. Visit `http://<ec2_public_ip>:8501` (from `terraform output streamlit_url`) for the UI.
+   groups, RDS instance (~5-10 min), EC2 instance, and budget alert. `terraform output` afterwards prints
+   `ec2_public_ip`, `rds_endpoint`, and `streamlit_url`.
+3. SSH in (`ssh -i <key_pair.pem> ec2-user@<ec2_public_ip>`) once the instance's user-data has finished
+   (`git clone` done, repo present under `/home/ec2-user/app` or wherever `git_repo_url` was cloned to).
+   Build an `.env` on the instance (copy the local one, point `POSTGRES_URL` at the RDS endpoint from
+   `terraform output rds_endpoint` with `?sslmode=require` appended) — don't print secrets to a shared
+   terminal; build it with a local `sed`/template pipeline and `scp` it over, or edit it directly over SSH.
+
+### Running ingestion
+
+Once the `.env` is in place on the instance and the containers are up (see below), ingestion is triggered
+the same way as locally, just against the instance's own `localhost`:
+
+```bash
+docker compose -f docker-compose.prod.yml exec api python3 -m app.db.bootstrap
+curl -X POST http://localhost:8000/ingestion/all
+curl http://localhost:8000/ingestion/status
+```
+
+`data/raw/` and `config/` are baked into the image (`COPY . .` in the Dockerfile), so a re-ingestion after
+changing either requires a rebuild (`docker compose -f docker-compose.prod.yml up -d --build`) first.
+Ingestion is idempotent (unique `content_hash` per document — see "Database schema" above), so re-running
+`POST /ingestion/all` only processes new or changed files.
+
+### Starting the app and UI
+
+```bash
+cd ~/app   # wherever git_repo_url was cloned to
+docker compose -f docker-compose.prod.yml up -d --build
+```
+
+This starts the `api` (port 8000) and `ui` (port 8501) containers — no local `postgres` container, since
+`docker-compose.prod.yml` points `POSTGRES_URL` at the RDS endpoint instead. The containers have
+`restart: unless-stopped`, and user-data enables the Docker systemd service, so both come back up on their
+own after an instance reboot or resize — no manual restart needed. Visit
+`http://<ec2_public_ip>:8501` (from `terraform output streamlit_url`) for the UI; the public IP changes on
+every stop/start of the instance since there's no Elastic IP attached (kept out, to stay fully free-tier).
+
+### Finding the resources in the AWS Console
+
+Everything Terraform creates is tagged `Project = pe-screening` (from `var.project_name`) and named with
+the same prefix, in the `aws_region` from `terraform.tfvars` (`eu-central-1` by default):
+
+| Resource | Console location | Name/identifier |
+| --- | --- | --- |
+| EC2 instance | EC2 → Instances | `pe-screening-app` |
+| RDS instance | RDS → Databases | `pe-screening-db` |
+| Security groups | EC2 → Security Groups | one for the instance, one for RDS, tagged `Project=pe-screening` |
+| DB subnet group | RDS → Subnet groups | tagged `Project=pe-screening` |
+| Budget alert | Billing → Budgets | `pe-screening-monthly` |
+
+Filtering any of the EC2/RDS/VPC console list views by the tag `Project: pe-screening` surfaces everything
+Terraform manages in one place. `terraform output` (run from `terraform/`) is the fastest way to get the
+current public IP and RDS endpoint without opening the console at all; `terraform show` prints the full
+state of every managed resource.
+
+### Deleting the resources
+
+```bash
+cd terraform
+terraform destroy
+```
+
+This tears down the EC2 instance, the RDS instance, both security groups, the DB subnet group, and the
+budget alert — everything Terraform created. Two things to know before running it:
+
+- The RDS instance is configured with `skip_final_snapshot = true` and `backup_retention_period = 0`
+  (deliberately, to stay free-tier), so `terraform destroy` deletes the database **with no snapshot and no
+  recovery option**. Anything only stored in Postgres (ingested chunks, embeddings) is gone for good —
+  re-provisioning means re-ingesting from `data/raw/` again.
+- The EC2 key pair (`key_pair_name`) and the local `.pem` file are not managed by Terraform (it only
+  references an existing key pair by name) — `terraform destroy` doesn't touch either; delete the key pair
+  separately via EC2 → Key Pairs if it's no longer needed.
 
 Two things worth knowing if you redo this:
 - **Embedding provider for bulk ingestion**: Google's free-tier `embedContent` quota is capped at 1000
@@ -212,11 +280,32 @@ Two things worth knowing if you redo this:
   document vectors were created in.
 - **`t3.micro` RAM is tight** (≈916 MiB usable) once `api` has the embedding model loaded alongside `ui` —
   verified working (a real `/ask` request succeeds), but with only tens of MiB free. The user-data script
-  adds a 1 GB swap file as an OOM safety margin; consider `t3.small` if you see containers getting killed
-  under real concurrent use.
+  adds a 1 GB swap file as an OOM safety margin; the instance has not been upsized since a real request
+  was verified working end-to-end on `t3.micro` + swap.
 
 This was deliberately kept to the simplest architecture that fits free-tier instance sizes (single EC2 box,
 no ECS/Fargate — Fargate isn't part of the standard Free Tier) rather than a "proper" multi-AZ/autoscaled
 setup, consistent with project-plan.md treating AWS as a packaging step, not core architecture.
+
+## Production readiness gaps
+
+The deployment above demonstrates the architecture end-to-end but stops short of a system a team could rely
+on for real deal work. Gaps, and the component each one would need:
+
+| Area | Current state | Needed for production |
+| --- | --- | --- |
+| Authentication | API and UI have no login or API key check — anyone who can reach the instance's ports can call every endpoint | Auth on the API (API keys or OAuth) and the UI, plus network restriction (security group, VPN, or an ALB in front) |
+| Transport security | Plain HTTP on ports 8000/8501, no certificate | TLS termination (ACM certificate + ALB/reverse proxy, or CloudFront) |
+| Secrets | `.env` with API keys and the DB password is a plaintext file on the EC2 instance | AWS Secrets Manager or Parameter Store, read via an IAM instance role instead of a file |
+| Availability | Single EC2 instance, single-AZ RDS, no Elastic IP (public IP changes on every stop/start), `backup_retention_period = 0`, `skip_final_snapshot = true` | Multi-AZ RDS, automated backups/snapshots, an Elastic IP or Route 53 record, more than one app instance behind a load balancer |
+| Deployment | Shipping a change means SSH-ing in and re-running `docker compose build` | A CI/CD pipeline (build → push to ECR → redeploy) |
+| Observability | No centralized logs/metrics; the only alert is the cost budget | CloudWatch Logs/Alarms or equivalent, application-level error tracking |
+| Capacity | `t3.micro` runs with only tens of MiB of RAM free under a single request; the 1 GB swap file is the only safety margin | A right-sized instance for real concurrent use, or running the embedding model as its own service |
+| Rate limiting | Relies entirely on `LLM_MAX_CONCURRENCY` and the LLM provider's own free-tier limits | Application-level request throttling and per-user usage quotas |
+| Multi-user support | No user accounts, sessions, or permissions — single-tenant UI and API | User accounts, per-user history, and access control |
+| Corpus coverage | Documents ingested for a handful of companies (see `data/raw/`) against the ~20-company target in data.md | Completing document collection and ingestion for the remaining companies |
+| Evaluation | The golden-question evaluation suite (project-plan.md, Phase 7) was never built | A golden-question set plus an automated retrieval/groundedness/citation check, so regressions are caught automatically |
+| Provider migration | Switching `EMBEDDING_PROVIDER` requires a full re-ingestion, since vector spaces aren't compatible across providers | A re-embedding/migration script, if the provider ever needs to change without re-ingesting from `data/raw/` |
+
 
 

@@ -270,9 +270,9 @@ One recent annual report is enough initially.
 
 Unnecessary dependency and licensing complexity for this experiment.
 
-## 9. A Useful Twist: Create a PE Screening Framework
+## 9. The PE Screening Framework
 
-Before collecting documents, define what PE characteristics the application should look for:
+Before collecting documents, the PE characteristics the application looks for are defined:
 
 ```yaml
 screening_dimensions:
@@ -333,9 +333,9 @@ Insufficient information in available sources.
 
 From a RAG-quality perspective, that last behavior is particularly important.
 
-## 10. The Resulting Demo Becomes Quite Good
+## 10. Example Interactions
 
-Imagine opening the application and asking:
+Example interactions once the corpus and framework are in place:
 
 ### Question 1
 
@@ -347,24 +347,24 @@ The RAG searches across companies and returns evidence.
 
 Find companies with evidence of an active acquisition strategy.
 
-Now you're testing cross-company retrieval.
+This tests cross-company retrieval.
 
 ### Question 3
 
 Compare Vitec and Nemetschek as potential buy-and-build platforms.
 
-Now you're testing multi-entity RAG.
+This tests multi-entity RAG.
 
 ### Question 4
 
 What could invalidate an investment thesis for ATOSS?
 
-Now you're testing risk retrieval.
+This tests risk retrieval.
 
 ### Question 5
 
 Give me a one-page investment committee briefing on Nexus.
 
-Now you're testing synthesis.
+This tests synthesis.
 
-Those five interactions tell a much better story than "I uploaded 60 PDFs and built a chatbot."
+These five interactions exercise cross-company retrieval, multi-entity comparison, risk retrieval, and synthesis — more than a generic document chatbot provides.
