@@ -3,10 +3,14 @@ from __future__ import annotations
 import asyncio
 import os
 import threading
+import time
 from functools import lru_cache
 
 BATCH_SIZE = 64
 QUERY_CACHE_SIZE = 1024
+# Google's free-tier embedding quota is a tight 100 requests/minute; back off and retry instead of failing.
+GOOGLE_RATE_LIMIT_RETRIES = 5
+GOOGLE_RATE_LIMIT_BACKOFF_SECONDS = 20
 
 DEFAULT_MODELS = {
     "sentence_transformers": "sentence-transformers/all-MiniLM-L6-v2",
@@ -74,8 +78,17 @@ class EmbeddingService:
             response = self.client.embeddings.create(model=self.model_name, input=texts)
             return [item.embedding for item in response.data]
 
-        result = self.client.embed_content(model=self.model_name, content=texts, task_type=task_type)
-        return result["embedding"]
+        from google.api_core.exceptions import ResourceExhausted
+
+        for attempt in range(GOOGLE_RATE_LIMIT_RETRIES):
+            try:
+                result = self.client.embed_content(model=self.model_name, content=texts, task_type=task_type)
+                return result["embedding"]
+            except ResourceExhausted:
+                if attempt == GOOGLE_RATE_LIMIT_RETRIES - 1:
+                    raise
+                time.sleep(GOOGLE_RATE_LIMIT_BACKOFF_SECONDS * (attempt + 1))
+        raise AssertionError("unreachable")
 
 
 @lru_cache
