@@ -1,8 +1,9 @@
-# Resolves the latest PostgreSQL 16.x minor version available in this region/account
+# Resolves AWS's recommended default minor version for PostgreSQL 16 in this region/account
 # instead of hardcoding one that may not (yet, or any longer) be offered.
 data "aws_rds_engine_version" "postgres" {
-  engine             = "postgres"
-  preferred_versions = ["16.*"]
+  engine       = "postgres"
+  version      = "16"
+  default_only = true
 }
 
 resource "aws_db_instance" "this" {

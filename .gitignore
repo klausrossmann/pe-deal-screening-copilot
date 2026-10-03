@@ -10,3 +10,4 @@ terraform/*.tfstate
 terraform/*.tfstate.*
 terraform/terraform.tfvars
 terraform/*.tfplan
+terraform/plan.out

@@ -161,45 +161,62 @@ results survive container restarts/rebuilds; `data/raw/` and `config/` are baked
 
 ## Deploying to AWS
 
-A low-cost layout: one EC2 instance (free-tier eligible `t3.micro`/`t2.micro`) running the `api` and `ui`
-containers via `docker-compose.prod.yml`, plus a managed RDS PostgreSQL instance (free-tier eligible
-`db.t3.micro`/`db.t4g.micro`, engine version 16.x or 15.4+ for `pgvector` support) instead of the local
-`postgres` container. `docker-compose.prod.yml` differs from `docker-compose.yml` only by dropping the
-local `postgres` service — `POSTGRES_URL` in `.env` must then point at the RDS endpoint instead of
-`localhost`/`postgres`.
+Live deployment layout: one EC2 instance (`t3.micro`) running the `api` and `ui` containers via
+`docker-compose.prod.yml`, plus a managed RDS PostgreSQL instance (`db.t3.micro`, engine 16.x) instead of
+the local `postgres` container. Managed entirely by Terraform in [terraform/](terraform/) — `main.tf`
+(provider), `network.tf` (default VPC, security groups, DB subnet group), `rds.tf`, `ec2.tf` +
+`templates/user-data.sh.tftpl` (first-boot script: Docker, Compose, buildx, a swap file, and cloning the
+repo), `budget.tf` (cost alert), `outputs.tf` (public IP, RDS endpoint, UI URL). `docker-compose.prod.yml`
+differs from `docker-compose.yml` only by dropping the local `postgres` service — `POSTGRES_URL` in `.env`
+points at the RDS endpoint instead.
 
-> New AWS accounts (since the 2024 Free Tier change) get **$100–200 in credits valid for 6 months**, not
-> the older "12 months of free EC2/RDS hours" — check the Billing console's Free Tier page for what
-> actually applies to your account. A `t3.micro` EC2 instance + `db.t3.micro` RDS instance running 24/7
-> cost only a few dollars a month even outside the credit, but set an AWS Budget alert (e.g. $5) as a
-> safety net, and stop (not terminate) both resources when you're not actively using the app to conserve
-> credit — EBS/RDS storage keeps billing a few cents a month while stopped, compute does not.
+> New AWS accounts get **$100–200 in credits valid for 6 months**, not the older "12 months of free
+> EC2/RDS hours" — check the Billing console's Free Tier page for what applies to your account. A
+> `t3.micro` + `db.t3.micro` running 24/7 cost only a few dollars a month even outside the credit; set an
+> AWS Budget alert (`budget.tf` does this automatically) as a safety net regardless.
+>
+> Accounts created via AWS's simplified "Sign up for AWS (new)" flow (AWS Builder ID / "projects") run
+> under an AWS-managed Service Control Policy that blocks raw EC2/RDS API calls Terraform needs (e.g.
+> `ec2:DescribeVpcs`) — if `terraform plan` fails with "explicit deny in a service control policy", you
+> need to **activate advanced features** first (irreversible; via `settings.aws.com` → Projects → Actions
+> → Explore advanced features). This converts the account into a self-administered AWS Organization. The
+> default post-activation SCP (`AdvancedModeRegionRestrictionSecurityControlPolicy`) only allows one
+> region until you edit it (AWS Organizations console, logged in **as the management account**, not the
+> project account) to add the region you actually use (check `aws configure get region`).
 
-Steps:
+Steps, once `aws configure` works and (if applicable) the account restrictions above are resolved:
 
-1. **IAM**: create an IAM user (or use IAM Identity Center) with programmatic access and run `aws configure`
-   locally so the AWS CLI can create resources.
-2. **RDS**: create a `db.t3.micro`/`db.t4g.micro` PostgreSQL 16.x instance (20 GB storage, not publicly
-   accessible), in the same VPC as the EC2 instance. After it's up, connect once (e.g. via an SSH tunnel
-   through the EC2 instance) and confirm `CREATE EXTENSION vector;` succeeds — this is what
-   `python3 -m app.db.bootstrap` runs automatically, so no manual SQL is needed beyond that check.
-3. **Security groups**: RDS's security group should only allow port 5432 from the EC2 instance's security
-   group (not `0.0.0.0/0`). The EC2 instance's security group should allow 22 (SSH, restricted to your IP)
-   and 8501 (Streamlit UI); keep 8000 (API) closed unless you need external API access too.
-4. **EC2**: launch a `t3.micro`/`t2.micro` instance (Amazon Linux 2023), using [deploy/ec2-user-data.sh](deploy/ec2-user-data.sh)
-   as its user-data to install Docker/Compose and clone the repo on first boot (edit the placeholder GitHub
-   URL in that script first, or just `git clone`/`scp` the repo manually after launch).
-5. **Configure**: on the instance, copy `.env.example` to `.env`, set `POSTGRES_URL` to the RDS endpoint
-   (append `?sslmode=require`), and switch `EMBEDDING_PROVIDER` to `openai` or `google` — the default
-   `sentence_transformers` provider loads a local PyTorch model that doesn't comfortably fit a `t3.micro`'s
-   1 GiB of RAM. Switching providers means re-ingesting from scratch (fresh DB, so this is a non-issue
-   on a first deploy).
-6. **Run it**: `docker compose -f docker-compose.prod.yml up -d --build`, then
-   `docker compose -f docker-compose.prod.yml exec api python3 -m app.db.bootstrap` and
-   `curl -X POST http://localhost:8000/ingestion/all` to populate the database.
-7. Visit `http://<ec2-public-ip>:8501` for the UI.
+1. `cd terraform && cp terraform.tfvars.example terraform.tfvars` and fill in `db_password` (generate one,
+   don't reuse anything real), `key_pair_name` (create via `aws ec2 create-key-pair`), `allowed_ssh_cidr`
+   (your IP, `/32` — never `0.0.0.0/0`), `git_repo_url` (a public repo the instance can clone anonymously),
+   `budget_alert_email`.
+2. `terraform init && terraform plan -out=plan.out && terraform apply plan.out`. Creates the VPC security
+   groups, RDS instance (~5-10 min), EC2 instance, and budget alert.
+3. SSH in once the instance's user-data has finished (`git clone` done): build an `.env` on the instance
+   (copy the local one, point `POSTGRES_URL` at the RDS endpoint from `terraform output rds_endpoint` with
+   `?sslmode=require` appended), then `docker compose -f docker-compose.prod.yml up -d --build`,
+   `docker compose -f docker-compose.prod.yml exec api python3 -m app.db.bootstrap`, and
+   `curl -X POST http://localhost:8000/ingestion/all`.
+4. Visit `http://<ec2_public_ip>:8501` (from `terraform output streamlit_url`) for the UI.
+
+Two things worth knowing if you redo this:
+- **Embedding provider for bulk ingestion**: Google's free-tier `embedContent` quota is capped at 1000
+  requests/day, and `ingest_document` only persists a document after *all* its chunks embed — a failed
+  bulk ingest re-embeds from scratch next time, so repeated retries can exhaust the daily quota with zero
+  progress saved. For a one-time ingest of a non-trivial corpus, it's more reliable to temporarily resize
+  the EC2 instance up (`ec2_instance_type = "t3.medium"` in `terraform.tfvars`, `terraform apply`) and use
+  the default `sentence_transformers` local model instead (no external quota), then resize back down to
+  `t3.micro` afterward (`terraform apply` again — this modifies the instance in place, same instance ID,
+  but the public IP changes on every stop/start since there's no Elastic IP). Whichever provider ends up
+  used for ingestion must stay fixed afterward — query embeddings have to match the space the stored
+  document vectors were created in.
+- **`t3.micro` RAM is tight** (≈916 MiB usable) once `api` has the embedding model loaded alongside `ui` —
+  verified working (a real `/ask` request succeeds), but with only tens of MiB free. The user-data script
+  adds a 1 GB swap file as an OOM safety margin; consider `t3.small` if you see containers getting killed
+  under real concurrent use.
 
 This was deliberately kept to the simplest architecture that fits free-tier instance sizes (single EC2 box,
 no ECS/Fargate — Fargate isn't part of the standard Free Tier) rather than a "proper" multi-AZ/autoscaled
 setup, consistent with project-plan.md treating AWS as a packaging step, not core architecture.
+
 

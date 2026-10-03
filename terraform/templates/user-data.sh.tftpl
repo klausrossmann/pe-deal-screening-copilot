@@ -13,6 +13,18 @@ curl -SL https://github.com/docker/compose/releases/latest/download/docker-compo
   -o "$DOCKER_CONFIG_DIR/docker-compose"
 chmod +x "$DOCKER_CONFIG_DIR/docker-compose"
 
+# Amazon Linux 2023's bundled buildx is too old for `docker compose build` on newer Compose versions.
+curl -SL https://github.com/docker/buildx/releases/download/v0.19.3/buildx-v0.19.3.linux-amd64 \
+  -o "$DOCKER_CONFIG_DIR/docker-buildx"
+chmod +x "$DOCKER_CONFIG_DIR/docker-buildx"
+
+# Safety margin: this instance type's RAM is tight once the embedding model and both containers are loaded.
+fallocate -l 1G /swapfile
+chmod 600 /swapfile
+mkswap /swapfile
+swapon /swapfile
+echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
+
 %{ if git_repo_url != "" ~}
 sudo -u ec2-user git clone ${git_repo_url} /home/ec2-user/app
 %{ else ~}
