@@ -159,3 +159,47 @@ results survive container restarts/rebuilds; `data/raw/` and `config/` are baked
 (`docker compose up -d --build`) after changing either. Run ingestion/tests the same way as above, just via
 `docker compose exec api ...` instead of a local Python environment.
 
+## Deploying to AWS
+
+A low-cost layout: one EC2 instance (free-tier eligible `t3.micro`/`t2.micro`) running the `api` and `ui`
+containers via `docker-compose.prod.yml`, plus a managed RDS PostgreSQL instance (free-tier eligible
+`db.t3.micro`/`db.t4g.micro`, engine version 16.x or 15.4+ for `pgvector` support) instead of the local
+`postgres` container. `docker-compose.prod.yml` differs from `docker-compose.yml` only by dropping the
+local `postgres` service — `POSTGRES_URL` in `.env` must then point at the RDS endpoint instead of
+`localhost`/`postgres`.
+
+> New AWS accounts (since the 2024 Free Tier change) get **$100–200 in credits valid for 6 months**, not
+> the older "12 months of free EC2/RDS hours" — check the Billing console's Free Tier page for what
+> actually applies to your account. A `t3.micro` EC2 instance + `db.t3.micro` RDS instance running 24/7
+> cost only a few dollars a month even outside the credit, but set an AWS Budget alert (e.g. $5) as a
+> safety net, and stop (not terminate) both resources when you're not actively using the app to conserve
+> credit — EBS/RDS storage keeps billing a few cents a month while stopped, compute does not.
+
+Steps:
+
+1. **IAM**: create an IAM user (or use IAM Identity Center) with programmatic access and run `aws configure`
+   locally so the AWS CLI can create resources.
+2. **RDS**: create a `db.t3.micro`/`db.t4g.micro` PostgreSQL 16.x instance (20 GB storage, not publicly
+   accessible), in the same VPC as the EC2 instance. After it's up, connect once (e.g. via an SSH tunnel
+   through the EC2 instance) and confirm `CREATE EXTENSION vector;` succeeds — this is what
+   `python3 -m app.db.bootstrap` runs automatically, so no manual SQL is needed beyond that check.
+3. **Security groups**: RDS's security group should only allow port 5432 from the EC2 instance's security
+   group (not `0.0.0.0/0`). The EC2 instance's security group should allow 22 (SSH, restricted to your IP)
+   and 8501 (Streamlit UI); keep 8000 (API) closed unless you need external API access too.
+4. **EC2**: launch a `t3.micro`/`t2.micro` instance (Amazon Linux 2023), using [deploy/ec2-user-data.sh](deploy/ec2-user-data.sh)
+   as its user-data to install Docker/Compose and clone the repo on first boot (edit the placeholder GitHub
+   URL in that script first, or just `git clone`/`scp` the repo manually after launch).
+5. **Configure**: on the instance, copy `.env.example` to `.env`, set `POSTGRES_URL` to the RDS endpoint
+   (append `?sslmode=require`), and switch `EMBEDDING_PROVIDER` to `openai` or `google` — the default
+   `sentence_transformers` provider loads a local PyTorch model that doesn't comfortably fit a `t3.micro`'s
+   1 GiB of RAM. Switching providers means re-ingesting from scratch (fresh DB, so this is a non-issue
+   on a first deploy).
+6. **Run it**: `docker compose -f docker-compose.prod.yml up -d --build`, then
+   `docker compose -f docker-compose.prod.yml exec api python3 -m app.db.bootstrap` and
+   `curl -X POST http://localhost:8000/ingestion/all` to populate the database.
+7. Visit `http://<ec2-public-ip>:8501` for the UI.
+
+This was deliberately kept to the simplest architecture that fits free-tier instance sizes (single EC2 box,
+no ECS/Fargate — Fargate isn't part of the standard Free Tier) rather than a "proper" multi-AZ/autoscaled
+setup, consistent with project-plan.md treating AWS as a packaging step, not core architecture.
+

@@ -1,0 +1,20 @@
+#!/bin/bash
+# EC2 user-data: runs once at first boot (Amazon Linux 2023).
+set -euo pipefail
+
+dnf update -y
+dnf install -y docker git
+systemctl enable --now docker
+usermod -aG docker ec2-user
+
+DOCKER_CONFIG_DIR=/usr/local/lib/docker/cli-plugins
+mkdir -p "$DOCKER_CONFIG_DIR"
+curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 \
+  -o "$DOCKER_CONFIG_DIR/docker-compose"
+chmod +x "$DOCKER_CONFIG_DIR/docker-compose"
+
+%{ if git_repo_url != "" ~}
+sudo -u ec2-user git clone ${git_repo_url} /home/ec2-user/app
+%{ else ~}
+echo "No git_repo_url set — upload the repo to /home/ec2-user/app yourself (e.g. scp -r)." > /home/ec2-user/NOTE.txt
+%{ endif ~}

@@ -1,0 +1,9 @@
+# Copy to terraform.tfvars and fill in (terraform.tfvars is gitignored - never commit real secrets/IPs here).
+
+aws_region          = "eu-central-1"
+db_password         = "CHANGE-ME-use-a-real-secret"
+key_pair_name       = "pe-screening-key"
+allowed_ssh_cidr    = "YOUR.IP.ADDR.ESS/32"
+git_repo_url        = ""
+budget_alert_email  = "you@example.com"
+monthly_budget_usd  = 5
