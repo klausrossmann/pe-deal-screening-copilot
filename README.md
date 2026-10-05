@@ -23,7 +23,8 @@ The repository now contains a working ingestion and retrieval scaffold for:
   to one dimension
 - concurrent screening with a single, configurable cap on LLM calls in flight (`LLM_MAX_CONCURRENCY`)
 - FastAPI app entrypoint
-- a Streamlit UI with four tabs (Company Screening, Ask, Compare, Universe) calling the FastAPI endpoints
+- a Streamlit UI with five tabs (Company Screening, Ask, Compare, Universe, Data) calling the FastAPI endpoints;
+  the Data tab adds companies, uploads documents with their metadata, and reruns the ingestion
 
 ## Quick start
 

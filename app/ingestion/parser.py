@@ -9,6 +9,7 @@ from app.schemas.documents import Page
 
 # Content of these tags is code or hidden, not visible text.
 _SKIPPED_TAGS = {"script", "style", "noscript", "template"}
+SUPPORTED_SUFFIXES = {".pdf", ".html", ".htm"}
 
 
 class _HTMLTextExtractor(HTMLParser):
@@ -50,7 +51,7 @@ def extract_pages(file_path: str | Path) -> list[Page]:
         text = _extract_html_text(file_path)
         return [Page(page_number=1, text=text)]
 
-    if suffix != ".pdf":
+    if suffix not in SUPPORTED_SUFFIXES:
         raise ValueError(f"Unsupported source format: {suffix or file_path.name}")
 
     reader = PdfReader(str(file_path))

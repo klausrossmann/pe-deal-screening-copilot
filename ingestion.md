@@ -94,8 +94,26 @@ Handled by `app/db/repository.py`. One transaction per document: insert the comp
 | --- | --- |
 | `POST /ingestion/all` | ingest every source in `config/sources.yaml`; returns counts of ingested vs. skipped files |
 | `GET /ingestion/status` | returns the number of documents currently stored |
+| `POST /ingestion/upload` | multipart: `files` (one or more) + `metadata` (JSON list, one object per file, same order); saves the files and registers them in `sources.yaml` without ingesting them |
+| `GET /companies` | lists the companies in `config/companies.yaml` |
+| `POST /companies` | appends a new company to `config/companies.yaml` (409 if the id exists) |
 
 `app/main.py` creates the database tables on startup (safe to call repeatedly, never deletes data).
+
+## Adding your own data
+
+The UI's **Data** tab covers the whole flow, in three steps:
+
+1. **Add a company** (optional) — `POST /companies`. Every field except `ticker` is required; `id`, `category` and the screening tags must be lowercase `a-z0-9_`.
+2. **Upload documents** — pick several PDF/HTML files at once, then fill in `company_id`, `document_type`, `year`, `title` and `source_url` for every file. `POST /ingestion/upload` (`app/ingestion/uploads.py`) validates the whole batch before writing anything:
+   - the company exists in `companies.yaml`
+   - the file type is `.pdf`/`.html`/`.htm`, a PDF starts with `%PDF`, max 50 MB per file
+   - the file name (directories stripped, other characters than `A-Za-z0-9._-` replaced by `_`) isn't already used for that company
+
+   Files land in `data/raw/<company_id>/`, entries are appended to `sources.yaml`.
+3. **Run ingestion** — calls `POST /ingestion/all`. Already ingested files are skipped by hash, so only the new uploads are embedded. Saved screening results for that company are invalidated automatically (the corpus fingerprint changes).
+
+Both manifests are appended as text rather than re-dumped (`_append_list_items()` in `manifest.py`), so their comments and formatting survive; if the re-parsed file doesn't contain the new entries, the original is restored. In Docker, `config/` and `data/raw/` are bind-mounted into the api container so uploads survive a rebuild.
 
 ## Running it
 

@@ -54,7 +54,8 @@ PostgreSQL is the source of truth for the processed corpus — not the filesyste
 app/
 ├── main.py                  FastAPI app; creates the tables on startup
 ├── api/
-│   ├── ingestion.py         POST /ingestion/all, GET /ingestion/status
+│   ├── ingestion.py         POST /ingestion/all, POST /ingestion/upload, GET /ingestion/status
+│   ├── companies.py         GET /companies, POST /companies
 │   ├── ask.py               POST /ask
 │   └── screening.py         POST /screen, POST /screen/universe, POST /compare
 ├── db/
@@ -63,7 +64,8 @@ app/
 │   ├── bootstrap.py         creates the pgvector extension and the tables
 │   └── repository.py        every database read/write the ingestion needs
 ├── ingestion/
-│   ├── manifest.py          reads config/sources.yaml and config/companies.yaml
+│   ├── manifest.py          reads/appends config/sources.yaml and config/companies.yaml
+│   ├── uploads.py           validates and stores user-uploaded files, registers them in sources.yaml
 │   ├── loader.py            finds a source file on disk and hashes it
 │   ├── parser.py            PDF/HTML -> pages
 │   ├── chunker.py           pages -> chunks
@@ -84,7 +86,7 @@ app/
 │   ├── embeddings.py        embedding provider wrapper (local/OpenAI/Google)
 │   └── llm.py               chat/LLM provider wrapper (OpenAI/Google/Groq)
 └── ui/
-    └── streamlit_app.py     Streamlit UI: Screening/Ask/Compare/Universe tabs, calls the FastAPI endpoints
+    └── streamlit_app.py     Streamlit UI: Screening/Ask/Compare/Universe/Data tabs, calls the FastAPI endpoints
 
 config/
 ├── sources.yaml              which documents to ingest (source manifest)

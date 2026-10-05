@@ -1,7 +1,7 @@
 """Streamlit UI for the PE Deal Screening copilot (project-plan.md Phase 6).
 
-Thin client over the FastAPI app: every tab just POSTs to an existing endpoint
-(/screen, /ask, /compare, /screen/universe) and renders the JSON response. Run with:
+Thin client over the FastAPI app: every tab just calls an existing endpoint
+(/screen, /ask, /compare, /screen/universe, /companies, /ingestion/*) and renders the JSON response. Run with:
 
     streamlit run app/ui/streamlit_app.py
 
@@ -9,10 +9,12 @@ Needs the FastAPI app running separately (`uvicorn app.main:app --reload`).
 """
 from __future__ import annotations
 
+import json
 import os
 from pathlib import Path
 from typing import Any
 
+import pandas as pd
 import requests
 import streamlit as st
 import yaml
@@ -33,6 +35,19 @@ RISK_LABELS = {
     "weak_evidence": "🟡 Weak risk signal",
     "insufficient_evidence": "⚪ Insufficient evidence",
 }
+DOCUMENT_TYPES = [
+    "annual_report",
+    "investor_presentation",
+    "investor_relations",
+    "company_profile",
+    "product_overview",
+    "industry_overview",
+    "customer_references",
+    "acquisition_announcement",
+    "acquisition_overview",
+    "other",
+]
+UPLOAD_METADATA_COLUMNS = ["company_id", "document_type", "year", "title", "source_url"]
 
 
 def assessment_label(assessment: str, polarity: str = "positive") -> str:
@@ -46,20 +61,13 @@ def side_label(side: dict[str, Any], polarity: str = "positive") -> str:
 
 
 @st.cache_data
-def load_companies(path: str = "config/companies.yaml") -> dict[str, str]:
-    """Returns {company_id: display_name}, read directly from config since there's no /companies endpoint."""
-    payload = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
-    return {company["id"]: company["name"] for company in payload.get("companies", [])}
-
-
-@st.cache_data
 def load_screening_structure(path: str = "config/screening_config.yaml") -> dict[str, Any]:
     """Returns the raw screening_dimensions mapping, used to populate the dimension/criterion pickers."""
     payload = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
     return payload.get("screening_dimensions") or {}
 
 
-def call_api(method: str, path: str, base_url: str, **kwargs: Any) -> dict[str, Any] | None:
+def call_api(method: str, path: str, base_url: str, **kwargs: Any) -> Any:
     """POST/GET against the FastAPI app, surfacing connection/HTTP errors as st.error instead of raising."""
     try:
         response = requests.request(method, f"{base_url}{path}", timeout=REQUEST_TIMEOUT_SECONDS, **kwargs)
@@ -78,6 +86,11 @@ def call_api(method: str, path: str, base_url: str, **kwargs: Any) -> dict[str, 
     except requests.exceptions.RequestException as exc:
         st.error(f"Request failed: {exc}")
     return None
+
+
+def load_companies(base_url: str) -> dict[str, str]:
+    """Returns {company_id: display_name} from the API, so companies added in the Data tab show up right away."""
+    return {company["id"]: company["name"] for company in call_api("GET", "/companies", base_url) or []}
 
 
 def render_sources(sources: list[dict[str, Any]], cached: bool = False) -> None:
@@ -289,6 +302,133 @@ def render_universe(result: dict[str, Any], companies: dict[str, str]) -> None:
                 render_sources(row["sources"], row.get("cached", False))
 
 
+def _is_blank(value: Any) -> bool:
+    return value is None or (isinstance(value, float) and pd.isna(value)) or not str(value).strip()
+
+
+def add_company_form(base_url: str) -> None:
+    st.subheader("1. Add a company")
+    with st.form("add_company", clear_on_submit=True):
+        col_left, col_right = st.columns(2)
+        with col_left:
+            name = st.text_input("Name *", placeholder="Acme Software AG")
+            company_id = st.text_input(
+                "ID *", placeholder="acme_software", help="Lowercase letters, digits and underscores. Cannot be changed later."
+            )
+            website = st.text_input("Website *", placeholder="https://www.acme.com")
+            country = st.text_input("Country *", placeholder="Germany")
+        with col_right:
+            category = st.text_input("Category *", placeholder="workforce_management_software")
+            ownership = st.selectbox("Ownership *", options=["public", "private"])
+            ticker = st.text_input("Ticker", help="Leave empty for private companies.")
+            tags = st.text_input("Screening tags *", placeholder="vertical_software, enterprise_software")
+        submitted = st.form_submit_button("Add company")
+
+    if not submitted:
+        return
+    payload = {
+        "id": company_id,
+        "name": name,
+        "website": website,
+        "country": country,
+        "category": category,
+        "ownership": ownership,
+        "ticker": ticker,
+        "screening_tags": [tag.strip() for tag in tags.split(",") if tag.strip()],
+    }
+    if any(_is_blank(payload[field]) for field in ("id", "name", "website", "country", "category")) or not payload[
+        "screening_tags"
+    ]:
+        st.warning("Fill in all fields marked with *.")
+        return
+    if call_api("POST", "/companies", base_url, json=payload):
+        st.session_state["data_flash"] = f"Added company **{name}** to companies.yaml."
+        st.rerun()
+
+
+def upload_documents_form(base_url: str, companies: dict[str, str]) -> None:
+    st.subheader("2. Upload documents")
+    files = st.file_uploader(
+        "PDF or HTML files",
+        type=["pdf", "html", "htm"],
+        accept_multiple_files=True,
+        key=f"upload_files_{st.session_state.get('upload_nonce', 0)}",
+    )
+    if not files:
+        return
+    if not companies:
+        st.info("Add a company first.")
+        return
+
+    st.caption("Every field is required. Double-click a cell to edit it.")
+    rows = pd.DataFrame(
+        [{"file": file.name, **{column: None for column in UPLOAD_METADATA_COLUMNS}} for file in files]
+    ).astype({"company_id": object, "document_type": object, "year": "float64", "title": object, "source_url": object})
+    edited = st.data_editor(
+        rows,
+        column_config={
+            "file": st.column_config.TextColumn("File", disabled=True),
+            "company_id": st.column_config.SelectboxColumn("Company", options=list(companies), required=True),
+            "document_type": st.column_config.SelectboxColumn("Document type", options=DOCUMENT_TYPES, required=True),
+            "year": st.column_config.NumberColumn("Year", min_value=1900, max_value=2100, step=1, format="%d", required=True),
+            "title": st.column_config.TextColumn("Title", required=True),
+            "source_url": st.column_config.TextColumn("Source URL", help="http(s) link to the original document", required=True),
+        },
+        hide_index=True,
+        num_rows="fixed",
+        key="upload_metadata_" + "|".join(f"{file.name}:{file.size}" for file in files),
+    )
+
+    if not st.button("Upload files", type="primary"):
+        return
+    records = edited.to_dict("records")
+    incomplete = [record["file"] for record in records if any(_is_blank(record[c]) for c in UPLOAD_METADATA_COLUMNS)]
+    if incomplete:
+        st.warning("Missing metadata for: " + ", ".join(incomplete))
+        return
+    metadata = [
+        {**{c: str(record[c]).strip() for c in UPLOAD_METADATA_COLUMNS}, "year": int(record["year"])} for record in records
+    ]
+    with st.spinner(f"Uploading {len(files)} file(s)..."):
+        result = call_api(
+            "POST",
+            "/ingestion/upload",
+            base_url,
+            files=[("files", (file.name, file.getvalue(), file.type or "application/octet-stream")) for file in files],
+            data={"metadata": json.dumps(metadata)},
+        )
+    if result:
+        names = ", ".join(source["file_name"] for source in result["registered"])
+        st.session_state["data_flash"] = f"Added {names} to sources.yaml. Run the ingestion below to make them searchable."
+        st.session_state["upload_nonce"] = st.session_state.get("upload_nonce", 0) + 1
+        st.rerun()
+
+
+def run_ingestion_section(base_url: str) -> None:
+    st.subheader("3. Run ingestion")
+    st.caption("Parses, chunks and embeds every document in sources.yaml. Already ingested files are skipped.")
+    if not st.button("Run ingestion"):
+        return
+    with st.spinner("Ingesting documents..."):
+        result = call_api("POST", "/ingestion/all", base_url)
+    if result:
+        st.success(f"Ingested {result['ingested']} new document(s), skipped {result['skipped']} already ingested.")
+        new_documents = [doc for doc in result["documents"] if doc["ingested"]]
+        if new_documents:
+            st.dataframe(new_documents, hide_index=True)
+
+
+def data_tab(base_url: str, companies: dict[str, str]) -> None:
+    st.header("Add your own data")
+    if flash := st.session_state.pop("data_flash", None):
+        st.success(flash)
+    add_company_form(base_url)
+    st.divider()
+    upload_documents_form(base_url, companies)
+    st.divider()
+    run_ingestion_section(base_url)
+
+
 def main() -> None:
     st.set_page_config(page_title="PE Deal Screening Copilot", layout="wide")
     st.title("PE Deal Screening Copilot")
@@ -302,11 +442,11 @@ def main() -> None:
             "Tick this to force a fresh assessment.",
         )
 
-    companies = load_companies()
+    companies = load_companies(base_url)
     dimensions = load_screening_structure()
 
-    tab_screening, tab_ask, tab_compare, tab_universe = st.tabs(
-        ["Company Screening", "Ask", "Compare", "Universe"]
+    tab_screening, tab_ask, tab_compare, tab_universe, tab_data = st.tabs(
+        ["Company Screening", "Ask", "Compare", "Universe", "Data"]
     )
     with tab_screening:
         screening_tab(base_url, companies, refresh)
@@ -316,6 +456,8 @@ def main() -> None:
         compare_tab(base_url, companies, dimensions, refresh)
     with tab_universe:
         universe_tab(base_url, companies, dimensions, refresh)
+    with tab_data:
+        data_tab(base_url, companies)
 
 
 if __name__ == "__main__":

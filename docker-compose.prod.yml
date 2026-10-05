@@ -8,6 +8,9 @@ services:
       - "8000:8000"
     volumes:
       - ./data/analysis:/app/data/analysis
+      # Uploads from the UI write here (files + companies.yaml/sources.yaml), so they must outlive the container.
+      - ./data/raw:/app/data/raw
+      - ./config:/app/config
     restart: unless-stopped
 
   ui:
