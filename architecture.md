@@ -153,12 +153,20 @@ With that in place, continue with [ingestion.md](ingestion.md) to populate the d
 ## Running with Docker
 
 `docker compose up -d --build` starts three containers from the same image (built from the root `Dockerfile`):
-`postgres`, `api` (`uvicorn`, port 8000) and `ui` (`streamlit`, port 8501). A `.env` file must exist first (step 1
+`postgres`, `api` (`uvicorn`, port 8000) and `ui` (`streamlit`, port 8501). Once up:
+
+| What | URL |
+| --- | --- |
+| Streamlit UI | http://localhost:8501 |
+| FastAPI | http://localhost:8000 (health check: `/health`, interactive docs: `/docs`) |
+| PostgreSQL | `localhost:5432` |
+
+A `.env` file must exist first (step 1
 above) — `docker compose` reads it via `env_file`. Two variables are overridden in `docker-compose.yml` itself
 so the containers can reach each other by service name instead of `localhost`: `POSTGRES_URL` (api/ui -> postgres)
-and `API_BASE_URL` (ui -> api). `data/analysis/` is bind-mounted into the `api` container so saved screening
-results survive container restarts/rebuilds; `data/raw/` and `config/` are baked into the image, so rebuild
-(`docker compose up -d --build`) after changing either. Run ingestion/tests the same way as above, just via
+and `API_BASE_URL` (ui -> api). `data/analysis/`, `data/raw/` and `config/` are bind-mounted into the `api`
+container, so saved screening results and files/companies added via the UI's Data tab survive container
+restarts/rebuilds. Run ingestion/tests the same way as above, just via
 `docker compose exec api ...` instead of a local Python environment.
 
 ## Deploying to AWS
